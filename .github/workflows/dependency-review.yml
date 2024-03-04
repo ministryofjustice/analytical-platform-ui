@@ -1,5 +1,5 @@
 ---
-name: Dependency review
+name: Dependency Review
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ permissions: {}
 
 jobs:
   dependency-review:
-    name: Dependency review
+    name: Dependency Review
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -22,7 +22,7 @@ jobs:
         id: checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - name: Dependency review
+      - name: Dependency Review
         id: dependency_review
         uses: actions/dependency-review-action@01bc87099ba56df1e897b6874784491ea6309bc4 # v3.1.4
         with:
