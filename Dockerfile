@@ -12,7 +12,7 @@ FROM public.ecr.aws/docker/library/python:3.11-alpine3.19 AS final
 RUN apk add --no-cache --virtual .build-deps \
     libffi-dev=3.4.4-r3 \
     gcc=13.2.1_git20231014-r0 \
-    musl-dev=1.2.4_git20230717-r4
+    musl-dev=1.2.4_git20230717-r4 \
     && apk add --no-cache libpq-dev=16.2-r0
 
 WORKDIR /controlpanel
