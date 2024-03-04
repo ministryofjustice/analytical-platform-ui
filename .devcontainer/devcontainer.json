@@ -1,5 +1,5 @@
 {
-  "name": "data-platform-control-panel",
+  "name": "analytical-platform-dashboard",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
@@ -13,7 +13,7 @@
   },
   "postCreateCommand": "bash scripts/devcontainer/post-create.sh",
   "postStartCommand": "bash scripts/devcontainer/post-start.sh",
-  "runArgs": ["--name=data-platform-control-panel-devcontainer"],
+  "runArgs": ["--name=analytical-platform-dashboard-devcontainer"],
   "customizations": {
     "vscode": {
       "extensions": [

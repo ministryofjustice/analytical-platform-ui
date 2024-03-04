@@ -25,13 +25,13 @@ jobs:
         with:
           push: false
           load: true
-          tags: control-panel
+          tags: dashboard
 
       - name: Scan Image
         id: scan_image
         uses: aquasecurity/trivy-action@2b6a709cf9c4025c5438138008beaddbb02086f0 # v0.14.0
         with:
-          image-ref: control-panel
+          image-ref: dashboard
           exit-code: 1
           format: sarif
           output: trivy-results.sarif
@@ -43,7 +43,7 @@ jobs:
         id: scan_image_on_failure
         uses: aquasecurity/trivy-action@2b6a709cf9c4025c5438138008beaddbb02086f0 # v0.14.0
         with:
-          image-ref: control-panel
+          image-ref: dashboard
           exit-code: 1
           format: table
           severity: CRITICAL
@@ -60,4 +60,4 @@ jobs:
           docker compose --file contrib/docker-compose-test.yml run --rm interfaces
         env:
           NETWORK: default
-          IMAGE_TAG: control-panel
+          IMAGE_TAG: dashboard
