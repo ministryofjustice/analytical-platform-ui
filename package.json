@@ -1,7 +1,7 @@
 {
-  "name": "data-platform-control-panel",
+  "name": "analytical-platform-dashboard",
   "version": "1.0.0",
-  "description": "Data Platform Control Panel",
+  "description": "Analytical Platform Dashboard",
   "directories": {
     "test": "tests"
   },
