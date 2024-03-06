@@ -31,14 +31,29 @@ class QuicksightView(OIDCLoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         qs = boto3.client("quicksight", region_name="eu-west-1")
-        response = qs.generate_embed_url_for_registered_user(
-            **{
-                "AwsAccountId": os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
-                "UserArn": os.environ.get("QUICKSIGHT_USER_ARN"),
-                "ExperienceConfiguration": {"QuickSightConsole": {"InitialPath": "/start"}},
-            }
-        )
-        context["embed_url"] = response["EmbedUrl"]
+        context["embed_url"] = None
+        user_name = "michael.collins"
+        try:
+            response = qs.register_user(
+                IdentityType='QUICKSIGHT',
+                Email="michael.collins5@justice.gov.uk",
+                UserRole="AUTHOR",
+                AwsAccountId=os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
+                Namespace="default",
+                UserName=user_name
+            )
+            context["register_url"] = response["UserInvitationUrl"]
+        except Exception as error:
+            response = qs.generate_embed_url_for_registered_user(
+                **{
+                    "AwsAccountId": os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
+                    "UserArn": f"arn:aws:quicksight:eu-west-1:525294151996:user/default/{user_name}",
+                    "ExperienceConfiguration": {"QuickSightConsole": {"InitialPath": "/start"}},
+                }
+            )
+
+            context["embed_url"] = response["EmbedUrl"]
+
         return context
 
 
