@@ -31,29 +31,32 @@ class QuicksightView(OIDCLoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         qs = boto3.client("quicksight", region_name="eu-west-1")
-        context["embed_url"] = None
-        user_name = "michael.collins"
+        rolename = "dev_user_michaeljcollinsuk"
+        session_name = "michaeljcollinsuk"
         try:
             response = qs.register_user(
-                IdentityType='QUICKSIGHT',
+                IdentityType='IAM',
+                IamArn=f"arn:aws:iam::525294151996:role/{rolename}",
+                SessionName=session_name,
                 Email="michael.collins5@justice.gov.uk",
-                UserRole="AUTHOR",
+                UserRole="READER",
                 AwsAccountId=os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
                 Namespace="default",
-                UserName=user_name
+                # UserName=user_name
             )
-            context["register_url"] = response["UserInvitationUrl"]
         except Exception as error:
-            response = qs.generate_embed_url_for_registered_user(
-                **{
-                    "AwsAccountId": os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
-                    "UserArn": f"arn:aws:quicksight:eu-west-1:525294151996:user/default/{user_name}",
-                    "ExperienceConfiguration": {"QuickSightConsole": {"InitialPath": "/start"}},
-                }
-            )
+            print(f"User probably already registered {error}")
+            pass
 
-            context["embed_url"] = response["EmbedUrl"]
+        response = qs.generate_embed_url_for_registered_user(
+            **{
+                "AwsAccountId": os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
+                "UserArn": f"arn:aws:quicksight:eu-west-1:525294151996:user/default/{rolename}/{session_name}",
+                "ExperienceConfiguration": {"QuickSightConsole": {"InitialPath": "/start"}},
+            }
+        )
 
+        context["embed_url"] = response["EmbedUrl"]
         return context
 
 
