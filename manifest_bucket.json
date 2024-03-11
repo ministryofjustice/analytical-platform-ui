@@ -9,6 +9,6 @@
     "globalUploadSettings": {
         "format": "CSV",
         "delimiter": ",",
-        "containsHeader": "false"
+        "containsHeader": "true"
     }
-}                         
+}

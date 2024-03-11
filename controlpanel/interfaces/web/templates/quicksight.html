@@ -1,11 +1,9 @@
 {% extends "base.html" %}
 
+{% block container_class_names %}govuk-grid-column-full{% endblock container_class_names %}
+
 {% block content %}
-
-    <h2><a href="{{register_url }}">{{register_url }}</a></h2>
-
     <body onload="embedConsole()">
-        <h1 class="govuk-heading-xl">{{ page_title }}</h1>
         <div id="experience-container"></div>
     </body>
 
@@ -30,7 +28,7 @@
                 url: "{{ embed_url|safe }}", // replace this value with the url generated via embedding API
                 container: '#experience-container',
                 height: "700px",
-                width: "1000px",
+                width: "100%",
                 onChange: (changeEvent, metadata) => {
                     switch (changeEvent.eventName) {
                         case 'FRAME_MOUNTED': {
