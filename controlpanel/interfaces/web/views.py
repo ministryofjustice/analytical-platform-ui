@@ -39,7 +39,7 @@ class QuicksightView(OIDCLoginRequiredMixin, TemplateView):
                 IamArn=f"arn:aws:iam::525294151996:role/{rolename}",
                 SessionName=session_name,
                 Email="michael.collins5@justice.gov.uk",
-                UserRole="READER",
+                UserRole="AUTHOR",
                 AwsAccountId=os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
                 Namespace="default",
                 # UserName=user_name
@@ -59,6 +59,19 @@ class QuicksightView(OIDCLoginRequiredMixin, TemplateView):
         context["embed_url"] = response["EmbedUrl"]
         return context
 
+    def describe_user(self, qs, rolename, session_name):
+        return qs.describe_user(
+            AwsAccountId=os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
+            Namespace="default",
+            UserName=f"{rolename}/{session_name}",
+        )
+
+    def describe_policy_assignment(self, qs, name):
+        return qs.describe_iam_policy_assignment(
+            AwsAccountId=os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
+            Namespace="default",
+            AssignmentName="michael-test-1"
+        )
 
 class DatasourcesList(OIDCLoginRequiredMixin, ListView):
     template_name = "datasources-list.html"
@@ -104,12 +117,13 @@ class DatasourcesManage(OIDCLoginRequiredMixin, UpdateView):
 
     def form_valid(self, form: DatasourceQuicksightForm) -> HttpResponse:
         redirect = super().form_valid(form)
+        assignment_name = "michael-test-from-embedded-qs"
         if self.object.is_quicksight_enabled:
             # TODO would need to get or create policy first
             qs = boto3.client("quicksight", region_name="eu-west-1")
             qs.create_iam_policy_assignment(
                 AwsAccountId=os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
-                AssignmentName="michael-test-1",
+                AssignmentName=assignment_name,
                 AssignmentStatus="ENABLED",
                 PolicyArn=os.environ.get("QUICKSIGHT_POLICY_ARN"),
                 Identities={"User": [os.environ.get("QUICKSIGHT_USERNAME")]},
@@ -119,7 +133,7 @@ class DatasourcesManage(OIDCLoginRequiredMixin, UpdateView):
             qs = boto3.client("quicksight", region_name="eu-west-1")
             qs.delete_iam_policy_assignment(
                 AwsAccountId=os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
-                AssignmentName="michael-test-1",
+                AssignmentName=assignment_name,
                 Namespace="default",
             )
         return redirect
