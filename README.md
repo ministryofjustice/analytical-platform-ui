@@ -10,35 +10,12 @@ For more information on Dev Containers, see the [Data Platform docs.](https://te
 
 
 ### Building the DevContainer
-To build the dev container, ensure docker desktop is running, then open the AP Dashboard project in VSCode. Open the command pallet by hitting command+shift+p and search for ```Dev Containers: Reopen in container``` and hit enter. This will build the dev container. If you are using a workspace with multiple applications, search for ```Dev Containers: Open folder in Container…``` instead, then select the AP UI folder. Once the dev container has finished building, it should install all the required Python dependencies.
+To build the dev container, ensure docker desktop is running, then open the AP Dashboard project in VSCode. Open the command pallet by hitting command+shift+p and search for ```Dev Containers: Reopen in container``` and hit enter. This will build the dev container. If you are using a workspace with multiple applications, search for ```Dev Containers: Open folder in Container…``` instead, then select the AP UI folder. Once the dev container has finished building, it should install all the required Python and NPM dependencies, as well as run the migrations.
 
 ### Environment Variables
 There is an example environment file stored on 1Password named ```Analytical Platform Dashboard Env```. Paste the contents into a new file called ```.env``` in the root of the project.
 
-### Building static assets
-First, install all npm dependencies by running ```npm install```. Then run:
-
-```commandline
-make build-static
-```
-
-Or look at the Makefile and run the individual commands as you require.
-
-### Migrations
-To build the required databases, run ```python manage.py migrate``` in the terminal.
-
-### Pre-commit
-
-To avoid pushing code and seeing the GitHub actions fail due to linting errors, when installing the project for the
-first time you should install the pre-commit hooks with:
-
-```commandline
-pre-commit install
-```
-
-This will run black, mypy, flake8 and isort before a commit to check for failures and stage any required changes.
-
 ### Running Development Server
 To run the server, you will need to use aws-sso cli. To find the correct profile, run ```aws-sso list``` in the terminal. This will provide you with a link to sign in via SSO. Once signed in, a list of profiles will be displayed. You are looking for the profile name linked to the ```analytical-platform-development``` AccountAlias.
 
-To run the server using this profile, enter ```aws-sso exec --profile <profile-name> -- python manage.py runserver```. Then go to ```localhost:8000``` and sign in using your @justice.gov.uk identity.
+To run the server using this profile, enter ```aws-sso exec --profile <profile-name> -- python manage.py runserver``` or ```source run-server.sh <profile-name>```. Then go to ```localhost:8000``` and sign in using your @justice.gov.uk identity.
