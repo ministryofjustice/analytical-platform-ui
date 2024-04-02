@@ -34,3 +34,6 @@ pre-commit install
 ```
 
 This will run black, mypy, flake8 and isort before a commit to check for failures and stage any required changes.
+
+### Running Development Server
+To run the server, you will need to use aws-sso cli. To find the correct profile, run ```aws-sso list``` in the terminal. This will provide you with a link to sign in via SSO. Once signed in, a list of profiles will be displayed. You are looking for the profile name linked to the ```analytical-platform-development``` AccountAlias. To run the server using this profile, enter ```aws-sso exec --profile <profile-name> -- python manage.py runserver```
