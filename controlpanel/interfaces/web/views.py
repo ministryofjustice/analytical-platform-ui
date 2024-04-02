@@ -25,6 +25,10 @@ class IndexView(OIDCLoginRequiredMixin, TemplateView):
         return context
 
 
+class LoginPromptView(TemplateView):
+    template_name = "login.html"
+
+
 class QuicksightView(OIDCLoginRequiredMixin, TemplateView):
     template_name = "quicksight.html"
 
@@ -35,7 +39,7 @@ class QuicksightView(OIDCLoginRequiredMixin, TemplateView):
         session_name = "michaeljcollinsuk"
         try:
             response = qs.register_user(
-                IdentityType='IAM',
+                IdentityType="IAM",
                 IamArn=f"arn:aws:iam::525294151996:role/{rolename}",
                 SessionName=session_name,
                 Email="michael.collins5@justice.gov.uk",
@@ -51,7 +55,7 @@ class QuicksightView(OIDCLoginRequiredMixin, TemplateView):
         response = qs.generate_embed_url_for_registered_user(
             **{
                 "AwsAccountId": os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
-                "UserArn": f"arn:aws:quicksight:eu-west-1:525294151996:user/default/{rolename}/{session_name}",
+                "UserArn": f"arn:aws:quicksight:eu-west-1:525294151996:user/default/{rolename}/{session_name}",  # noqa
                 "ExperienceConfiguration": {"QuickSightConsole": {"InitialPath": "/start"}},
             }
         )
@@ -70,8 +74,9 @@ class QuicksightView(OIDCLoginRequiredMixin, TemplateView):
         return qs.describe_iam_policy_assignment(
             AwsAccountId=os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
             Namespace="default",
-            AssignmentName="michael-test-1"
+            AssignmentName="michael-test-1",
         )
+
 
 class DatasourcesList(OIDCLoginRequiredMixin, ListView):
     template_name = "datasources-list.html"

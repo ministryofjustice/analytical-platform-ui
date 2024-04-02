@@ -6,11 +6,13 @@ from controlpanel.interfaces.web.views import (
     DatasourcesList,
     DatasourcesManage,
     IndexView,
+    LoginPromptView,
     QuicksightView,
 )
 
 urlpatterns = [
     path("", IndexView.as_view(), name="index"),
+    path("login/prompt/", LoginPromptView.as_view(), name="login-prompt"),
     path("login/", auth.OIDCLoginView.as_view(), name="login"),
     path("authenticate/", auth.OIDCAuthenticationView.as_view(), name="authenticate"),
     path("logout/", auth.LogoutView.as_view(), name="logout"),
