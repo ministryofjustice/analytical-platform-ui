@@ -6,6 +6,9 @@
 
 The dashboard is run in a DevContainer via Docker. The DevContainer VSCode extension is recommended, as is Docker Desktop.
 
+For more information on Dev Containers, see the [Data Platform docs.](https://technical-documentation.data-platform.service.justice.gov.uk/documentation/platform/infrastructure/developing.html#developing-the-data-platform)
+
+
 ### Building the DevContainer
 To build the dev container, ensure docker desktop is running, then open the AP Dashboard project in VSCode. Open the command pallet by hitting command+shift+p and search for ```Dev Containers: Reopen in container``` and hit enter. This will build the dev container. If you are using a workspace with multiple applications, search for ```Dev Containers: Open folder in Container…``` instead, then select the AP UI folder. Once the dev container has finished building, it should install all the required Python dependencies.
 
