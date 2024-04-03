@@ -10,7 +10,9 @@ For more information on Dev Containers, see the [Data Platform docs.](https://te
 
 
 ### Building the DevContainer
-To build the dev container, ensure docker desktop is running, then open the AP Dashboard project in VSCode. Open the command pallet by hitting command+shift+p and search for ```Dev Containers: Reopen in container``` and hit enter. This will build the dev container. If you are using a workspace with multiple applications, search for ```Dev Containers: Open folder in Container…``` instead, then select the AP UI folder. Once the dev container has finished building, it should install all the required Python and npm dependencies, as well as run the migrations.
+To build the dev container, ensure docker desktop is running, then open the AP Dashboard project in VSCode. Open the command pallet by hitting command+shift+p and search for ```Dev Containers: Reopen in container``` and hit enter. This will build the dev container.
+
+If you are using a workspace with multiple applications, search for ```Dev Containers: Open folder in Container…``` instead, then select the AP UI folder. Once the dev container has finished building, it should install all the required Python and npm dependencies, as well as run the migrations.
 
 ### Environment Variables
 There is an example environment file stored on 1Password named ```Analytical Platform Dashboard Env```. Paste the contents into a new file called ```.env``` in the root of the project.
