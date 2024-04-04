@@ -20,7 +20,7 @@ There is an example environment file stored on 1Password named ```Analytical Pla
 ### Running Development Server
 To run the server, you will need to use aws-sso cli. To find the correct profile, run ```aws-sso list``` in the terminal. This will provide you with a link to sign in via SSO. Once signed in, a list of profiles will be displayed. You are looking for the profile name linked to the ```analytical-platform-development``` AccountAlias.
 
-To run the server using this profile, enter ```aws-sso exec --profile <profile-name> -- python manage.py runserver```. Then go to ```localhost:8000``` and sign in using your @justice.gov.uk identity.
+To run the server using this profile, enter ```aws-sso exec --profile analytical-platform-development:AdministratorAccess -- python manage.py runserver``` or ```make serve-sso```. Then go to ```localhost:8000``` and sign in using your @justice.gov.uk identity.
 
 ### Updating Migrations
 To run the migrations locally, run ```python manage.py migrate``` in the terminal.
