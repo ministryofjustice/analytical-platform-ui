@@ -11,3 +11,10 @@ pip install --upgrade pip
 
 # Install dependencies
 pip install -r requirements.dev.txt
+
+# install npm dependencies and static assets
+npm install
+make build-static
+
+# Run migrations
+python manage.py migrate
