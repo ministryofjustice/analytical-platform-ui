@@ -24,6 +24,9 @@ db-drop:
 serve:
 	python manage.py runserver
 
+serve-sso:
+	aws-sso exec --profile analytical-platform-development:AdministratorAccess -- python manage.py runserver
+
 container:
 	docker build -t controlpanel .
 
