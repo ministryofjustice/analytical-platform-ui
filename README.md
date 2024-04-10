@@ -27,3 +27,5 @@ To run the migrations locally, run ```python manage.py migrate``` in the termina
 
 ### Updating static assets
 To build the static assets, run ```make build-static``` in the terminal.
+
+test
