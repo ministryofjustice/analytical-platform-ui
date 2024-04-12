@@ -22,9 +22,9 @@ RUN mkdir --parents static/assets/fonts \
     && mkdir --parents static/assets/js
 
 COPY --from=build-node static/app.css static/app.css
-COPY --from=build-node node_modules/govuk-frontend/govuk/assets/fonts/. static/assets/fonts
-COPY --from=build-node node_modules/govuk-frontend/govuk/assets/images/. static/assets/images
-COPY --from=build-node node_modules/govuk-frontend/govuk/all.js static/assets/js/govuk.js
+COPY --from=build-node node_modules/govuk-frontend/dist/govuk/assets/fonts/. static/assets/fonts
+COPY --from=build-node node_modules/govuk-frontend/dist/govuk/assets/images/. static/assets/images
+COPY --from=build-node node_modules/govuk-frontend/dist/govuk/all.bundle.js static/assets/js/govuk.js
 COPY scripts/container/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY requirements.txt manage.py ./
 COPY controlpanel controlpanel
