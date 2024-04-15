@@ -14,6 +14,7 @@ build-css:
 build-js:
 	mkdir -p static/assets/js
 	cp node_modules/govuk-frontend/dist/govuk/all.bundle.js static/assets/js/govuk.js
+	cp node_modules/govuk-frontend/dist/govuk/all.bundle.js.map static/assets/js/govuk.js.map
 
 db-migrate:
 	python manage.py migrate
