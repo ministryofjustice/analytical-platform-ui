@@ -1,6 +1,6 @@
 <!-- The title of this PR should complete the sentence: “Merging this PR will ...” -->
 
-## :memo: Summary
+# :memo: Pull Request Summary
 This PR resolves ...
 <!-- Adding the issue number above will automatically link the PR to the github issue,
 and will close the issue on merging. Note this will only happen if the correct keyword
