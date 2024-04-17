@@ -7,7 +7,7 @@ COPY controlpanel/interfaces/web/static/app.scss ./controlpanel/interfaces/web/s
 RUN npm install \
     && npm run css
 
-FROM public.ecr.aws/docker/library/python:3.11-alpine3.19 AS final
+FROM public.ecr.aws/docker/library/python:3.12-alpine3.19 AS base
 
 RUN apk add --no-cache --virtual .build-deps \
     libffi-dev=3.4.4-r3 \
@@ -22,9 +22,9 @@ RUN mkdir --parents static/assets/fonts \
     && mkdir --parents static/assets/js
 
 COPY --from=build-node static/app.css static/app.css
-COPY --from=build-node node_modules/govuk-frontend/govuk/assets/fonts/. static/assets/fonts
-COPY --from=build-node node_modules/govuk-frontend/govuk/assets/images/. static/assets/images
-COPY --from=build-node node_modules/govuk-frontend/govuk/all.js static/assets/js/govuk.js
+COPY --from=build-node node_modules/govuk-frontend/dist/govuk/assets/fonts/. static/assets/fonts
+COPY --from=build-node node_modules/govuk-frontend/dist/govuk/assets/images/. static/assets/images
+COPY --from=build-node node_modules/govuk-frontend/dist/govuk/all.bundle.js static/assets/js/govuk.js
 COPY scripts/container/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY requirements.txt manage.py ./
 COPY controlpanel controlpanel
