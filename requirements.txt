@@ -16,6 +16,6 @@ pyOpenSSL==24.1.0
 pytest==8.0.0
 pytest-django==4.8.0
 python-dotenv==1.0.1
-requests==2.31.0
+requests==2.32.2
 urllib3==2.1.0
 uvicorn[standard]==0.28.0
