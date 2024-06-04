@@ -26,16 +26,16 @@ jobs:
 
       - name: Initialise CodeQL
         id: initialise_codeql
-        uses: github/codeql-action/init@407ffafae6a767df3e0230c3df91b6443ae8df75 # v2.22.8
+        uses: github/codeql-action/init@2e230e8fe0ad3a14a340ad0815ddb96d599d2aff # v3.25.8
         with:
           languages: ${{ matrix.language }}
 
       - name: CodeQL Autobuild
         id: codeql_autobuild
-        uses: github/codeql-action/autobuild@407ffafae6a767df3e0230c3df91b6443ae8df75 # v2.22.8
+        uses: github/codeql-action/autobuild@2e230e8fe0ad3a14a340ad0815ddb96d599d2aff # v3.25.8
 
       - name: CodeQL Analysis
         id: codeql_analysis
-        uses: github/codeql-action/analyze@407ffafae6a767df3e0230c3df91b6443ae8df75 # v2.22.8
+        uses: github/codeql-action/analyze@2e230e8fe0ad3a14a340ad0815ddb96d599d2aff # v3.25.8
         with:
           category: "language:${{ matrix.language }}"
