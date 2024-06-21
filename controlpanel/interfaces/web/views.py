@@ -1,15 +1,12 @@
 import os
 from typing import Any
 
-from django.http import HttpResponse
-from django.urls import reverse_lazy
-from django.views.generic import FormView, ListView, TemplateView, UpdateView
+from django.views.generic import TemplateView
 
 import boto3
 
-from controlpanel.core.models import Datasource, User
+from controlpanel.core.models import User
 from controlpanel.interfaces.web.auth.mixins import OIDCLoginRequiredMixin
-from controlpanel.interfaces.web.forms import DatasourceFormView, DatasourceQuicksightForm
 
 
 class IndexView(OIDCLoginRequiredMixin, TemplateView):
@@ -76,69 +73,3 @@ class QuicksightView(OIDCLoginRequiredMixin, TemplateView):
             Namespace="default",
             AssignmentName="michael-test-1",
         )
-
-
-class DatasourcesList(OIDCLoginRequiredMixin, ListView):
-    template_name = "datasources-list.html"
-    model = Datasource
-    context_object_name = "datasources"
-
-
-class DatasourcesCreate(OIDCLoginRequiredMixin, FormView):
-    template_name = "datasources.html"
-    form_class = DatasourceFormView
-    success_url = reverse_lazy("datasources-list")
-
-    def get_form_kwargs(self) -> dict[str, Any]:
-        kwargs = super().get_form_kwargs()
-        kwargs["user"] = self.request.user
-        return kwargs
-
-    def form_valid(self, form: Any) -> HttpResponse:
-        obj = form.save()
-        create_bucket = False
-        if create_bucket:
-            s3 = boto3.client(
-                "s3",
-                region_name="eu-west-1",
-                aws_access_key_id=os.environ.get("DATA_ACCESS_KEY"),
-                aws_secret_access_key=os.environ.get("DATA_SECRET_KEY"),
-                aws_session_token=os.environ.get("DATA_SESSION_TOKEN"),
-            )
-            s3.create_bucket(
-                Bucket=obj.name,
-                CreateBucketConfiguration={
-                    "LocationConstraint": "eu-west-1",
-                },
-            )
-        return super().form_valid(form)
-
-
-class DatasourcesManage(OIDCLoginRequiredMixin, UpdateView):
-    form_class = DatasourceQuicksightForm
-    template_name = "datasources-manage.html"
-    model = Datasource
-    success_url = reverse_lazy("datasources-list")
-
-    def form_valid(self, form: DatasourceQuicksightForm) -> HttpResponse:
-        redirect = super().form_valid(form)
-        assignment_name = "michael-test-from-embedded-qs"
-        if self.object.is_quicksight_enabled:
-            # TODO would need to get or create policy first
-            qs = boto3.client("quicksight", region_name="eu-west-1")
-            qs.create_iam_policy_assignment(
-                AwsAccountId=os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
-                AssignmentName=assignment_name,
-                AssignmentStatus="ENABLED",
-                PolicyArn=os.environ.get("QUICKSIGHT_POLICY_ARN"),
-                Identities={"User": [os.environ.get("QUICKSIGHT_USERNAME")]},
-                Namespace="default",
-            )
-        else:
-            qs = boto3.client("quicksight", region_name="eu-west-1")
-            qs.delete_iam_policy_assignment(
-                AwsAccountId=os.environ.get("QUICKSIGHT_ACCOUNT_ID"),
-                AssignmentName=assignment_name,
-                Namespace="default",
-            )
-        return redirect

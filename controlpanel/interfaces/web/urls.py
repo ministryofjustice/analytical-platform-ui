@@ -1,14 +1,7 @@
 from django.urls import path
 
 from controlpanel.interfaces.web import auth, data_products
-from controlpanel.interfaces.web.views import (
-    DatasourcesCreate,
-    DatasourcesList,
-    DatasourcesManage,
-    IndexView,
-    LoginPromptView,
-    QuicksightView,
-)
+from controlpanel.interfaces.web.views import IndexView, LoginPromptView, QuicksightView
 
 urlpatterns = [
     path("", IndexView.as_view(), name="index"),
@@ -19,7 +12,4 @@ urlpatterns = [
     path("login-fail/", auth.LoginFail.as_view(), name="login-fail"),
     path("data-products/", data_products.DataProductsView.as_view(), name="data-products"),
     path("quicksight/", QuicksightView.as_view(), name="quicksight"),
-    path("datasources/", DatasourcesList.as_view(), name="datasources-list"),
-    path("datasources/create/", DatasourcesCreate.as_view(), name="datasources-create"),
-    path("datasources/<int:pk>", DatasourcesManage.as_view(), name="datasources-manage"),
 ]
