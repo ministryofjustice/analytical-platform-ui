@@ -2,15 +2,9 @@ from django.urls import reverse
 
 
 def nav_items(request):
-    data_products_url = reverse("data-products")
     return {
         "nav_items": [
             {"name": "Home", "url": "/", "active": request.get_full_path() == "/"},
-            {
-                "name": "Data Products",
-                "url": data_products_url,
-                "active": request.get_full_path() == data_products_url,
-            },
         ]
     }
 

@@ -2,7 +2,7 @@ from django.urls import reverse
 
 import pytest
 
-from controlpanel.interfaces.web.context_processors import header_context, nav_items
+from controlpanel.core.context_processors import header_context, nav_items
 
 
 class TestContextProcessors:
@@ -14,8 +14,7 @@ class TestContextProcessors:
 
     def test_nav_items(self, request_obj):
         home = {"name": "Home", "url": "/", "active": True}
-        data_products = {"name": "Data Products", "url": reverse("data-products"), "active": False}
-        assert nav_items(request=request_obj) == {"nav_items": [home, data_products]}
+        assert nav_items(request=request_obj) == {"nav_items": [home]}
 
     def test_header_context(self, request_obj):
         expected_nav_items = [

@@ -2,8 +2,8 @@ from typing import Any
 
 from django.views.generic import TemplateView
 
+from controlpanel.auth.views.mixins import OIDCLoginRequiredMixin
 from controlpanel.core.models import User
-from controlpanel.interfaces.web.auth.mixins import OIDCLoginRequiredMixin
 
 
 class IndexView(OIDCLoginRequiredMixin, TemplateView):

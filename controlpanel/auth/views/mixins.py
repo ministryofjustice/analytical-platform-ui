@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from controlpanel.core.auth import OIDCSessionValidator
+from controlpanel.auth import OIDCSessionValidator
 
 
 class OIDCLoginRequiredMixin(LoginRequiredMixin):
