@@ -2,7 +2,7 @@ FROM public.ecr.aws/docker/library/node:20.11.1 AS build-node
 
 WORKDIR /
 COPY package.json package-lock.json ./
-COPY controlpanel/interfaces/web/static/app.scss ./controlpanel/interfaces/web/static/app.scss
+COPY assets/scss/app.scss ./assets/scss/app.scss
 
 RUN npm install \
     && npm run css

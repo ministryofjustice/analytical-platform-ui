@@ -7,7 +7,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "css": "sass --load-path=./ --style=compressed controlpanel/interfaces/web/static/app.scss:static/app.css"
+    "css": "sass --load-path=./ --style=compressed assets/scss/app.scss:static/app.css"
   },
   "license": "MIT",
   "devDependencies": {
