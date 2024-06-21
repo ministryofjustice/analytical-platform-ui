@@ -17,7 +17,7 @@ from typing import Any, Dict
 import structlog
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Name of the project
 PROJECT_NAME = "controlpanel"
@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     # The core logic of Control panel
     "controlpanel.core",
     # The frontend part of Control panel
-    "controlpanel.interfaces.web",
+    # "controlpanel.interfaces.web",
 ]
 
 MIDDLEWARE = [
@@ -88,7 +88,7 @@ ROOT_URLCONF = "controlpanel.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
