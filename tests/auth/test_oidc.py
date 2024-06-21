@@ -1,6 +1,6 @@
 import pytest
 
-from controlpanel.core.auth import OIDCSubAuthenticationBackend
+from controlpanel.auth import OIDCSubAuthenticationBackend
 
 
 class TestOIDCSubAuthenticationBackend:
