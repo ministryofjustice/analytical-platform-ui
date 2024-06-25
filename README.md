@@ -6,7 +6,7 @@
 
 The dashboard is run in a DevContainer via Docker. The DevContainer VSCode extension is recommended, as is Docker Desktop.
 
-For more information on Dev Containers, see the [Data Platform docs.](https://technical-documentation.data-platform.service.justice.gov.uk/documentation/platform/infrastructure/developing.html#developing-the-data-platform)
+For more information on Dev Containers, see the [Analytical Platform docs.](https://technical-documentation.data-platform.service.justice.gov.uk/documentation/platform/infrastructure/developing.html#developing-the-data-platform)
 
 
 ### Building the DevContainer
