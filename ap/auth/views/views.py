@@ -10,7 +10,7 @@ from django.views.generic import TemplateView, View
 from authlib.common.security import generate_token
 from authlib.integrations.django_client import OAuthError
 
-from ap.auth import OIDCSubAuthenticationBackend, oauth
+from ap.auth.oidc import OIDCSubAuthenticationBackend, oauth
 from ap.auth.utils import pkce_transform
 
 

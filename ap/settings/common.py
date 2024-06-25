@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+
 import os
 from os.path import abspath, dirname, join
 from pathlib import Path
@@ -68,7 +69,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "ap.middleware.DisableClientSideCachingMiddleware",
+    "ap.core.middleware.DisableClientSideCachingMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -206,7 +207,7 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SECURE = True
 
 # Custom user model class
-AUTH_USER_MODEL = "core.User"
+AUTH_USER_MODEL = "users.User"
 
 # -- OIDC Settings
 AZURE_CLIENT_ID = os.environ.get("AZURE_CLIENT_ID")
