@@ -15,7 +15,7 @@ RUN apk add --no-cache --virtual .build-deps \
     musl-dev=1.2.4_git20230717-r4 \
     && apk add --no-cache libpq-dev=16.2-r0
 
-WORKDIR /controlpanel
+WORKDIR /ap
 
 RUN mkdir --parents static/assets/fonts \
     && mkdir --parents static/assets/images \
@@ -27,7 +27,7 @@ COPY --from=build-node node_modules/govuk-frontend/dist/govuk/assets/images/. st
 COPY --from=build-node node_modules/govuk-frontend/dist/govuk/all.bundle.js static/assets/js/govuk.js
 COPY scripts/container/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY requirements.txt manage.py ./
-COPY controlpanel controlpanel
+COPY ap ap
 COPY tests tests
 
 RUN pip install --no-cache-dir --requirement requirements.txt \

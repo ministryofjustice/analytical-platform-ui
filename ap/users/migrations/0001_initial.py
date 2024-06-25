@@ -109,7 +109,7 @@ class Migration(migrations.Migration):
                 ),
             ],
             options={
-                "db_table": "control_panel_user",
+                "db_table": "ap_user",
                 "ordering": ("nickname",),
             },
             managers=[

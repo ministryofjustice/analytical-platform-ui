@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView
-from controlpanel.auth.views.mixins import OIDCLoginRequiredMixin
+from ap.auth.views.mixins import OIDCLoginRequiredMixin
 
 
 

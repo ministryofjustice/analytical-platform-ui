@@ -1,12 +1,12 @@
 # First-party/Local
-from controlpanel.settings.common import *  # noqa: F403
+from ap.settings.common import *  # noqa: F403
 
 ENV = "test"
 
 LOG_LEVEL = "WARNING"
 
 LOGGING["loggers"]["django_structlog"]["level"] = LOG_LEVEL  # noqa: F405
-LOGGING["loggers"]["controlpanel"]["level"] = LOG_LEVEL  # noqa: F405
+LOGGING["loggers"]["ap"]["level"] = LOG_LEVEL  # noqa: F405
 
 AUTHENTICATION_BACKENDS = [
     "rules.permissions.ObjectPermissionBackend",

@@ -4,7 +4,7 @@ from django.utils import timezone
 import structlog
 from authlib.integrations.django_client import OAuth
 
-from controlpanel.core.models.user import User
+from ap.core.models.user import User
 
 logger = structlog.get_logger(__name__)
 

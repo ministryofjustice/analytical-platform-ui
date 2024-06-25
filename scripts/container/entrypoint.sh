@@ -8,7 +8,7 @@ WORKERS=${WORKERS:-"4"}
 case "$MODE" in
 "run")
   echo "Running Django server on ${ADDRESS}:${PORT}"
-  gunicorn -b "${ADDRESS}":"${PORT}" -k uvicorn.workers.UvicornWorker -w "${WORKERS}" controlpanel.asgi:application
+  gunicorn -b "${ADDRESS}":"${PORT}" -k uvicorn.workers.UvicornWorker -w "${WORKERS}" ap.asgi:application
   ;;
 "migrate")
   echo "Running Django migrations"

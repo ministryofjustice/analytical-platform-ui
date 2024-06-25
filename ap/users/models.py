@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from controlpanel.core.utils import sanitize_dns_label
+from ap.core.utils import sanitize_dns_label
 
 
 class User(AbstractUser):
@@ -12,7 +12,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ["email", "user_id"]
 
     class Meta:
-        db_table = "control_panel_user"
+        db_table = "ap_user"
         ordering = ("name",)
 
     def __repr__(self):

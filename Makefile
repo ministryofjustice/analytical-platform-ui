@@ -29,9 +29,9 @@ serve-sso:
 	aws-sso exec --profile analytical-platform-development:AdministratorAccess -- python manage.py runserver
 
 container:
-	docker build -t controlpanel .
+	docker build -t ap .
 
 test: container
 	@echo
 	@echo "> Running Python Tests (In Docker)..."
-	IMAGE_TAG=controlpanel docker compose --file=contrib/docker-compose-test.yml run --rm interfaces
+	IMAGE_TAG=ap docker compose --file=contrib/docker-compose-test.yml run --rm interfaces

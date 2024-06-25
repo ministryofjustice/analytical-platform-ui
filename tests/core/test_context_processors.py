@@ -2,7 +2,7 @@ from django.urls import reverse
 
 import pytest
 
-from controlpanel.core.context_processors import header_context, nav_items
+from ap.core.context_processors import header_context, nav_items
 
 
 class TestContextProcessors:

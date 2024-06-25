@@ -10,8 +10,8 @@ from django.views.generic import TemplateView, View
 from authlib.common.security import generate_token
 from authlib.integrations.django_client import OAuthError
 
-from controlpanel.auth import OIDCSubAuthenticationBackend, oauth
-from controlpanel.auth.utils import pkce_transform
+from ap.auth import OIDCSubAuthenticationBackend, oauth
+from ap.auth.utils import pkce_transform
 
 
 class OIDCLoginView(View):
