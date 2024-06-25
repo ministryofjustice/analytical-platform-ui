@@ -38,17 +38,17 @@ jobs:
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/analytical-platform-dashboard:${{ github.ref_name }}
+          tags: ghcr.io/${{ github.repository_owner }}/analytical-platform-ui:${{ github.ref_name }}
 
       - name: Sign
         id: sign
         run: |
-          cosign sign --yes ghcr.io/${{ github.repository_owner }}/analytical-platform-dashboard@${{ steps.push.outputs.digest }}
+          cosign sign --yes ghcr.io/${{ github.repository_owner }}/analytical-platform-ui@${{ steps.push.outputs.digest }}
 
       - name: Verify
         id: verify
         run: |
           cosign verify \
           --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-          --certificate-identity=https://github.com/${{ github.repository_owner }}/analytical-platform-dashboard/.github/workflows/release.yml@refs/tags/${{ github.ref_name }} \
-          ghcr.io/${{ github.repository_owner }}/analytical-platform-dashboard@${{ steps.push.outputs.digest }}
+          --certificate-identity=https://github.com/${{ github.repository_owner }}/analytical-platform-ui/.github/workflows/release.yml@refs/tags/${{ github.ref_name }} \
+          ghcr.io/${{ github.repository_owner }}/analytical-platform-ui@${{ steps.push.outputs.digest }}

@@ -1,7 +1,7 @@
 {
-  "name": "analytical-platform-dashboard",
+  "name": "analytical-platform-ui",
   "version": "1.0.0",
-  "description": "Analytical Platform Dashboard",
+  "description": "Analytical Platform UI",
   "directories": {
     "test": "tests"
   },
