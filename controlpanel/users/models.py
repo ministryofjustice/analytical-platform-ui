@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from controlpanel.core.common.utils import sanitize_dns_label
+from controlpanel.core.utils import sanitize_dns_label
 
 
 class User(AbstractUser):

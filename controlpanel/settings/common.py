@@ -61,7 +61,9 @@ INSTALLED_APPS = [
     "govuk_frontend_django",
     # Provide structured log service
     "django_structlog",
-    # Project defined apps
+    # First party project defined apps
+    "controlpanel.auth",
+    "controlpanel.core",
     "controlpanel.users",
 ]
 
