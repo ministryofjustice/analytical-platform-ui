@@ -1,0 +1,29 @@
+<header class="moj-header" role="banner">
+
+    <div class="moj-header__container">
+
+      <div class="moj-header__logo">
+
+        {% include "includes/moj_header.svg" %}
+        <a class="moj-header__link moj-header__link--organisation-name" href="{{ header_organisation_url }}">Ministry of Justice</a>
+
+        <a class="moj-header__link moj-header__link--service-name" href="{{ header_service_url}}">Analytical Platform</a>
+      </div>
+      <div class="moj-header__content">
+
+        <nav class="moj-header__navigation" aria-label="Account navigation">
+
+          <ul class="moj-header__navigation-list">
+            {% for item in header_nav_items %}
+                {% include "includes/nav_item.html" with item=item level="moj-header__navigation-" %}
+            {% endfor %}
+          </ul>
+
+        </nav>
+
+      </div>
+    </div>
+
+</header>
+
+{% include "includes/navigation.html" %}

@@ -6,13 +6,13 @@ services:
     image: public.ecr.aws/docker/library/postgres:15.4
     restart: always
     environment:
-      POSTGRES_USER: controlpanel
-      POSTGRES_PASSWORD: controlpanel
-      POSTGRES_DB: controlpanel
+      POSTGRES_USER: ap
+      POSTGRES_PASSWORD: ap
+      POSTGRES_DB: ap
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U controlpanel"]
+      test: ["CMD-SHELL", "pg_isready -U ap"]
       interval: 5s
       timeout: 5s
       retries: 5

@@ -1,5 +1,5 @@
 {
-  "name": "analytical-platform-dashboard",
+  "name": "analytical-platform-ui",
   "image": "ghcr.io/ministryofjustice/devcontainer-base:latest",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
@@ -14,7 +14,7 @@
   },
   "postCreateCommand": "bash scripts/devcontainer/post-create.sh",
   "postStartCommand": "bash scripts/devcontainer/post-start.sh",
-  "runArgs": ["--name=analytical-platform-dashboard-devcontainer"],
+  "runArgs": ["--name=analytical-platform-ui-devcontainer"],
   "customizations": {
     "vscode": {
       "extensions": [

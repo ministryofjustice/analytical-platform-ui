@@ -2,7 +2,7 @@ FROM public.ecr.aws/docker/library/node:20.11.1 AS build-node
 
 WORKDIR /
 COPY package.json package-lock.json ./
-COPY controlpanel/interfaces/web/static/app.scss ./controlpanel/interfaces/web/static/app.scss
+COPY assets/scss/app.scss ./assets/scss/app.scss
 
 RUN npm install \
     && npm run css
@@ -13,9 +13,9 @@ RUN apk add --no-cache --virtual .build-deps \
     libffi-dev=3.4.4-r3 \
     gcc=13.2.1_git20231014-r0 \
     musl-dev=1.2.4_git20230717-r4 \
-    && apk add --no-cache libpq-dev=16.2-r0
+    && apk add --no-cache libpq-dev=16.3-r0
 
-WORKDIR /controlpanel
+WORKDIR /ap
 
 RUN mkdir --parents static/assets/fonts \
     && mkdir --parents static/assets/images \
@@ -27,7 +27,7 @@ COPY --from=build-node node_modules/govuk-frontend/dist/govuk/assets/images/. st
 COPY --from=build-node node_modules/govuk-frontend/dist/govuk/all.bundle.js static/assets/js/govuk.js
 COPY scripts/container/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY requirements.txt manage.py ./
-COPY controlpanel controlpanel
+COPY ap ap
 COPY tests tests
 
 RUN pip install --no-cache-dir --requirement requirements.txt \
