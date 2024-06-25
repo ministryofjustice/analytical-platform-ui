@@ -13,7 +13,7 @@ RUN apk add --no-cache --virtual .build-deps \
     libffi-dev=3.4.4-r3 \
     gcc=13.2.1_git20231014-r0 \
     musl-dev=1.2.4_git20230717-r4 \
-    && apk add --no-cache libpq-dev=16.2-r0
+    && apk add --no-cache libpq-dev=16.3-1
 
 WORKDIR /ap
 
