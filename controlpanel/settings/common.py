@@ -61,10 +61,8 @@ INSTALLED_APPS = [
     "govuk_frontend_django",
     # Provide structured log service
     "django_structlog",
-    # The core logic of Control panel
-    "controlpanel.core",
-    # The frontend part of Control panel
-    # "controlpanel.interfaces.web",
+    # Project defined apps
+    "controlpanel.users",
 ]
 
 MIDDLEWARE = [
