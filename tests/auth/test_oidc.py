@@ -1,6 +1,6 @@
 import pytest
 
-from ap.auth import OIDCSubAuthenticationBackend
+from ap.auth.oidc import OIDCSubAuthenticationBackend
 
 
 class TestOIDCSubAuthenticationBackend:
