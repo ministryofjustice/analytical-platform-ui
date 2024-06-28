@@ -6,7 +6,7 @@ Django==4.2.11
 django-structlog==8.0.0
 django_extensions==3.2.3
 govuk-frontend-django==0.4.0
-gunicorn==21.2.0
+gunicorn==22.0.0
 iniconfig==2.0.0
 josepy==1.14.0
 model-bakery==1.17.0
