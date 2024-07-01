@@ -5,12 +5,11 @@ cfgv==3.4.0
 Django==4.2.11
 django-structlog==8.0.0
 django_extensions==3.2.3
-govuk-frontend-django==0.4.0
+govuk-frontend-django==0.9.1
 gunicorn==22.0.0
 iniconfig==2.0.0
 josepy==1.14.0
 model-bakery==1.17.0
-pluggy==1.4.0
 psycopg2==2.9.9
 pyOpenSSL==24.1.0
 pytest==8.0.0
@@ -18,4 +17,4 @@ pytest-django==4.8.0
 python-dotenv==1.0.1
 requests==2.32.3
 urllib3==2.2.2
-uvicorn[standard]==0.28.0
+uvicorn[standard]==0.30.1
