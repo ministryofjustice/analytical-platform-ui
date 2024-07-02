@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/node:22.3.0 AS build-node
+FROM public.ecr.aws/docker/library/node:20.15.0 AS build-node
 
 WORKDIR /
 COPY package.json package-lock.json ./
@@ -7,12 +7,12 @@ COPY assets/scss/app.scss ./assets/scss/app.scss
 RUN npm install \
     && npm run css
 
-FROM public.ecr.aws/docker/library/python:3.12-alpine3.19 AS base
+FROM public.ecr.aws/docker/library/python:3.12.4-alpine3.20 AS base
 
 RUN apk add --no-cache --virtual .build-deps \
-    libffi-dev=3.4.4-r3 \
-    gcc=13.2.1_git20231014-r0 \
-    musl-dev=1.2.4_git20230717-r4 \
+    libffi-dev=3.4.6-r0 \
+    gcc=13.2.1_git20240309-r0 \
+    musl-dev=1.2.5-r0 \
     && apk add --no-cache libpq-dev=16.3-r0
 
 WORKDIR /app
