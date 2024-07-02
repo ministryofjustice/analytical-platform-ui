@@ -23,7 +23,8 @@
       "extensions": [
         "EditorConfig.EditorConfig",
         "GitHub.vscode-github-actions",
-        "GitHub.vscode-codeql"
+        "GitHub.vscode-codeql",
+        "ms-vsliveshare.vsliveshare"
       ]
     }
   }
