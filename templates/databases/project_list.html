@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 class="govuk-heading-xl">Projects</h1>
+    <div class="govuk-width-container">
+        {% for obj in object_list %}
+            <p class="govuk-body"><a class="govuk-link" href="{{ obj.get_absolute_url }}">{{ obj.name }}</a></p>
+        {% endfor %}
+    </div>
+
+    <div class="govuk-width-container">
+        <p class="govuk-body"><a class="govuk-button" href="{% url "databases:project-create" %}">Create a project</a></p>
+    </div>
+{% endblock %}

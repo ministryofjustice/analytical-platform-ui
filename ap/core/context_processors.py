@@ -1,10 +1,19 @@
 from django.urls import reverse
 
 
+def database_access_url():
+    return reverse("databases:index")
+
+
 def nav_items(request):
     return {
         "nav_items": [
             {"name": "Home", "url": "/", "active": request.get_full_path() == "/"},
+            {
+                "name": "Database access",
+                "url": database_access_url(),
+                "active": request.get_full_path() == database_access_url(),
+            },
         ]
     }
 
