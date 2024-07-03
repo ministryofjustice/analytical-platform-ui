@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "django_structlog",
     # First party project defined apps
     "ap.auth",
+    "ap.databases",
     "ap.core",
     "ap.users",
 ]
