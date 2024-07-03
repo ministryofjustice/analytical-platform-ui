@@ -6,4 +6,4 @@
 export STATIC_SRC="${STATIC_SRC:-"/ap/static"}"
 export STATIC_DEST="${STATIC_DEST:-"/staticfiles"}"
 
-cp -R ${STATIC_SRC} ${STATIC_DEST}
+cp -R "${STATIC_SRC}" "${STATIC_DEST}"

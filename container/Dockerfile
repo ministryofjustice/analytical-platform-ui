@@ -61,9 +61,9 @@ apk add --no-cache \
 EOF
 
 # Install Python packages and remove APK build dependencies
-COPY requirements.txt requirements.txt
+COPY requirements.txt /tmp/requirements.txt
 RUN <<EOF
-pip install --no-cache-dir --requirement requirements.txt
+pip install --no-cache-dir --requirement /tmp/requirements.txt
 apk del .build-deps
 EOF
 
