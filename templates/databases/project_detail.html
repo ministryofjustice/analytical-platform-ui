@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1 class="govuk-heading-xl">{{ object.name }}</h1>
+
+    <div class="govuk-width-container">
+        <p class="govuk-body">{{ object.review_date }}</p>
+        <p class="govuk-body">{{ object.business_case }}</p>
+    </div>
+
+{% endblock %}

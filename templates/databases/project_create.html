@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class=""
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="govuk-button">Submit</button>
+    </form>
+
+{% endblock %}
