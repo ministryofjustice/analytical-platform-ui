@@ -1,0 +1,59 @@
+---
+schemaVersion: 2.0.0
+
+containerRunOptions:
+  user: "analyticalplatform"
+
+commandTests:
+  - name: "alpine"
+    command: "grep"
+    args: ["VERSION_ID", "/etc/os-release"]
+    expectedOutput: ["VERSION_ID=3.20.1"]
+
+  - name: "whoami"
+    command: "whoami"
+    expectedOutput: ["analyticalplatform"]
+
+  - name: "user"
+    command: "id"
+    args: ["-u", "analyticalplatform"]
+    expectedOutput: ["1000"]
+
+  - name: "groups"
+    command: "id"
+    args: ["-g", "analyticalplatform"]
+    expectedOutput: ["1000"]
+
+  - name: "python"
+    command: "python"
+    args: ["--version"]
+    expectedOutput: ["Python 3.12.4"]
+
+fileExistenceTests:
+  - name: "/app"
+    path: "/app"
+    shouldExist: true
+
+  - name: "/app/ap"
+    path: "/app/ap"
+    shouldExist: true
+
+  - name: "/app/static"
+    path: "/app/static"
+    shouldExist: true
+
+  - name: "/app/manage.py"
+    path: "/app/manage.py"
+    shouldExist: true
+
+  - name: "/usr/local/bin/entrypoint.sh"
+    path: "/usr/local/bin/entrypoint.sh"
+    shouldExist: true
+
+  - name: "/usr/local/bin/healthcheck.sh"
+    path: "/usr/local/bin/healthcheck.sh"
+    shouldExist: true
+
+  - name: "/usr/local/bin/init-nginx.sh"
+    path: "/usr/local/bin/init-nginx.sh"
+    shouldExist: true

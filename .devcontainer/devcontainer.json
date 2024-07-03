@@ -15,8 +15,8 @@
     "ghcr.io/ministryofjustice/devcontainer-feature/kubernetes:1": {},
     "ghcr.io/ministryofjustice/devcontainer-feature/static-analysis:1": {}
   },
-  "postCreateCommand": "bash scripts/devcontainer/post-create.sh",
-  "postStartCommand": "bash scripts/devcontainer/post-start.sh",
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  "postStartCommand": "bash .devcontainer/post-start.sh",
   "runArgs": ["--name=analytical-platform-ui-devcontainer"],
   "customizations": {
     "vscode": {

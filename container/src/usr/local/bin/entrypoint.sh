@@ -5,7 +5,7 @@ ADDRESS=${ADDRESS:-"0.0.0.0"}
 PORT=${PORT:-"8000"}
 WORKERS=${WORKERS:-"4"}
 
-case "$MODE" in
+case "${MODE}" in
 "run")
   echo "Running Django server on ${ADDRESS}:${PORT}"
   gunicorn -b "${ADDRESS}":"${PORT}" -k uvicorn.workers.UvicornWorker -w "${WORKERS}" ap.asgi:application
