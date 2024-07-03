@@ -40,7 +40,7 @@ adduser \
   --uid ${CONTAINER_UID} \
   --ingroup ${CONTAINER_GROUP} \
   --disabled-password \
-  ${CONTAINER_USER} \
+  ${CONTAINER_USER}
 
 install --directory --owner ${CONTAINER_USER} --group ${CONTAINER_GROUP} --mode 0755 \
   ${APP_ROOT} \
@@ -64,6 +64,7 @@ EOF
 COPY requirements.txt /tmp/requirements.txt
 RUN <<EOF
 pip install --no-cache-dir --requirement /tmp/requirements.txt
+
 apk del .build-deps
 EOF
 

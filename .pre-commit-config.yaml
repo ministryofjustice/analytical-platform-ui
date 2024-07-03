@@ -38,3 +38,4 @@ repos:
     rev: v1.32.0
     hooks:
       - id: yamllint
+        args: ["--config-file", ".yaml-lint.yml"]

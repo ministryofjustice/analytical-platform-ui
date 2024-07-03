@@ -38,6 +38,10 @@ fileExistenceTests:
     path: "/app/ap"
     shouldExist: true
 
+  - name: "/app/run"
+    path: "/app/run"
+    shouldExist: true
+
   - name: "/app/static"
     path: "/app/static"
     shouldExist: true
