@@ -77,12 +77,27 @@ app:
       valueFrom:
         secretKeyRef:
           name: ui-rds
-          key: user
+          key: username
     - name: DB_PASSWORD
       valueFrom:
         secretKeyRef:
           name: ui-rds
           key: password
+    - name: DB_HOST
+      valueFrom:
+        secretKeyRef:
+          name: ui-rds
+          key: address
+    - name: DB_PORT
+      valueFrom:
+        secretKeyRef:
+          name: ui-rds
+          key: port
+    - name: SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: ui-app-secrets
+          key: secret-key
     - name: SENTRY_DSN
       valueFrom:
         secretKeyRef:
