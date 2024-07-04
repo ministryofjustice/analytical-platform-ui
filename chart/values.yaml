@@ -103,6 +103,16 @@ app:
         secretKeyRef:
           name: ui-sentry-dsn
           key: dsn
+    - name: AZURE_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: ui-azure
+          key: client-id
+    - name: AZURE_TENANT_ID
+      valueFrom:
+        secretKeyRef:
+          name: ui-azure
+          key: tenant-id
   port: 8000
 
 reverseProxy:
