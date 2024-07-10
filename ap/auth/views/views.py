@@ -1,5 +1,4 @@
 import time
-import sentry_sdk
 
 from django.conf import settings
 from django.contrib import auth
@@ -8,6 +7,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, View
 
+import sentry_sdk
 from authlib.common.security import generate_token
 from authlib.integrations.django_client import OAuthError
 
