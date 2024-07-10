@@ -85,7 +85,6 @@ MIDDLEWARE = [
 # -- Sentry error tracking
 
 if os.environ.get("SENTRY_DSN"):
-    SENTRY_ENVIRONMENT = ENV
     KUBERNETES_ENV = "EKS"
     # Third-party
     import sentry_sdk
@@ -94,7 +93,7 @@ if os.environ.get("SENTRY_DSN"):
 
     sentry_sdk.init(
         dsn=os.environ["SENTRY_DSN"],
-        environment=SENTRY_ENVIRONMENT,
+        environment=ENV,
         integrations=[DjangoIntegration()],
         traces_sample_rate=0.0,
         send_default_pii=True,
