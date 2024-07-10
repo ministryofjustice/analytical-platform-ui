@@ -29,11 +29,22 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
+        - name: init-db
+          securityContext:
+            {{- toYaml .Values.app.securityContext | nindent 12 }}
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+          {{- with .Values.app.environment }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+            - name: MODE
+              value: "migrate"
         - name: init-nginx
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+            {{- toYaml .Values.app.securityContext | nindent 12 }}
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
           volumeMounts:
             - mountPath: /staticfiles
               name: staticfiles
@@ -45,7 +56,7 @@ spec:
           image: "{{ .Values.reverseProxy.image.repository }}:{{ .Values.reverseProxy.image.tag }}"
           imagePullPolicy: IfNotPresent
           ports:
-            - name: http
+            - name: reverse-proxy
               containerPort: {{ .Values.reverseProxy.port }}
           volumeMounts:
             - name: nginxconfig
@@ -56,28 +67,30 @@ spec:
           readinessProbe:
             httpGet:
               path: /nginx-health
-              port: http
-            initialDelaySeconds: 5
-            periodSeconds: 5
+              port: reverse-proxy
+            initialDelaySeconds: {{ .Values.reverseProxy.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.reverseProxy.readinessProbe.periodSeconds }}
+          resources:
+            {{- toYaml .Values.reverseProxy.resources | nindent 12 }}
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+            {{- toYaml .Values.app.securityContext | nindent 12 }}
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
           {{- with .Values.app.environment }}
           env:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
-            - name: http
+            - name: app
               containerPort: {{ .Values.app.port }}
               protocol: TCP
           livenessProbe:
-            {{- toYaml .Values.livenessProbe | nindent 12 }}
+            {{- toYaml .Values.app.livenessProbe | nindent 12 }}
           readinessProbe:
-            {{- toYaml .Values.readinessProbe | nindent 12 }}
+            {{- toYaml .Values.app.readinessProbe | nindent 12 }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.app.resources | nindent 12 }}
       volumes:
         - name: nginxconfig
           configMap:

@@ -1,15 +1,5 @@
 ---
-# Default values for analytical-platform-ui.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 replicaCount: 1
-
-image:
-  repository: ghcr.io/ministryofjustice/analytical-platform-ui
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
 
 imagePullSecrets: []
 nameOverride: ""
@@ -23,56 +13,43 @@ serviceAccount:
 
 podAnnotations: {}
 podLabels: {}
-
-podSecurityContext: {}
-
-securityContext:
-  capabilities:
-    drop:
-      - ALL
-  readOnlyRootFilesystem: true
-  runAsNonRoot: true
-  runAsUser: 1000
+podSecurityContext:
+  seccompProfile:
+      type: RuntimeDefault
 
 service:
   type: ClusterIP
   port: 80
 
 ingress:
-  enabled: false
-  className: ""
-  annotations: {}
+  enabled: true
+  className: "default"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production-http01
   hosts:
-    - host: chart-example.local
+    - host: development.analytical-platform.service.justice.gov.uk
       paths:
         - path: /
           pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources: {}
-
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
-
-nodeSelector: {}
-
-tolerations: []
+  tls:
+   - secretName: ui-tls
+     hosts:
+       - development.analytical-platform.service.justice.gov.uk
 
 affinity: {}
+nodeSelector: {}
+tolerations: []
 
 app:
+  image:
+    repository: ghcr.io/ministryofjustice/analytical-platform-ui
+    pullPolicy: IfNotPresent
+    tag: ""
   environment:
     - name: DJANGO_SETTINGS_MODULE
       value: ap.settings
+    - name: ALLOWED_HOSTS
+      value: "*"
     - name: DB_USER
       valueFrom:
         secretKeyRef:
@@ -93,11 +70,13 @@ app:
         secretKeyRef:
           name: ui-rds
           key: port
+    - name: DB_NAME
+      value: "ui"
     - name: SECRET_KEY
       valueFrom:
         secretKeyRef:
           name: ui-app-secrets
-          key: secret-key
+          key: secret_key
     - name: SENTRY_DSN
       valueFrom:
         secretKeyRef:
@@ -114,16 +93,51 @@ app:
           name: ui-azure-secrets
           key: tenant-id
   port: 8000
+  # These are removed while healthcheck endpoint is worked on
+  # livenessProbe:
+  #   httpGet:
+  #     path: /
+  #     port: app
+  # readinessProbe:
+  #   httpGet:
+  #     path: /
+  #     port: app
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    runAsNonRoot: true
+    runAsUser: 1000
 
 reverseProxy:
   image:
     repository: "docker.io/nginxinc/nginx-unprivileged"
     tag: "1.27.0-alpine3.19"
   port: 8080
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 5
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
   securityContext:
     capabilities:
       drop:
         - ALL
-    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
     runAsNonRoot: true
     runAsUser: 101

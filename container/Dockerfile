@@ -77,6 +77,7 @@ COPY --from=build-node --chown=${CONTAINER_USER}:${CONTAINER_GROUP} /build/node_
 # Copy application code
 COPY --chown=${CONTAINER_USER}:${CONTAINER_GROUP} manage.py ${APP_ROOT}/manage.py
 COPY --chown=${CONTAINER_USER}:${CONTAINER_GROUP} ap ${APP_ROOT}/ap
+COPY --chown=${CONTAINER_USER}:${CONTAINER_GROUP} templates ${APP_ROOT}/templates
 COPY --chown=${CONTAINER_USER}:${CONTAINER_GROUP} tests ${APP_ROOT}/tests
 
 # Copy container files
