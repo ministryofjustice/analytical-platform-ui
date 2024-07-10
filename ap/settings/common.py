@@ -87,9 +87,6 @@ MIDDLEWARE = [
 if os.environ.get("SENTRY_DSN"):
     SENTRY_ENVIRONMENT = ENV
     KUBERNETES_ENV = "EKS"
-    # May need to change the below if
-    if ENV == "alpha":
-        SENTRY_ENVIRONMENT = "prod"
     # Third-party
     import sentry_sdk
     from sentry_sdk import set_tag
