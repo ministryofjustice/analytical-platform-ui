@@ -85,7 +85,6 @@ MIDDLEWARE = [
 # -- Sentry error tracking
 
 if os.environ.get("SENTRY_DSN"):
-    KUBERNETES_ENV = "EKS"
     # Third-party
     import sentry_sdk
     from sentry_sdk import set_tag
@@ -98,7 +97,7 @@ if os.environ.get("SENTRY_DSN"):
         traces_sample_rate=0.0,
         send_default_pii=True,
     )
-    set_tag("Kubernetes Env", KUBERNETES_ENV)
+
     if "runworker" in sys.argv:
         set_tag("RunningIn", "Worker")
     elif "shell" in sys.argv:
