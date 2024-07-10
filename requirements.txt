@@ -15,5 +15,5 @@ pytest==8.0.0
 pytest-django==4.8.0
 python-dotenv==1.0.1
 requests==2.32.3
-sentry-sdk==1.40.5
+sentry-sdk==2.9.0
 uvicorn[standard]==0.30.1

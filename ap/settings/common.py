@@ -31,7 +31,7 @@ DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 PROJECT_ROOT = dirname(DJANGO_ROOT)
 
 # Name of the deployment environment (dev/prod)
-ENV = os.environ.get("ENV", "dev")
+ENV = os.environ.get("environment", "dev")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
