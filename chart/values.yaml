@@ -15,7 +15,7 @@ podAnnotations: {}
 podLabels: {}
 podSecurityContext:
   seccompProfile:
-      type: RuntimeDefault
+    type: RuntimeDefault
 
 service:
   type: ClusterIP
@@ -32,9 +32,9 @@ ingress:
         - path: /
           pathType: ImplementationSpecific
   tls:
-   - secretName: ui-tls
-     hosts:
-       - development.analytical-platform.service.justice.gov.uk
+    - secretName: ui-tls
+      hosts:
+        - development.analytical-platform.service.justice.gov.uk
 
 affinity: {}
 nodeSelector: {}
@@ -94,14 +94,14 @@ app:
           key: tenant-id
   port: 8000
   # These are removed while healthcheck endpoint is worked on
-  # livenessProbe:
-  #   httpGet:
-  #     path: /
-  #     port: app
-  # readinessProbe:
-  #   httpGet:
-  #     path: /
-  #     port: app
+  livenessProbe:
+    httpGet:
+      path: /healthcheck
+      port: app
+  readinessProbe:
+    httpGet:
+      path: /healthcheck
+      port: app
   resources:
     limits:
       cpu: 200m
