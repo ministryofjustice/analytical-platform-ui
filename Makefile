@@ -1,5 +1,7 @@
 #!make
 
+IMAGE_NAME = ghcr.io/ministryofjustice/analytical-platform-ui:local
+
 build-static:
 	make build-css
 	make build-js
@@ -28,10 +30,24 @@ serve:
 serve-sso:
 	aws-sso exec --profile analytical-platform-development:AdministratorAccess -- python manage.py runserver
 
-container:
-	docker build -t ap .
+build-container:
+	@ARCH=`uname -m`; \
+	case $$ARCH in \
+	aarch64 | arm64) \
+		echo "Building on $$ARCH architecture"; \
+		docker build --platform linux/amd64 --file container/Dockerfile --tag $(IMAGE_NAME) . ;; \
+	*) \
+		echo "Building on $$ARCH architecture"; \
+		docker build --file container/Dockerfile --tag $(IMAGE_NAME) . ;; \
+	esac
 
-test: container
+cst: build-container
+	container-structure-test test --platform linux/amd64 --config container/test/container-structure-test.yml --image $(IMAGE_NAME)
+
+test: build-container
 	@echo
 	@echo "> Running Python Tests (In Docker)..."
 	IMAGE_TAG=ap docker compose --file=contrib/docker-compose-test.yml run --rm interfaces
+
+ct:
+	ct lint --charts chart

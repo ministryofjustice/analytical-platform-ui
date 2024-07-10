@@ -1,0 +1,143 @@
+---
+replicaCount: 1
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: "ui"
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: "default"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production-http01
+  hosts:
+    - host: development.analytical-platform.service.justice.gov.uk
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: ui-tls
+      hosts:
+        - development.analytical-platform.service.justice.gov.uk
+
+affinity: {}
+nodeSelector: {}
+tolerations: []
+
+app:
+  image:
+    repository: ghcr.io/ministryofjustice/analytical-platform-ui
+    pullPolicy: IfNotPresent
+    tag: ""
+  environment:
+    - name: DJANGO_SETTINGS_MODULE
+      value: ap.settings
+    - name: ALLOWED_HOSTS
+      value: "*"
+    - name: DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: ui-rds
+          key: username
+    - name: DB_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: ui-rds
+          key: password
+    - name: DB_HOST
+      valueFrom:
+        secretKeyRef:
+          name: ui-rds
+          key: address
+    - name: DB_PORT
+      valueFrom:
+        secretKeyRef:
+          name: ui-rds
+          key: port
+    - name: DB_NAME
+      value: "ui"
+    - name: SECRET_KEY
+      valueFrom:
+        secretKeyRef:
+          name: ui-app-secrets
+          key: secret_key
+    - name: SENTRY_DSN
+      valueFrom:
+        secretKeyRef:
+          name: ui-sentry-dsn
+          key: dsn
+    - name: AZURE_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: ui-azure-secrets
+          key: client-id
+    - name: AZURE_TENANT_ID
+      valueFrom:
+        secretKeyRef:
+          name: ui-azure-secrets
+          key: tenant-id
+  port: 8000
+  # These are removed while healthcheck endpoint is worked on
+  livenessProbe:
+    httpGet:
+      path: /healthcheck
+      port: app
+  readinessProbe:
+    httpGet:
+      path: /healthcheck
+      port: app
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    runAsNonRoot: true
+    runAsUser: 1000
+
+reverseProxy:
+  image:
+    repository: "docker.io/nginxinc/nginx-unprivileged"
+    tag: "1.27.0-alpine3.19"
+  port: 8080
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 5
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    runAsNonRoot: true
+    runAsUser: 101

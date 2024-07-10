@@ -14,7 +14,7 @@ def header_context(request):
     return {
         "header_nav_items": [
             {
-                "name": request.user.name,
+                "name": request.user.name if is_logged_in else "",
                 "url": "",
             },
             {

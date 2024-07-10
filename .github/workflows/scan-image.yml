@@ -24,15 +24,16 @@ jobs:
         id: build_image
         uses: docker/build-push-action@15560696de535e4014efeff63c48f16952e52dd1 # v6.2.0
         with:
+          file: container/Dockerfile
           push: false
           load: true
-          tags: dashboard
+          tags: ui
 
       - name: Scan Image
         id: scan_image
         uses: aquasecurity/trivy-action@7c2007bcb556501da015201bcba5aa14069b74e2 # v0.23.0
         with:
-          image-ref: dashboard
+          image-ref: ui
           exit-code: 1
           format: sarif
           output: trivy-results.sarif
@@ -44,7 +45,7 @@ jobs:
         id: scan_image_on_failure
         uses: aquasecurity/trivy-action@7c2007bcb556501da015201bcba5aa14069b74e2 # v0.23.0
         with:
-          image-ref: dashboard
+          image-ref: ui
           exit-code: 1
           format: table
           severity: CRITICAL
