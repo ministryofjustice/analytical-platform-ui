@@ -18,9 +18,14 @@ If you are using a workspace with multiple applications, search for ```Dev Conta
 There is an example environment file stored on 1Password named ```Analytical Platform UI Env```. Paste the contents into a new file called ```.env``` in the root of the project.
 
 ### Running Development Server
-To run the server, you will need to use aws-sso cli. To find the correct profile, run ```aws-sso list``` in the terminal. This will provide you with a link to sign in via SSO. Once signed in, a list of profiles will be displayed. You are looking for the profile name linked to the ```analytical-platform-development``` AccountAlias.
+To run the server, you will need to use aws-sso cli. To find the correct profile, run ```aws-sso list``` in the terminal. This will provide you with a link to sign in via SSO. Once signed in, a list of profiles will be displayed. You are looking for the profile name linked to the ```analytical-platform-compute-development``` AccountAlias.
 
-To run the server using this profile, enter ```aws-sso exec --profile analytical-platform-development:AdministratorAccess -- python manage.py runserver``` or ```make serve-sso```. Then go to ```localhost:8000``` and sign in using your @justice.gov.uk identity.
+To run the server using this profile, enter ```aws-sso exec --profile analytical-platform-compute-development:modernisation-platform-sandbox -- python manage.py runserver``` or ```make serve-sso```. Then go to ```localhost:8000``` and sign in using your @justice.gov.uk identity.
+
+### Local debugging
+Copy `launch.json.example`, `settings.json.example` and `tasks.json.example` from the examples folder into a `.vscode` folder in the root of the project and remove the `.example` suffix. To debug the application, go to the `run and debug` tab and select the `runserver` configuration. When starting debugging you may need to sign into AWS first. There will be a prompt in the terminal to do so.
+
+To debug any tests, switch the debug configuration to `Python: Debug Tests` then go to the testing tab. From here you can run the full suite of tests or individual tests. You can also click the debug icon in order to debug any tests that are failing.
 
 ### Updating Migrations
 To run the migrations locally, run ```python manage.py migrate``` in the terminal.

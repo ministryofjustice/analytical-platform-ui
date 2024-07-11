@@ -28,7 +28,7 @@ serve:
 	python manage.py runserver
 
 serve-sso:
-	aws-sso exec --profile analytical-platform-development:AdministratorAccess -- python manage.py runserver
+	aws-sso exec --profile analytical-platform-compute-development:modernisation-platform-sandbox -- python manage.py runserver
 
 build-container:
 	@ARCH=`uname -m`; \
