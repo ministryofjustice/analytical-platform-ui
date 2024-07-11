@@ -23,7 +23,7 @@
           "console": "integratedTerminal",
           "justMyCode": false,
           "env": {
-              "DJANGO_SETTINGS_MODULE": "controlpanel.settings.test"
+              "DJANGO_SETTINGS_MODULE": "ap.settings.test"
           }
       }
   ]
