@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
-import sys
 from os.path import abspath, dirname, join
 from pathlib import Path
 from typing import Any, Dict
@@ -87,7 +86,6 @@ MIDDLEWARE = [
 if os.environ.get("SENTRY_DSN"):
     # Third-party
     import sentry_sdk
-    from sentry_sdk import set_tag
     from sentry_sdk.integrations.django import DjangoIntegration
 
     sentry_sdk.init(
@@ -98,10 +96,6 @@ if os.environ.get("SENTRY_DSN"):
         send_default_pii=True,
     )
 
-    if "runworker" in sys.argv:
-        set_tag("RunningIn", "Worker")
-    elif "shell" in sys.argv:
-        set_tag("RunningIn", "Shell")
 
 # The list of authentication backend used for checking user's access to app
 AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
