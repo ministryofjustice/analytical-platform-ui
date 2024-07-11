@@ -46,6 +46,11 @@ app:
     pullPolicy: IfNotPresent
     tag: ""
   environment:
+    - name: APP_ENVIRONMENT
+      valueFrom:
+        secretKeyRef:
+          name: ui-app-secrets
+          key: environment
     - name: DJANGO_SETTINGS_MODULE
       value: ap.settings
     - name: ALLOWED_HOSTS
