@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, View
 
+import sentry_sdk
 from authlib.common.security import generate_token
 from authlib.integrations.django_client import OAuthError
 
@@ -58,7 +59,8 @@ class OIDCAuthenticationView(View):
             else:
                 self._login_success(request, user, token)
                 return redirect("/")
-        except OAuthError:
+        except OAuthError as error:
+            sentry_sdk.capture_exception(error)
             return self._login_failure()
 
 

@@ -30,7 +30,7 @@ DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 PROJECT_ROOT = dirname(DJANGO_ROOT)
 
 # Name of the deployment environment (dev/prod)
-ENV = os.environ.get("ENV", "dev")
+ENV = os.environ.get("APP_ENVIRONMENT", "dev")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -80,6 +80,22 @@ MIDDLEWARE = [
     # Structured logging
     "django_structlog.middlewares.RequestMiddleware",
 ]
+
+# -- Sentry error tracking
+
+if os.environ.get("SENTRY_DSN"):
+    # Third-party
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=os.environ["SENTRY_DSN"],
+        environment=ENV,
+        integrations=[DjangoIntegration()],
+        traces_sample_rate=0.0,
+        send_default_pii=True,
+    )
+
 
 # The list of authentication backend used for checking user's access to app
 AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
