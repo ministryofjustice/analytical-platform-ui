@@ -68,10 +68,107 @@ Environment variables for the AP UI are specified in `charts/values.yaml` under 
 Any non-secret values can be added like the example below:
 
 ``` yaml
-- name: VAR_NAME
-  value: "var_value"
+app:
+   environment:
+      - name: VAR_NAME
+      value: "var_value"
 ```
 
 Create a pull request and follow the release process and your new environment variable should be accessible.
 
 ### Adding Secrets
+
+There are a 2 of types of secrets that can be added:
+
+ - Kubernetes Secrets
+ - External Secrets
+
+Both are created through the modernisation-platform-environments repository then referenced in `charts/values.yaml`.
+
+#### Kubernetes Secrets
+
+#### External Secrets
+
+To add an external secret:
+
+ - Go to the modernisation-platform-environments repository and create a new branch
+ - navigate to `terraform/environments/analytical-platform-compute/secrets.tf`
+ - add a new block that looks like the example below (change the sections marked with <>)
+   - Keep the secret_string as CHANGEME as this will be changed in the AWS console
+
+``` tf
+module "<secret_module_name>" {
+  #checkov:skip=CKV_TF_1:Module registry does not support commit hashes for versions
+  #checkov:skip=CKV_TF_2:Module registry does not support tags for versions
+
+  source  = "terraform-aws-modules/secrets-manager/aws"
+  version = "1.1.2"
+
+  name        = "ui/<name_here>"
+  description = "<description here>"
+  kms_key_id  = module.common_secrets_manager_kms.key_arn
+
+  secret_string         = "CHANGEME"
+  ignore_secret_changes = true
+
+  tags = local.tags
+}
+```
+
+ - Commit and push the changes
+   - Create a PR and follow the same process to release these changes in test and development as you would deploying the application.
+ - Go to the AWS console and log into either the Analytical-Platform-Compute-Development or Analytical-Platform-Compute-Test account
+ - Go to Secrets Manager
+ - If the terraform apply was successful, you should see your new secret here
+ - Click on the secret name then click Retrieve Secret Value (You should see CHANGEME)
+ - Click edit
+   - Modify the value to what you want the secret to be
+   - Click save
+ - Get the PR approved, merged to main and apply the changes to production
+ - Once the secret is in production, change it in secrets manager then create a new branch in modernisation-platform-environments repository
+ - Navigate to `terraform/environments/analytical-platform-compute/kubernetes-external-secrets.tf`
+ - Add a block that looks similar to the example below (change the sections marked with <>)
+
+
+ ``` tf
+ resource "kubernetes_manifest" "<external_secret_name>" {
+  manifest = {
+    "apiVersion" = "external-secrets.io/v1beta1"
+    "kind"       = "ExternalSecret"
+    "metadata" = {
+      "name"      = "ui-<secret-name>"
+      "namespace" = kubernetes_namespace.ui.metadata[0].name
+    }
+    "spec" = {
+      "secretStoreRef" = {
+        "kind" = "ClusterSecretStore"
+        "name" = "aws-secretsmanager"
+      }
+      "target" = {
+        "name" = "ui-<secret-name>" # should be the same as the metadata name
+      }
+      "data" = [
+        {
+          "remoteRef" = {
+            "key" = module.<secret_module_create_above_name_here>.secret_id
+          }
+          "secretKey" = "<key-name-here>"
+        }
+      ]
+    }
+  }
+}
+ ```
+ - Follow the same process above to add this to the dev/test/prod.
+ - Once the secrets have been added, create a new branch in this repo and go to `charts/values.yaml` and add a block like the example below
+
+ ``` yaml
+ - name: EXTERNAL_SECRET_NAME
+      valueFrom:
+        secretKeyRef:
+          name: <target-name>
+          key: <secretKey>
+ ```
+ - name references the name in the target block in the second example
+ - key references the secretKey in the data block in the second example
+ - create a PR and follow the release process. The new secret should get picked up in the environment.
