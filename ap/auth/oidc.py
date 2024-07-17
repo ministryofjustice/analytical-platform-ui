@@ -1,3 +1,6 @@
+import boto3
+import jwt
+
 from django.conf import settings
 from django.utils import timezone
 
@@ -95,3 +98,58 @@ class OIDCSessionValidator:
         will be renewed based on t
         """
         return self._has_access_token_expired() or self._has_id_token_expired()
+
+
+# POC implementation
+def get_aws_access_identity_center_token(token):
+    client = boto3.client("sso-oidc")
+    try:
+        response = client.create_token_with_iam(
+            clientId=settings.IDENTITY_CENTRE_OIDC_APPLICATION_ID, #the application ID (ARN?) from Identity Centre e.g. arn:aws:sso::222222222222:application/ssoins-12345678/apl-87654321
+            grantType="urn:ietf:params:oauth:grant-type:jwt-bearer",
+            assertion=token["id_token"], #ID token from EntraID
+        )
+    except Exception as e:
+        raise e
+
+    # decode the ID token with pyjwt lib
+    aws_token = jwt.decode(jwt=response["idToken"], options={"verify_signature": False})
+
+    sts = boto3.client("sts")
+    response = sts.assume_role(
+        RoleArn=settings.IAM_BEARER_ROLE_ARN,
+        RoleSessionName=f"identity-bearer-{token["userinfo"]["preferred_username"]}",
+        ProvidedContexts=[
+            {
+                'ProviderArn': 'arn:aws:iam::aws:contextProvider/IdentityCenter',
+                'ContextAssertion': aws_token['sts:identity_context']
+            },
+        ]
+    )
+    # Then use "sts:identity_context" from the token later when calls STS to get temporary credentials
+    credentials = {
+        "aws_access_key_id": response["Credentials"]["AccessKeyId"],
+        "aws_secret_access_key": response["Credentials"]["SecretAccessKey"],
+        "aws_session_token": response["Credentials"]["SessionToken"]
+    }
+    sts2 = boto3.client(
+        "sts",
+        **credentials
+    )
+    breakpoint()
+    athena = boto3.client("athena", **credentials, region_name="eu-west-2")
+    s3 = boto3.client("s3", **credentials)
+    breakpoint()
+
+    res = athena.start_query_execution(
+        QueryString='SELECT * FROM "james_lake_form_test_resource_link" limit 10;',
+        QueryExecutionContext={
+            'Database': 'julia-lakeformation-database'
+        },
+        WorkGroup="primary",
+        ResultConfiguration={
+            "OutputLocation": "s3://aws-athena-query-results-eu-west-2-525294151996/",
+        }
+        # ResultConfiguration = { 'OutputLocation': 's3://your-bucket/key'}
+    )
+    breakpoint()

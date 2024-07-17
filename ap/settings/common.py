@@ -304,3 +304,7 @@ structlog.configure(
     wrapper_class=structlog.stdlib.BoundLogger,
     cache_logger_on_first_use=True,
 )
+
+# identity centre updates
+IDENTITY_CENTRE_OIDC_APPLICATION_ID = os.environ.get("IDENTITY_CENTRE_OIDC_APPLICATION_ID")
+IAM_BEARER_ROLE_ARN = os.environ.get("IAM_BEARER_ROLE_ARN")
