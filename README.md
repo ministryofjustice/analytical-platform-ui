@@ -32,3 +32,46 @@ To run the migrations locally, run ```python manage.py migrate``` in the termina
 
 ### Updating static assets
 To build the static assets, run ```make build-static``` in the terminal.
+
+## Release Procedure
+
+To create a release of the Analytical Platform UI:
+
+ - Before merging your branch to main, bump both the `version` and `appVersion` in `chart/Chart.yaml`
+    - We use SemVer without a v prefix, e.g `1.0.0`
+    - Release candidates are specified with a `-rcX` postfix, e.g `1.0.0-rc1`
+ - Once changes have been merged, go to the repository in GitLab.
+ - Go to releases and click the Draft a new release button
+ - Click choose a tag and specify the version you set in `chart/Chart.yaml` and click create new tag
+ - Click generate release notes, click set as pre-release if the branch is a release candidate
+ - Click publish release. This will build the image and push the helm chart
+ - Once the build has finished, go to the modernisation-platform-environments repository. (You may need to [pull this down](https://github.com/ministryofjustice/modernisation-platform-environments) if you haven't previously)
+ - Create a new branch from main and go to `terraform/environments/analytical-platform-compute/helm-charts-applications.tf`
+ - Update the version to your new release version
+ - Commit the change and create a pull request
+ - Go to the pull request page and view the details of a running terraform plan (development, test or production are fine)
+ - If the development and test plans are successful, run the terraform apply on those environments
+    - Do this by clicking apply under plan in the sidebar
+    - Click `Review pending deployments` in the main panel
+    - Tick the environments and click Approve and Deploy
+ - Once the apply job has finished, test changes in either region
+ - When you're happy with your changes, get the PR reviewed by another member of the team
+ - Merge your PR to main then go to actions and find the workflow running on main that is running the terraform plan
+ - Once the plan for production has finished, run the terraform apply job for production
+
+
+## Environment Variables and Secrets
+
+### Adding Environment Variables
+
+Environment variables for the AP UI are specified in `charts/values.yaml` under app -> environment.
+Any non-secret values can be added like the example below:
+
+``` yaml
+- name: VAR_NAME
+  value: "var_value"
+```
+
+Create a pull request and follow the release process and your new environment variable should be accessible.
+
+### Adding Secrets
