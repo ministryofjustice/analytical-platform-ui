@@ -51,7 +51,7 @@ class OIDCAuthenticationView(View):
     def get(self, request):
         try:
             token = oauth.azure.authorize_access_token(request)
-            request.session["token"] = token
+            request.session["entra_access_token"] = token
             oidc_auth = OIDCSubAuthenticationBackend(token)
             user = oidc_auth.create_or_update_user()
             if not user:
