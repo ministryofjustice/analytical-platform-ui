@@ -89,12 +89,14 @@ Both are created through the modernisation-platform-environments repository then
 
 #### External Secrets
 
+External secrets are held in AWS Secrets Manager.
+
 To add an external secret:
 
  - Go to the modernisation-platform-environments repository and create a new branch
  - navigate to `terraform/environments/analytical-platform-compute/secrets.tf`
  - add a new block that looks like the example below (change the sections marked with <>)
-   - Keep the secret_string as CHANGEME as this will be changed in the AWS console
+   - Keep the secret_string as CHANGEME as this will be changed in Secrets Manager
 
 ``` tf
 module "<secret_module_name>" {
@@ -125,7 +127,7 @@ module "<secret_module_name>" {
    - Modify the value to what you want the secret to be
    - Click save
  - Get the PR approved, merged to main and apply the changes to production
- - Once the secret is in production, change it in secrets manager then create a new branch in modernisation-platform-environments repository
+ - Once the secret is in production, change it in secrets manager in Analytical-Platform-Compute-Production then create a new branch in modernisation-platform-environments repository
  - Navigate to `terraform/environments/analytical-platform-compute/kubernetes-external-secrets.tf`
  - Add a block that looks similar to the example below (change the sections marked with <>)
 
@@ -147,7 +149,7 @@ module "<secret_module_name>" {
       "target" = {
         "name" = "ui-<secret-name>" # should be the same as the metadata name
       }
-      "data" = [
+      "data" = [  # you could have multiple related secrets in this block
         {
           "remoteRef" = {
             "key" = module.<secret_module_create_above_name_here>.secret_id
@@ -169,6 +171,6 @@ module "<secret_module_name>" {
           name: <target-name>
           key: <secretKey>
  ```
- - name references the name in the target block in the second example
- - key references the secretKey in the data block in the second example
+ - name references the `name` in the `target` block in the second example
+ - key references the `secretKey` in the `data` block in the second example
  - create a PR and follow the release process. The new secret should get picked up in the environment.
