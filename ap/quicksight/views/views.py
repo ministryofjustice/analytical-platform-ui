@@ -11,12 +11,12 @@ class QuicksightView(OIDCLoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        user = context["view"].request.user
+        user = self.request.user
         context["embed_url"] = self._get_embed_url(user)
         return context
 
     def _get_embed_url(self, user):
-        qs_session_name = "quicksight-test"
+        qs_session_name = f"quicksight-test-{user.email}"
 
         sts = boto3.client("sts")
         response = sts.assume_role(
