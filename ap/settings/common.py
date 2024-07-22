@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "ap.auth",
     "ap.core",
     "ap.users",
+    "ap.quicksight",
 ]
 
 MIDDLEWARE = [
@@ -311,3 +312,6 @@ COMPUTE_ACCOUNT_ID = os.environ.get("COMPUTE_ACCOUNT_ID")
 IDENTITY_CENTRE_OIDC_ARN = os.environ.get("IDENTITY_CENTRE_OIDC_ARN")
 # role to assume when requesting temporary credentials with the users Identity Center context
 IAM_BEARER_ROLE_ARN = os.environ.get("IAM_BEARER_ROLE_ARN")
+COMPUTE_ACCOUNT_ID = os.environ.get("COMPUTE_ACCOUNT_ID")
+
+QUICKSIGHT_DOMAINS = os.environ.get("QUICKSIGHT_DOMAINS", "").split(",")

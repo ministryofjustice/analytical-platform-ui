@@ -1,9 +1,10 @@
-import boto3
-import jwt
-
 from django.conf import settings
 from django.utils import timezone
 
+import boto3
+import botocore
+import botocore.exceptions
+import jwt
 import structlog
 from authlib.integrations.django_client import OAuth
 
@@ -112,6 +113,8 @@ def get_aws_identity_center_access_token(id_token):
             grantType="urn:ietf:params:oauth:grant-type:jwt-bearer",
             assertion=id_token,
         )
+    except botocore.exceptions.ClientError as ice:
+        raise ice
     except Exception as e:
         raise e
 
@@ -130,14 +133,14 @@ def get_aws_credentials(aws_token):
         RoleSessionName=f"identity-bearer-{aws_token['sub']}",
         ProvidedContexts=[
             {
-                'ProviderArn': 'arn:aws:iam::aws:contextProvider/IdentityCenter',
-                'ContextAssertion': aws_token['sts:identity_context']
+                "ProviderArn": "arn:aws:iam::aws:contextProvider/IdentityCenter",
+                "ContextAssertion": aws_token["sts:identity_context"],
             },
-        ]
+        ],
     )
     credentials = {
         "aws_access_key_id": response["Credentials"]["AccessKeyId"],
         "aws_secret_access_key": response["Credentials"]["SecretAccessKey"],
-        "aws_session_token": response["Credentials"]["SessionToken"]
+        "aws_session_token": response["Credentials"]["SessionToken"],
     }
     return credentials
