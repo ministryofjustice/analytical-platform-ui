@@ -11,7 +11,7 @@ import sentry_sdk
 from authlib.common.security import generate_token
 from authlib.integrations.django_client import OAuthError
 
-from ap.auth.oidc import OIDCSubAuthenticationBackend, oauth, get_aws_access_identity_center_token
+from ap.auth.oidc import OIDCSubAuthenticationBackend, get_aws_access_identity_center_token, oauth
 from ap.auth.utils import pkce_transform
 
 

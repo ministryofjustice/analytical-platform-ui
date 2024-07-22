@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "ap.auth",
     "ap.core",
     "ap.users",
+    "ap.quicksight",
 ]
 
 MIDDLEWARE = [
@@ -308,3 +309,4 @@ structlog.configure(
 # identity centre updates
 IDENTITY_CENTRE_OIDC_APPLICATION_ID = os.environ.get("IDENTITY_CENTRE_OIDC_APPLICATION_ID")
 IAM_BEARER_ROLE_ARN = os.environ.get("IAM_BEARER_ROLE_ARN")
+COMPUTE_ACCOUNT_ID = os.environ.get("COMPUTE_ACCOUNT_ID")

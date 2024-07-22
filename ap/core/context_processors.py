@@ -2,9 +2,15 @@ from django.urls import reverse
 
 
 def nav_items(request):
+    print(request.get_full_path())
     return {
         "nav_items": [
             {"name": "Home", "url": "/", "active": request.get_full_path() == "/"},
+            {
+                "name": "QuickSight",
+                "url": "/quicksight",
+                "active": request.get_full_path() == "/quicksight/",
+            },
         ]
     }
 
