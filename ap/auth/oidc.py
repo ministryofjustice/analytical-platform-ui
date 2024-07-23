@@ -117,11 +117,14 @@ def get_aws_access_identity_center_token(token):
 
     # decode the ID token with pyjwt lib
     aws_token = jwt.decode(jwt=response["idToken"], options={"verify_signature": False})
+    return aws_token
 
+
+def get_aws_credentials(aws_token):
     sts = boto3.client("sts")
     response = sts.assume_role(
         RoleArn=settings.IAM_BEARER_ROLE_ARN,
-        RoleSessionName=f"identity-bearer-{token["userinfo"]["preferred_username"]}",
+        RoleSessionName=f"identity-bearer-{aws_token["sub"]}",
         ProvidedContexts=[
             {
                 "ProviderArn": "arn:aws:iam::aws:contextProvider/IdentityCenter",
@@ -135,62 +138,4 @@ def get_aws_access_identity_center_token(token):
         "aws_secret_access_key": response["Credentials"]["SecretAccessKey"],
         "aws_session_token": response["Credentials"]["SessionToken"],
     }
-    sts2 = boto3.client("sts", **credentials)
-    athena = boto3.client("athena", **credentials, region_name="eu-west-2")
-    s3 = boto3.client("s3", **credentials)
-
-    qs_session_name = f"quicksight-test-{token["userinfo"]["preferred_username"]}"
-
-    response = sts.assume_role(
-        RoleArn=f"arn:aws:iam::{settings.COMPUTE_ACCOUNT_ID}:role/quicksight_test",
-        RoleSessionName=qs_session_name,
-    )
-
-    qs_credentials = {
-        "aws_access_key_id": response["Credentials"]["AccessKeyId"],
-        "aws_secret_access_key": response["Credentials"]["SecretAccessKey"],
-        "aws_session_token": response["Credentials"]["SessionToken"],
-    }
-
-    quicksight = boto3.client("quicksight", **qs_credentials, region_name="eu-west-2")
-
-    # Gets information about members of the aws_analytical_platform group
-    # group_response = quicksight.list_group_memberships(GroupName="aws_analytical_platform",
-    #                                     AwsAccountId=settings.COMPUTE_ACCOUNT_ID,
-    #                                     Namespace="default")
-    # print(group_response)
-
-    # Assumes email is part of the above group
-    user_response = quicksight.describe_user(
-        UserName=token["userinfo"]["email"],
-        AwsAccountId=settings.COMPUTE_ACCOUNT_ID,
-        Namespace="default",
-    )
-    print(user_response)
-
-    url_response = quicksight.generate_embed_url_for_registered_user(
-        AwsAccountId=settings.COMPUTE_ACCOUNT_ID,
-        UserArn=user_response["User"]["Arn"],
-        ExperienceConfiguration={
-            "QuickSightConsole": {
-                "InitialPath": "/start",
-                "FeatureConfigurations": {"StatePersistence": {"Enabled": True}},
-            },
-        },
-    )
-    print(url_response)
-
-    # breakpoint()
-
-    # res = athena.start_query_execution(
-    #     QueryString='SELECT * FROM "james_lake_form_test_resource_link" limit 10;',
-    #     QueryExecutionContext={
-    #         'Database': 'julia-lakeformation-database'
-    #     },
-    #     WorkGroup="primary",
-    #     ResultConfiguration={
-    #         "OutputLocation": "s3://aws-athena-query-results-eu-west-2-525294151996/",
-    #     }
-    #     # ResultConfiguration = { 'OutputLocation': 's3://your-bucket/key'}
-    # )
-    # breakpoint()
+    return credentials

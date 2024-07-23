@@ -53,7 +53,8 @@ class OIDCAuthenticationView(View):
             token = oauth.azure.authorize_access_token(request)
             request.session["token"] = token
             oidc_auth = OIDCSubAuthenticationBackend(token)
-            get_aws_access_identity_center_token(token)
+            # TODO need to handle session refresh
+            request.session["aws_token"] = get_aws_access_identity_center_token(token)
             user = oidc_auth.create_or_update_user()
             if not user:
                 return self._login_failure()
