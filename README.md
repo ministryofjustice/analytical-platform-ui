@@ -70,8 +70,10 @@ Any non-secret values can be added like the example below:
 ``` yaml
 app:
    environment:
-      - name: VAR_NAME
-      value: "var_value"
+      - name: DJANGO_SETTINGS_MODULE
+      value: ap.settings
+      - name: NEW_VAR_NAME
+      value: new_var_value
 ```
 
 Create a pull request and follow the release process and your new environment variable should be accessible.
@@ -119,6 +121,7 @@ module "<secret_module_name>" {
 
  - Commit and push the changes
    - Create a PR and follow the same process to release these changes in test and development as you would deploying the application.
+   - Read the [Release Procedure](#release-procedure) section if you're unsure.
  - Go to the AWS console and log into either the Analytical-Platform-Compute-Development or Analytical-Platform-Compute-Test account
  - Go to Secrets Manager
  - If the terraform apply was successful, you should see your new secret here
