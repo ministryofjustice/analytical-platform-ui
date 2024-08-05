@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     # First party project defined apps
     "ap.auth",
     "ap.core",
+    "ap.database_access",
     "ap.users",
     "ap.quicksight",
 ]
