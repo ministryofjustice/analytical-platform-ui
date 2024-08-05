@@ -306,7 +306,9 @@ structlog.configure(
     cache_logger_on_first_use=True,
 )
 
-# identity centre updates
-IDENTITY_CENTRE_OIDC_APPLICATION_ID = os.environ.get("IDENTITY_CENTRE_OIDC_APPLICATION_ID")
-IAM_BEARER_ROLE_ARN = os.environ.get("IAM_BEARER_ROLE_ARN")
 COMPUTE_ACCOUNT_ID = os.environ.get("COMPUTE_ACCOUNT_ID")
+
+# the arn for the oidc app in the management account
+IDENTITY_CENTRE_OIDC_ARN = os.environ.get("IDENTITY_CENTRE_OIDC_ARN")
+# role to assume when requesting temporary credentials with the users Identity Center context
+IAM_BEARER_ROLE_ARN = os.environ.get("IAM_BEARER_ROLE_ARN")

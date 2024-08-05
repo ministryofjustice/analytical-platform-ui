@@ -102,13 +102,16 @@ class OIDCSessionValidator:
 
 
 # POC implementation
-def get_aws_access_identity_center_token(token):
+def get_aws_identity_center_access_token(id_token):
+    """
+    Requires ID token for a user from EntraID
+    """
     client = boto3.client("sso-oidc")
     try:
         response = client.create_token_with_iam(
-            clientId=settings.IDENTITY_CENTRE_OIDC_APPLICATION_ID,  # the application ID (ARN?) from Identity Centre e.g. arn:aws:sso::222222222222:application/ssoins-12345678/apl-87654321
+            clientId=settings.IDENTITY_CENTRE_OIDC_ARN,
             grantType="urn:ietf:params:oauth:grant-type:jwt-bearer",
-            assertion=token["id_token"],  # ID token from EntraID
+            assertion=id_token,
         )
     except botocore.exceptions.ClientError as ice:
         raise ice
@@ -121,10 +124,13 @@ def get_aws_access_identity_center_token(token):
 
 
 def get_aws_credentials(aws_token):
+    """
+    Gets AWS credentials passing the identity context of the user from the AWS access token
+    """
     sts = boto3.client("sts")
     response = sts.assume_role(
         RoleArn=settings.IAM_BEARER_ROLE_ARN,
-        RoleSessionName=f"identity-bearer-{aws_token["sub"]}",
+        RoleSessionName=f"identity-bearer-{aws_token['sub']}",
         ProvidedContexts=[
             {
                 "ProviderArn": "arn:aws:iam::aws:contextProvider/IdentityCenter",
@@ -132,7 +138,6 @@ def get_aws_credentials(aws_token):
             },
         ],
     )
-    # Then use "sts:identity_context" from the token later when calls STS to get temporary credentials
     credentials = {
         "aws_access_key_id": response["Credentials"]["AccessKeyId"],
         "aws_secret_access_key": response["Credentials"]["SecretAccessKey"],

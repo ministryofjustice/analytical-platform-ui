@@ -11,7 +11,7 @@ import sentry_sdk
 from authlib.common.security import generate_token
 from authlib.integrations.django_client import OAuthError
 
-from ap.auth.oidc import OIDCSubAuthenticationBackend, get_aws_access_identity_center_token, oauth
+from ap.auth.oidc import OIDCSubAuthenticationBackend, oauth
 from ap.auth.utils import pkce_transform
 
 
@@ -51,10 +51,8 @@ class OIDCAuthenticationView(View):
     def get(self, request):
         try:
             token = oauth.azure.authorize_access_token(request)
-            request.session["token"] = token
+            request.session["entra_access_token"] = token
             oidc_auth = OIDCSubAuthenticationBackend(token)
-            # TODO need to handle session refresh
-            request.session["aws_token"] = get_aws_access_identity_center_token(token)
             user = oidc_auth.create_or_update_user()
             if not user:
                 return self._login_failure()
