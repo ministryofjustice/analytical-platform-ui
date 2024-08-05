@@ -11,7 +11,7 @@ from ap.auth.views.mixins import OIDCLoginRequiredMixin
 
 
 class QuicksightView(OIDCLoginRequiredMixin, TemplateView):
-    template_name = "quicksight.html"
+    template_name = "quicksight/index.html"
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
