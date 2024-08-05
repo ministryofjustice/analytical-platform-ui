@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     # First party project defined apps
     "ap.auth",
     "ap.core",
+    "ap.database_access",
     "ap.users",
     "ap.quicksight",
 ]
@@ -308,6 +309,8 @@ structlog.configure(
 
 COMPUTE_ACCOUNT_ID = os.environ.get("COMPUTE_ACCOUNT_ID")
 
+GLUE_CATALOG_ID = os.environ.get("GLUE_CATALOG_ID")
+
 # the arn for the oidc app in the management account
 IDENTITY_CENTRE_OIDC_ARN = os.environ.get("IDENTITY_CENTRE_OIDC_ARN")
 # role to assume when requesting temporary credentials with the users Identity Center context
@@ -315,3 +318,7 @@ IAM_BEARER_ROLE_ARN = os.environ.get("IAM_BEARER_ROLE_ARN")
 COMPUTE_ACCOUNT_ID = os.environ.get("COMPUTE_ACCOUNT_ID")
 
 QUICKSIGHT_DOMAINS = os.environ.get("QUICKSIGHT_DOMAINS", "").split(",")
+
+DEFAULT_ROLE_ARN = os.environ.get("DEFAULT_ROLE_ARN", None)
+
+AWS_DEFAULT_REGION = os.environ.get("AWS_DEFAULT_REGION", "eu-west-2")
