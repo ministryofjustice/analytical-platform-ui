@@ -309,6 +309,8 @@ structlog.configure(
 
 COMPUTE_ACCOUNT_ID = os.environ.get("COMPUTE_ACCOUNT_ID")
 
+GLUE_CATALOG_ID = os.environ.get("GLUE_CATALOG_ID")
+
 # the arn for the oidc app in the management account
 IDENTITY_CENTRE_OIDC_ARN = os.environ.get("IDENTITY_CENTRE_OIDC_ARN")
 # role to assume when requesting temporary credentials with the users Identity Center context
