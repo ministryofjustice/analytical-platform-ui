@@ -18,7 +18,7 @@
         <tr class="govuk-table__row">
           <td class="govuk-table__cell">{{ table.Name }}</td>
           <td class="govuk-table__cell">
-            <a href="" class="govuk-link">View</a>
+            <a href="{% url 'database_access:table_detail' database.name table.Name %}" class="govuk-link">View</a>
           </td>
         </tr>
       {% endfor %}
