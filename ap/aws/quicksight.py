@@ -3,10 +3,10 @@ from django.conf import settings
 import botocore
 import sentry_sdk
 
-from ap.aws import base
+from ap import aws
 
 
-class QuicksightAWSService(base.AWSService):
+class QuicksightService(aws.AWSService):
     @property
     def client(self):
         return self.boto3_session.client("quicksight")
