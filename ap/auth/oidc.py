@@ -1,6 +1,10 @@
 from django.conf import settings
 from django.utils import timezone
 
+import boto3
+import botocore
+import botocore.exceptions
+import jwt
 import structlog
 from authlib.integrations.django_client import OAuth
 
@@ -95,3 +99,48 @@ class OIDCSessionValidator:
         will be renewed based on t
         """
         return self._has_access_token_expired() or self._has_id_token_expired()
+
+
+# POC implementation
+def get_aws_identity_center_access_token(id_token):
+    """
+    Requires ID token for a user from EntraID
+    """
+    client = boto3.client("sso-oidc")
+    try:
+        response = client.create_token_with_iam(
+            clientId=settings.IDENTITY_CENTRE_OIDC_ARN,
+            grantType="urn:ietf:params:oauth:grant-type:jwt-bearer",
+            assertion=id_token,
+        )
+    except botocore.exceptions.ClientError as ice:
+        raise ice
+    except Exception as e:
+        raise e
+
+    # decode the ID token with pyjwt lib
+    aws_token = jwt.decode(jwt=response["idToken"], options={"verify_signature": False})
+    return aws_token
+
+
+def get_aws_credentials(aws_token):
+    """
+    Gets AWS credentials passing the identity context of the user from the AWS access token
+    """
+    sts = boto3.client("sts")
+    response = sts.assume_role(
+        RoleArn=settings.IAM_BEARER_ROLE_ARN,
+        RoleSessionName=f"identity-bearer-{aws_token['sub']}",
+        ProvidedContexts=[
+            {
+                "ProviderArn": "arn:aws:iam::aws:contextProvider/IdentityCenter",
+                "ContextAssertion": aws_token["sts:identity_context"],
+            },
+        ],
+    )
+    credentials = {
+        "aws_access_key_id": response["Credentials"]["AccessKeyId"],
+        "aws_secret_access_key": response["Credentials"]["SecretAccessKey"],
+        "aws_session_token": response["Credentials"]["SessionToken"],
+    }
+    return credentials
