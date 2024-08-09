@@ -2,7 +2,7 @@ from django.conf import settings
 
 import boto3
 import structlog
-from botocore.credentials import RefreshableCredentials
+from botocore import credentials
 from botocore.session import get_session
 
 log = structlog.getLogger(__name__)
@@ -10,14 +10,26 @@ log = structlog.getLogger(__name__)
 TTL = 1500
 
 
-class AWSCredentials:
-    def __init__(self, assume_role_name=None, region_name=None, profile_name=None) -> None:
+class BotoSession:
+    def __init__(self, assume_role_name=None, profile_name=None, region_name=None):
         self.assume_role_name = assume_role_name or settings.DEFAULT_ROLE_ARN
         self.region_name = region_name or settings.AWS_DEFAULT_REGION
         self.profile_name = profile_name
 
-    def get_sts_credentials(self):
-        log.info("Getting AWS credentials using STS")
+    def refreshable_credentials(self):
+        log.info("Loading AWS credentials")
+        if not self.assume_role_name:
+            # boto3 refreshes the credentials automatically if no role is assumed
+            return self.get_default_credentials()
+
+        return credentials.RefreshableCredentials.create_from_metadata(
+            metadata=self.get_sts_credentials(),
+            refresh_using=self.get_sts_credentials,
+            method="sts-assume-role",
+        )
+
+    def get_sts_credentials(self) -> dict:
+        log.info("Getting credentials using STS")
         boto3_ini_session = boto3.Session(region_name=self.region_name)
         sts = boto3_ini_session.client("sts")
         response = sts.assume_role(
@@ -32,55 +44,75 @@ class AWSCredentials:
             "expiry_time": response["Credentials"]["Expiration"].isoformat(),
         }
 
-    def get_default_credentials(self):
-        log.info("Using default AWS credentials")
+    def get_default_credentials(self) -> credentials.Credentials:
+        log.info("Getting credentials using default boto3 method")
         boto3_ini_session = boto3.Session(
             region_name=self.region_name, profile_name=self.profile_name
         )
         return boto3_ini_session.get_credentials()
 
-    def refreshable_credentials(self):
-        log.info("Refreshing AWS credentials")
-        if not self.assume_role_name:
-            return self.get_default_credentials()
+    def get_boto3_session(self) -> boto3.Session:
+        log.info("Creating a new boto3 session")
+        botocore_session = get_session()
+        botocore_session.set_config_variable("region", self.region_name)
+        botocore_session._credentials = self.refreshable_credentials()
+        return boto3.Session(botocore_session=botocore_session)
 
-        return RefreshableCredentials.create_from_metadata(
-            metadata=self.get_sts_credentials(),
-            refresh_using=self.get_sts_credentials,
-            method="sts-assume-role",
-        )
+
+class SingletonMeta(type):
+    _instances: dict = {}
+
+    def __call__(cls, *args, **kwargs):
+        """
+        Possible changes to the value of the `__init__` argument do not affect
+        the returned instance.
+        """
+        if cls in cls._instances:
+            return cls._instances[cls]
+
+        instance = super().__call__(*args, **kwargs)
+        cls._instances[cls] = instance
+        return instance
+
+
+class AWSCredentialSessionSet(metaclass=SingletonMeta):
+    def __init__(self):
+        self.credential_sessions = {}
+
+    def get_or_create_session(
+        self,
+        profile_name: str | None = None,
+        assume_role_name: str | None = None,
+        region_name: str | None = None,
+    ) -> boto3.Session:
+        credential_session_key = "{}_{}_{}".format(profile_name, assume_role_name, region_name)
+        if credential_session_key in self.credential_sessions:
+            log.info(f"Returning existing session for {credential_session_key}")
+            return self.credential_sessions[credential_session_key]
+
+        log.warn(f"(for monitoring purpose) Initialising session ({credential_session_key})")
+        self.credential_sessions[credential_session_key] = BotoSession(
+            region_name=region_name,
+            profile_name=profile_name,
+            assume_role_name=assume_role_name,
+        ).get_boto3_session()
+        return self.credential_sessions[credential_session_key]
 
 
 class AWSService:
-    _boto3_session = None
-    _credentials = None
-
     def __init__(self, assume_role_name=None, profile_name=None, region_name=None):
         self.assume_role_name = assume_role_name or settings.DEFAULT_ROLE_ARN
         self.profile_name = profile_name
         self.region_name = region_name or settings.AWS_DEFAULT_REGION
 
     @property
-    def credentials(self):
-        if self._credentials is not None:
-            return self._credentials
-
-        self._credentials = AWSCredentials(
-            assume_role_name=self.assume_role_name,
-            region_name=self.region_name,
-            profile_name=self.profile_name,
-        ).refreshable_credentials()
-
-        return self._credentials
+    def credential_session_set(self) -> AWSCredentialSessionSet:
+        return AWSCredentialSessionSet()
 
     @property
-    def boto3_session(self):
-        if self._boto3_session is not None:
-            return self._boto3_session
-
-        botocore_session = get_session()
-        botocore_session.set_config_variable("region", self.region_name)
-        botocore_session._credentials = self.credentials
-        self._boto3_session = boto3.Session(botocore_session=botocore_session)
-
-        return self._boto3_session
+    def boto3_session(self) -> boto3.Session:
+        return self.credential_session_set.get_or_create_session(
+            profile_name=self.profile_name,
+            assume_role_name=self.assume_role_name,
+            region_name=self.region_name,
+        )
