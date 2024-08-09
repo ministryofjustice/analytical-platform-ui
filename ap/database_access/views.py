@@ -1,6 +1,5 @@
 from typing import Any
 
-from django.conf import settings
 from django.views.generic import DetailView, TemplateView
 
 from ap import aws
@@ -22,10 +21,8 @@ class DatabaseDetailView(OIDCLoginRequiredMixin, DetailView):
     context_object_name = "database"
 
     def get_object(self):
-        response = aws.GlueService().client.get_tables(
-            CatalogId=settings.GLUE_CATALOG_ID, DatabaseName=self.kwargs["database_name"]
-        )
-        return {"name": self.kwargs["database_name"], "tables": response["TableList"]}
+        tables = aws.GlueService().get_table_list(database_name=self.kwargs["database_name"])
+        return {"name": self.kwargs["database_name"], "tables": tables}
 
 
 class TableDetailView(OIDCLoginRequiredMixin, DetailView):
@@ -33,14 +30,12 @@ class TableDetailView(OIDCLoginRequiredMixin, DetailView):
     context_object_name = "table"
 
     def get_object(self):
-        response = aws.GlueService().client.get_table(
-            CatalogId=settings.GLUE_CATALOG_ID,
-            DatabaseName=self.kwargs["database_name"],
-            Name=self.kwargs["table_name"],
+        table = aws.GlueService().get_table_detail(
+            database_name=self.kwargs["database_name"], table_name=self.kwargs["table_name"]
         )
         return {
             "name": self.kwargs["table_name"],
-            "is_registered_with_lake_formation": response["Table"]["IsRegisteredWithLakeFormation"],
+            "is_registered_with_lake_formation": table.get("IsRegisteredWithLakeFormation"),
         }
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
