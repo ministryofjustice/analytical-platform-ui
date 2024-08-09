@@ -1,6 +1,8 @@
 from django.conf import settings
 
 import boto3
+import botocore
+import sentry_sdk
 
 from . import session
 
@@ -28,3 +30,15 @@ class AWSService:
     @property
     def client(self):
         return self.boto3_session.client(self.aws_service_name)
+
+    def _request(self, method_name, **kwargs):
+        """
+        Make a request to the AWS service client. Handles exceptions and logs them to Sentry.
+        """
+        try:
+            return getattr(self.client, method_name)(**kwargs)
+        except botocore.exceptions.ClientError as e:
+            if settings.DEBUG:
+                raise e
+            sentry_sdk.capture_exception(e)
+            return None
