@@ -3,13 +3,11 @@ from django.conf import settings
 import botocore
 import sentry_sdk
 
-from ap import aws
+from . import base
 
 
-class QuicksightService(aws.AWSService):
-    @property
-    def client(self):
-        return self.boto3_session.client("quicksight")
+class QuicksightService(base.AWSService):
+    aws_service_name = "quicksight"
 
     def get_embed_url(self, user):
         try:
