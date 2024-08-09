@@ -11,8 +11,7 @@ TTL = 1500
 
 
 class BotoSession:
-    def __init__(self, session_name, assume_role_name=None, profile_name=None, region_name=None):
-        self.session_name = session_name
+    def __init__(self, assume_role_name=None, profile_name=None, region_name=None):
         self.assume_role_name = assume_role_name or settings.DEFAULT_ROLE_ARN
         self.region_name = region_name or settings.AWS_DEFAULT_REGION
         self.profile_name = profile_name
@@ -35,7 +34,7 @@ class BotoSession:
         sts = boto3_ini_session.client("sts")
         response = sts.assume_role(
             RoleArn=self.assume_role_name,
-            RoleSessionName=f"ap-ui-{self.session_name}",
+            RoleSessionName=f"analytical-platform-ui-{settings.ENV}",
             DurationSeconds=TTL,
         )
         return {
@@ -82,7 +81,6 @@ class AWSCredentialSessionSet(metaclass=SingletonMeta):
 
     def get_or_create_session(
         self,
-        session_name: str,
         profile_name: str | None = None,
         assume_role_name: str | None = None,
         region_name: str | None = None,
@@ -94,7 +92,6 @@ class AWSCredentialSessionSet(metaclass=SingletonMeta):
 
         log.warn(f"(for monitoring purpose) Initialising session ({credential_session_key})")
         self.credential_sessions[credential_session_key] = BotoSession(
-            session_name=session_name,
             region_name=region_name,
             profile_name=profile_name,
             assume_role_name=assume_role_name,

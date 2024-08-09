@@ -2,10 +2,12 @@ from django.conf import settings
 
 import boto3
 
-from ap.aws import session
+from . import session
 
 
 class AWSService:
+    aws_service_name: str = ""
+
     def __init__(self, assume_role_name=None, profile_name=None, region_name=None):
         self.assume_role_name = assume_role_name or settings.DEFAULT_ROLE_ARN
         self.profile_name = profile_name
@@ -21,9 +23,8 @@ class AWSService:
             profile_name=self.profile_name,
             assume_role_name=self.assume_role_name,
             region_name=self.region_name,
-            session_name=self.__class__.__name__,
         )
 
     @property
-    def name(self):
-        return self.__class__.__name__
+    def client(self):
+        return self.boto3_session.client(self.aws_service_name)
