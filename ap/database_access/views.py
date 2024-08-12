@@ -4,7 +4,6 @@ from django.views.generic import DetailView, TemplateView
 
 from ap import aws
 from ap.auth.views.mixins import OIDCLoginRequiredMixin
-from ap.database_access.models.access import TableAccess
 
 
 class DatabaseListView(OIDCLoginRequiredMixin, TemplateView):
@@ -40,9 +39,4 @@ class TableDetailView(OIDCLoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context["access_queryset"] = TableAccess.objects.filter(
-            database_access__user=self.request.user,
-            database_access__database_name=self.kwargs["database_name"],
-            table_name=self.kwargs["table_name"],
-        ).select_related("database_access")
         return context
