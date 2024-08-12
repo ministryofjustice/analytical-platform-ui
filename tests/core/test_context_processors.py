@@ -13,8 +13,13 @@ class TestContextProcessors:
         return request
 
     def test_nav_items(self, request_obj):
-        home = {"name": "Home", "url": "/", "active": True}
-        assert nav_items(request=request_obj) == {"nav_items": [home]}
+        expected = [
+            {"name": "Home", "url": "/", "active": True},
+            # {"name": "Home", "url": "/", "active": True},
+            {"name": "QuickSight", "url": reverse("quicksight:index"), "active": False},
+            {"name": "Database access", "url": reverse("database_access:list"), "active": False},
+        ]
+        assert nav_items(request=request_obj) == {"nav_items": expected}
 
     def test_header_context(self, request_obj):
         expected_nav_items = [

@@ -7,7 +7,7 @@ def nav_items(request):
             {"name": "Home", "url": "/", "active": request.get_full_path() == "/"},
             {
                 "name": "QuickSight",
-                "url": "/quicksight",
+                "url": reverse("quicksight:index"),
                 "active": request.get_full_path() == "/quicksight/",
             },
             {

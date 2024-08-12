@@ -20,7 +20,7 @@
   </table>
 
   {% if table.is_registered_with_lake_formation %}
-    <h2 class="govuk-heading-l">User Access</h1>
+    <h2 class="govuk-heading-l">User Access</h2>
 
     {% if access_queryset %}
     <table class="govuk-table">
@@ -47,6 +47,7 @@
           </td>
         </tr>
         {% endfor %}
+      </tbody>
     </table>
     {% else %}
       <p class="govuk-body">No users have access to this table.</p>

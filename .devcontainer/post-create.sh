@@ -19,7 +19,6 @@ make build-static
 # Run migrations
 python manage.py migrate
 
-
 # create aws and kube configs
 aws-sso config-profiles --force
 
