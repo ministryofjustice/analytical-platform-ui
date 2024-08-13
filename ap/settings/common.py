@@ -65,7 +65,9 @@ INSTALLED_APPS = [
     # First party project defined apps
     "ap.auth",
     "ap.core",
+    "ap.database_access",
     "ap.users",
+    "ap.quicksight",
 ]
 
 MIDDLEWARE = [
@@ -245,6 +247,7 @@ AUTHLIB_OAUTH_CLIENTS = {
             "response_type": "code",
             "token_endpoint_auth_method": "none",
             "code_challenge_method": AZURE_CODE_CHALLENGE_METHOD,
+            "prompt": "login",
         },
     },
 }
@@ -304,3 +307,20 @@ structlog.configure(
     wrapper_class=structlog.stdlib.BoundLogger,
     cache_logger_on_first_use=True,
 )
+
+COMPUTE_ACCOUNT_ID = os.environ.get("COMPUTE_ACCOUNT_ID")
+
+GLUE_CATALOG_ID = os.environ.get("GLUE_CATALOG_ID")
+
+# the arn for the oidc app in the management account
+IDENTITY_CENTRE_OIDC_ARN = os.environ.get("IDENTITY_CENTRE_OIDC_ARN")
+# role to assume when requesting temporary credentials with the users Identity Center context
+IAM_BEARER_ROLE_ARN = os.environ.get("IAM_BEARER_ROLE_ARN")
+COMPUTE_ACCOUNT_ID = os.environ.get("COMPUTE_ACCOUNT_ID")
+
+QUICKSIGHT_DOMAINS = os.environ.get("QUICKSIGHT_DOMAINS", "").split(",")
+
+# should not be required when using a service role e.g. in dev/prod
+DEFAULT_STS_ROLE_TO_ASSUME = os.environ.get("DEFAULT_STS_ROLE_TO_ASSUME", None)
+
+AWS_DEFAULT_REGION = os.environ.get("AWS_DEFAULT_REGION", "eu-west-2")

@@ -51,7 +51,7 @@ class OIDCAuthenticationView(View):
     def get(self, request):
         try:
             token = oauth.azure.authorize_access_token(request)
-            request.session["token"] = token
+            request.session["entra_access_token"] = token
             oidc_auth = OIDCSubAuthenticationBackend(token)
             user = oidc_auth.create_or_update_user()
             if not user:
@@ -60,6 +60,8 @@ class OIDCAuthenticationView(View):
                 self._login_success(request, user, token)
                 return redirect("/")
         except OAuthError as error:
+            if settings.DEBUG:
+                raise error
             sentry_sdk.capture_exception(error)
             return self._login_failure()
 
@@ -89,7 +91,7 @@ class LogoutView(OIDCLogoutView):
 class LoginFail(TemplateView):
     template_name = "login-fail.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["environment"] = settings.ENV
-        return context
+    def get(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return redirect("/")
+        return super().get(request, *args, **kwargs)

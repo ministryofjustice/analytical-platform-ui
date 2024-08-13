@@ -2,10 +2,8 @@ from django.http import HttpResponse
 from django.views import View
 from django.views.generic import TemplateView
 
-from ap.auth.views.mixins import OIDCLoginRequiredMixin
 
-
-class IndexView(OIDCLoginRequiredMixin, TemplateView):
+class IndexView(TemplateView):
     template_name = "home.html"
 
 
