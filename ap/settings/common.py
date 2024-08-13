@@ -229,6 +229,7 @@ AUTH_USER_MODEL = "users.User"
 
 # -- OIDC Settings
 AZURE_CLIENT_ID = os.environ.get("AZURE_CLIENT_ID")
+AZURE_CLIENT_SECRET = os.environ.get("AZURE_CLIENT_SECRET")
 AZURE_RP_SCOPES = "openid email profile Group.ReadWrite.All"
 AZURE_RENEW_ID_TOKEN_EXPIRY_SECONDS = os.environ.get("AZURE_RENEW_ID_TOKEN_EXPIRY_SECONDS", 60 * 60)
 AZURE_TENANT_ID = os.environ.get("AZURE_TENANT_ID")
@@ -241,11 +242,12 @@ AZURE_CODE_CHALLENGE_METHOD = os.environ.get("AZURE_CODE_CHALLENGE_METHOD", "S25
 AUTHLIB_OAUTH_CLIENTS = {
     "azure": {
         "client_id": AZURE_CLIENT_ID,
+        "client_secret": AZURE_CLIENT_SECRET,
         "server_metadata_url": AZURE_OP_CONF_URL,
         "client_kwargs": {
             "scope": AZURE_RP_SCOPES,
             "response_type": "code",
-            "token_endpoint_auth_method": "none",
+            "token_endpoint_auth_method": "client_secret_post",
             "code_challenge_method": AZURE_CODE_CHALLENGE_METHOD,
             "prompt": "login",
         },

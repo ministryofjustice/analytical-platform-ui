@@ -60,6 +60,9 @@ class OIDCAuthenticationView(View):
                 self._login_success(request, user, token)
                 return redirect("/")
         except OAuthError as error:
+            if settings.DEBUG:
+                raise error
+
             sentry_sdk.capture_exception(error)
             return self._login_failure()
 
