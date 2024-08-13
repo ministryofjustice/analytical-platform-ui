@@ -17,6 +17,13 @@ If you are using a workspace with multiple applications, search for ```Dev Conta
 ### Environment Variables
 There is an example environment file stored on 1Password named ```Analytical Platform UI Env```. Paste the contents into a new file called ```.env``` in the root of the project.
 
+If you have the 1password CLI installed on your local machine, you use the following command to copy the file:
+```
+op document get --vault "Analytical Platform" "Analytical Platform UI .env" --out-file .env
+```
+
+For installation instructions for the 1password CLI see [here](https://developer.1password.com/docs/cli/get-started/).
+
 ### Running Development Server
 To run the server, you will need to use aws-sso cli. To find the correct profile, run ```aws-sso list``` in the terminal. This will provide you with a link to sign in via SSO. Once signed in, a list of profiles will be displayed. You are looking for the profile name linked to the ```analytical-platform-compute-development``` AccountAlias.
 
