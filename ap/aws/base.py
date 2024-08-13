@@ -11,7 +11,7 @@ class AWSService:
     aws_service_name: str = ""
 
     def __init__(self, assume_role_name=None, profile_name=None, region_name=None):
-        self.assume_role_name = assume_role_name or settings.DEFAULT_ROLE_ARN
+        self.assume_role_name = assume_role_name
         self.profile_name = profile_name
         self.region_name = region_name or settings.AWS_DEFAULT_REGION
 

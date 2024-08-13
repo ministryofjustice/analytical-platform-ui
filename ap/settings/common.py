@@ -320,6 +320,7 @@ COMPUTE_ACCOUNT_ID = os.environ.get("COMPUTE_ACCOUNT_ID")
 
 QUICKSIGHT_DOMAINS = os.environ.get("QUICKSIGHT_DOMAINS", "").split(",")
 
-DEFAULT_ROLE_ARN = os.environ.get("DEFAULT_ROLE_ARN", None)
+# should not be required when using a service role e.g. in dev/prod
+DEFAULT_STS_ROLE_TO_ASSUME = os.environ.get("DEFAULT_STS_ROLE_TO_ASSUME", None)
 
 AWS_DEFAULT_REGION = os.environ.get("AWS_DEFAULT_REGION", "eu-west-2")

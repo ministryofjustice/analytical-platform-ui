@@ -3,7 +3,8 @@
 
 {% block content %}
     <div class="govuk-width-container">
-        <h1 class="govuk-heading-xl">Your session expired</h1>
+        <h1 class="govuk-heading-xl">Something went wrong</h1>
+        <p class="govuk-body">Your session may have expired. Please try again.</p>
         <a class="govuk-button govuk-button--start" href="{% url 'login' %}">Sign in</a>
     </div>
 {% endblock %}

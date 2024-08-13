@@ -12,7 +12,10 @@ TTL = 1500
 
 class BotoSession:
     def __init__(self, assume_role_name=None, profile_name=None, region_name=None):
-        self.assume_role_name = assume_role_name or settings.DEFAULT_ROLE_ARN
+        self.assume_role_name = assume_role_name
+        if self.assume_role_name is None and settings.DEFAULT_STS_ROLE_TO_ASSUME is not None:
+            self.assume_role_name = settings.DEFAULT_STS_ROLE_TO_ASSUME
+
         self.region_name = region_name or settings.AWS_DEFAULT_REGION
         self.profile_name = profile_name
 
@@ -30,7 +33,7 @@ class BotoSession:
 
     def get_sts_credentials(self) -> dict:
         log.info("Getting credentials using STS")
-        boto3_ini_session = boto3.Session(region_name=self.region_name)
+        boto3_ini_session = boto3.Session(region_name=settings.AWS_DEFAULT_REGION)
         sts = boto3_ini_session.client("sts")
         response = sts.assume_role(
             RoleArn=self.assume_role_name,
