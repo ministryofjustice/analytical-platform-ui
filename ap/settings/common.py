@@ -247,6 +247,7 @@ AUTHLIB_OAUTH_CLIENTS = {
             "response_type": "code",
             "token_endpoint_auth_method": "none",
             "code_challenge_method": AZURE_CODE_CHALLENGE_METHOD,
+            "prompt": "login",
         },
     },
 }
