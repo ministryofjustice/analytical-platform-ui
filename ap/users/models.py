@@ -30,8 +30,11 @@ class User(AbstractUser):
         )
 
     @property
-    def first_name(self):
-        return self.name.split(",")[-1]
+    def display_first_name(self):
+        if self.first_name:
+            return self.first_name.title()
+
+        return self.name.split(",")[-1].title()
 
     def save(self, *args, **kwargs):
         return super().save(*args, **kwargs)
