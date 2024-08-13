@@ -4,22 +4,29 @@
 
 {% block content %}
 
-    <div class="govuk-width-container">
-        <h1 class="govuk-heading-xl">Analytical Platform</h1>
-        <h2 class="govuk-heading-l">Welcome {{ user.first_name|title }}</h1>
-        <p class="govuk-body">The Analytical Platform provides users with a place to store, ingest and consume data.</p>
-    </div>
+    {% if not request.user.is_authenticated %}
+        <div class="govuk-width-container">
+            <h1 class="govuk-heading-xl">Analytical Platform Dashboard</h1>
+            <p class="govuk-body">The Analytical Platform provides users with a place to store, ingest, consume and visualise data.</p>
+            <a class="govuk-button govuk-button--start" href="{% url 'login' %}">Sign in</a>
+        </div>
+    {% else %}
+        <div class="govuk-width-container">
+            <h2 class="govuk-heading-l">Welcome {{ user.display_first_name }}</h1>
+            <p class="govuk-body">The Analytical Platform provides users with a place to store, ingest, consume and visualise data.</p>
+        </div>
 
-    <div class="govuk-width-container">
-        <h2 class="govuk-heading-l">Tools and services</h2>
-        <ul class="govuk-list">
-            <li>
-                <a href="{% url 'quicksight:index' %}">Visualise data with QuickSight</a>
-            </li>
-            <li>
-                <a href="{% url 'database_access:list' %}">Database access</a>
-            </li>
-        </ul>
-    </div>
+        <div class="govuk-width-container">
+            <h2 class="govuk-heading-l">Tools and services</h2>
+            <ul class="govuk-list">
+                <li>
+                    <a href="{% url 'quicksight:index' %}">Visualise data with QuickSight</a>
+                </li>
+                <li>
+                    <a href="{% url 'database_access:list' %}">Database access</a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
 
 {% endblock %}
