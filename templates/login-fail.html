@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login failed</title>
-</head>
-<body>
-    <h1>Login refused, your session was expired, please re-login</h1>
-    <a href="/login/">login</a>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="govuk-width-container">
+        <h1 class="govuk-heading-xl">Your session expired</h1>
+        <a class="govuk-button govuk-button--start" href="{% url 'login' %}">Sign in</a>
+    </div>
+{% endblock %}

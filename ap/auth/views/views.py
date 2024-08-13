@@ -89,7 +89,7 @@ class LogoutView(OIDCLogoutView):
 class LoginFail(TemplateView):
     template_name = "login-fail.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["environment"] = settings.ENV
-        return context
+    def get(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            return redirect("/")
+        return super().get(request, *args, **kwargs)

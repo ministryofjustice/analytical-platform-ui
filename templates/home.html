@@ -4,23 +4,22 @@
 
 {% block content %}
 
-{% if user.is_authenticated %}
-<pre>
-{{ user.email }}
-{{ user.name }}
-{{ user.user_id }}
-{{ request.session.aws_token.sub }}
-</pre>
+    <div class="govuk-width-container">
+        <h1 class="govuk-heading-xl">Analytical Platform</h1>
+        <h2 class="govuk-heading-l">Welcome {{ user.first_name|title }}</h1>
+        <p class="govuk-body">The Analytical Platform provides users with a place to store, ingest and consume data.</p>
+    </div>
 
-<h1 class="govuk-heading-xl">User list</h1>
-{% for user in users %}
-    <li>{{ user.name }}: {{ user.nickname }}, {{ user.email }} </li>
-{% endfor %}
-<hr>
-<a href="{% url 'logout' %}">logout</a>
-<br/>
-{% else %}
-<a href="{% url 'login' %}">login</a>
-{% endif %}
+    <div class="govuk-width-container">
+        <h2 class="govuk-heading-l">Tools and services</h2>
+        <ul class="govuk-list">
+            <li>
+                <a href="{% url 'quicksight:index' %}">Visualise data with QuickSight</a>
+            </li>
+            <li>
+                <a href="{% url 'database_access:list' %}">Database access</a>
+            </li>
+        </ul>
+    </div>
 
 {% endblock %}

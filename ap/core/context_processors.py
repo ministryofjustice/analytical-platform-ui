@@ -2,6 +2,9 @@ from django.urls import reverse
 
 
 def nav_items(request):
+    if not request.user.is_authenticated:
+        return {"nav_items": []}
+
     return {
         "nav_items": [
             {"name": "Home", "url": "/", "active": request.get_full_path() == "/"},
@@ -24,7 +27,7 @@ def header_context(request):
     return {
         "header_nav_items": [
             {
-                "name": request.user.name if is_logged_in else "",
+                "name": request.user.email if is_logged_in else "",
                 "url": "",
             },
             {
