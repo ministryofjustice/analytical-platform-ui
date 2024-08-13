@@ -22,7 +22,7 @@ class TestContextProcessors:
 
     def test_header_context(self, request_obj):
         expected_nav_items = [
-            {"name": request_obj.user.name, "url": ""},
+            {"name": request_obj.user.email, "url": ""},
             {"name": "Sign out", "url": reverse("logout")},
         ]
 
