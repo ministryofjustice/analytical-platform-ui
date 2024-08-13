@@ -29,5 +29,9 @@ class User(AbstractUser):
             f"arn:aws:quicksight:eu-west-2:{settings.COMPUTE_ACCOUNT_ID}:user/default/{self.email}"
         )
 
+    @property
+    def first_name(self):
+        return self.name.split(",")[-1]
+
     def save(self, *args, **kwargs):
         return super().save(*args, **kwargs)
