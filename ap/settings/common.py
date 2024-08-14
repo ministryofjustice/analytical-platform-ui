@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from os.path import abspath, dirname, join
 from pathlib import Path
+from socket import gaierror, gethostbyname, gethostname
 from typing import Any, Dict
 
 import structlog
@@ -209,6 +210,11 @@ LOGOUT_REDIRECT_URL = "/"
 
 # Whitelist values for the HTTP Host header, to prevent certain attacks
 ALLOWED_HOSTS = [host for host in os.environ.get("ALLOWED_HOSTS", "").split() if host]
+
+try:
+    ALLOWED_HOSTS.append(gethostbyname(gethostname()))
+except gaierror:
+    pass
 
 # -- HTTP headers
 # Sets the X-Content-Type-Options: nosniff header
