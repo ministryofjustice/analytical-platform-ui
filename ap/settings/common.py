@@ -207,10 +207,10 @@ LOGIN_URL = "login"
 
 LOGOUT_REDIRECT_URL = "/"
 
-ALLOWED_HOSTS: list = []
-
 # Whitelist values for the HTTP Host header, to prevent certain attacks
 ALLOWED_HOSTS = [host for host in os.environ.get("ALLOWED_HOSTS", "").split() if host]
+
+QUICKSIGHT_DOMAINS = [f"https://{host}" for host in ALLOWED_HOSTS] or ["http://localhost:8000"]
 
 # -- HTTP headers
 # Sets the X-Content-Type-Options: nosniff header
