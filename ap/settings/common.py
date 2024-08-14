@@ -210,8 +210,6 @@ LOGOUT_REDIRECT_URL = "/"
 # Whitelist values for the HTTP Host header, to prevent certain attacks
 ALLOWED_HOSTS = [host for host in os.environ.get("ALLOWED_HOSTS", "").split() if host]
 
-QUICKSIGHT_DOMAINS = [f"https://{host}" for host in ALLOWED_HOSTS] or ["http://localhost:8000"]
-
 # -- HTTP headers
 # Sets the X-Content-Type-Options: nosniff header
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -315,7 +313,7 @@ IDENTITY_CENTRE_OIDC_ARN = os.environ.get("IDENTITY_CENTRE_OIDC_ARN")
 # role to assume when requesting temporary credentials with the users Identity Center context
 IAM_BEARER_ROLE_ARN = os.environ.get("IAM_BEARER_ROLE_ARN")
 
-QUICKSIGHT_DOMAINS = os.environ.get("QUICKSIGHT_DOMAINS", "").split(",")
+QUICKSIGHT_DOMAINS = [f"https://{host}" for host in ALLOWED_HOSTS] or ["http://localhost:8000"]
 
 # should not be required when using a service role e.g. in dev/prod
 DEFAULT_STS_ROLE_TO_ASSUME = os.environ.get("DEFAULT_STS_ROLE_TO_ASSUME", None)
