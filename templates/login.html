@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="govuk-width-container">
+        <h1 class="govuk-heading-xl">Analytical Platform Dashboard</h1>
+        <p class="govuk-body">The Analytical Platform provides users with a place to store, ingest, consume and visualise data.</p>
+        <a class="govuk-button govuk-button--start" href="{% url 'login' %}">Sign in</a>
+    </div>
+
+{% endblock %}
