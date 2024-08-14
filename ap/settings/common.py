@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from os.path import abspath, dirname, join
 from pathlib import Path
+from socket import gaierror, gethostbyname, gethostname
 from typing import Any, Dict
 
 import structlog
@@ -210,6 +211,15 @@ LOGOUT_REDIRECT_URL = "/"
 # Whitelist values for the HTTP Host header, to prevent certain attacks
 ALLOWED_HOSTS = [host for host in os.environ.get("ALLOWED_HOSTS", "").split() if host]
 
+# set this before adding the IP address below
+# TODO We may be able to set this in terraform instead, we should check this
+QUICKSIGHT_DOMAINS = [f"https://{host}" for host in ALLOWED_HOSTS] or ["http://localhost:8000"]
+
+try:
+    ALLOWED_HOSTS.append(gethostbyname(gethostname()))
+except gaierror:
+    pass
+
 # -- HTTP headers
 # Sets the X-Content-Type-Options: nosniff header
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -312,8 +322,6 @@ GLUE_CATALOG_ID = os.environ.get("GLUE_CATALOG_ID")
 IDENTITY_CENTRE_OIDC_ARN = os.environ.get("IDENTITY_CENTRE_OIDC_ARN")
 # role to assume when requesting temporary credentials with the users Identity Center context
 IAM_BEARER_ROLE_ARN = os.environ.get("IAM_BEARER_ROLE_ARN")
-
-QUICKSIGHT_DOMAINS = [f"https://{host}" for host in ALLOWED_HOSTS] or ["http://localhost:8000"]
 
 # should not be required when using a service role e.g. in dev/prod
 DEFAULT_STS_ROLE_TO_ASSUME = os.environ.get("DEFAULT_STS_ROLE_TO_ASSUME", None)
