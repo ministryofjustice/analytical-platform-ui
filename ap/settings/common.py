@@ -319,6 +319,7 @@ IDENTITY_CENTRE_OIDC_ARN = os.environ.get("IDENTITY_CENTRE_OIDC_ARN")
 # role to assume when requesting temporary credentials with the users Identity Center context
 IAM_BEARER_ROLE_ARN = os.environ.get("IAM_BEARER_ROLE_ARN")
 
+# TODO we may be able to set this in terraform instead
 QUICKSIGHT_DOMAINS = [f"https://{host}" for host in ALLOWED_HOSTS] or ["http://localhost:8000"]
 
 # should not be required when using a service role e.g. in dev/prod
