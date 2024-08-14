@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -22,12 +21,6 @@ class User(AbstractUser):
     @staticmethod
     def construct_username(name):
         return sanitize_dns_label(name)
-
-    @property
-    def quicksight_arn(self):
-        return (
-            f"arn:aws:quicksight:eu-west-2:{settings.COMPUTE_ACCOUNT_ID}:user/default/{self.email}"
-        )
 
     @property
     def display_first_name(self):
