@@ -40,7 +40,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "please_change_me")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", True)
 
 # Application definition
 
@@ -213,7 +213,10 @@ ALLOWED_HOSTS = [host for host in os.environ.get("ALLOWED_HOSTS", "").split() if
 
 # set this before adding the IP address below
 # TODO We may be able to set this in terraform instead, we should check this
-QUICKSIGHT_DOMAINS = [f"https://{host}" for host in ALLOWED_HOSTS] or ["http://localhost:8000"]
+QUICKSIGHT_DOMAINS = []
+for host in ALLOWED_HOSTS:
+    prefix = "*" if host.startswith(".") else ""
+    QUICKSIGHT_DOMAINS.append(f"https://{prefix}{host}")
 
 try:
     ALLOWED_HOSTS.append(gethostbyname(gethostname()))
