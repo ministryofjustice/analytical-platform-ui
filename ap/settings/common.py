@@ -40,7 +40,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "please_change_me")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", True)
 
 # Application definition
 
