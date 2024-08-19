@@ -54,7 +54,7 @@ app:
     - name: DJANGO_SETTINGS_MODULE
       value: ap.settings
     - name: ALLOWED_HOSTS
-      value: "*"
+      value: ".analytical-platform.service.justice.gov.uk"
     - name: DB_USER
       valueFrom:
         secretKeyRef:
@@ -101,19 +101,21 @@ app:
   # These are removed while healthcheck endpoint is worked on
   livenessProbe:
     httpGet:
-      path: /healthcheck
+      path: /healthcheck/
       port: app
+      initialDelaySeconds: 30
   readinessProbe:
     httpGet:
-      path: /healthcheck
+      path: /healthcheck/
       port: app
+      initialDelaySeconds: 30
   resources:
     limits:
-      cpu: 200m
-      memory: 256Mi
+      cpu: 500m
+      memory: 1Gi
     requests:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 250m
+      memory: 512Mi
   securityContext:
     capabilities:
       drop:

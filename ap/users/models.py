@@ -18,12 +18,16 @@ class User(AbstractUser):
     def __repr__(self):
         return f"<User: {self.username} ({self.user_id})>"
 
-    def get_full_name(self):
-        return self.name
-
     @staticmethod
     def construct_username(name):
         return sanitize_dns_label(name)
+
+    @property
+    def display_first_name(self):
+        if self.first_name:
+            return self.first_name.title()
+
+        return self.name.split(",")[-1].title()
 
     def save(self, *args, **kwargs):
         return super().save(*args, **kwargs)

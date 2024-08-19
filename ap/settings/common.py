@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 import os
 from os.path import abspath, dirname, join
 from pathlib import Path
+from socket import gaierror, gethostbyname, gethostname
 from typing import Any, Dict
 
 import structlog
@@ -39,7 +40,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "please_change_me")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", True)
 
 # Application definition
 
@@ -65,7 +66,9 @@ INSTALLED_APPS = [
     # First party project defined apps
     "ap.auth",
     "ap.core",
+    "ap.database_access",
     "ap.users",
+    "ap.quicksight",
 ]
 
 MIDDLEWARE = [
@@ -205,10 +208,20 @@ LOGIN_URL = "login"
 
 LOGOUT_REDIRECT_URL = "/"
 
-ALLOWED_HOSTS: list = []
-
 # Whitelist values for the HTTP Host header, to prevent certain attacks
 ALLOWED_HOSTS = [host for host in os.environ.get("ALLOWED_HOSTS", "").split() if host]
+
+# set this before adding the IP address below
+# TODO We may be able to set this in terraform instead, we should check this
+QUICKSIGHT_DOMAINS = []
+for host in ALLOWED_HOSTS:
+    prefix = "*" if host.startswith(".") else ""
+    QUICKSIGHT_DOMAINS.append(f"https://{prefix}{host}")
+
+try:
+    ALLOWED_HOSTS.append(gethostbyname(gethostname()))
+except gaierror:
+    pass
 
 # -- HTTP headers
 # Sets the X-Content-Type-Options: nosniff header
@@ -304,3 +317,16 @@ structlog.configure(
     wrapper_class=structlog.stdlib.BoundLogger,
     cache_logger_on_first_use=True,
 )
+
+
+GLUE_CATALOG_ID = os.environ.get("GLUE_CATALOG_ID")
+
+# the arn for the oidc app in the management account
+IDENTITY_CENTRE_OIDC_ARN = os.environ.get("IDENTITY_CENTRE_OIDC_ARN")
+# role to assume when requesting temporary credentials with the users Identity Center context
+IAM_BEARER_ROLE_ARN = os.environ.get("IAM_BEARER_ROLE_ARN")
+
+# should not be required when using a service role e.g. in dev/prod
+DEFAULT_STS_ROLE_TO_ASSUME = os.environ.get("DEFAULT_STS_ROLE_TO_ASSUME", None)
+
+AWS_DEFAULT_REGION = os.environ.get("AWS_DEFAULT_REGION", "eu-west-2")

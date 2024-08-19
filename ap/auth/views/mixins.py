@@ -12,5 +12,6 @@ class OIDCLoginRequiredMixin(LoginRequiredMixin):
         if not request.user.is_authenticated:
             return redirect(reverse("login"))
         if OIDCSessionValidator(request).expired():
+            request.session["next"] = request.get_full_path()
             return redirect(reverse("login"))
         return super().dispatch(request, *args, **kwargs)
