@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-{% extends "govuk_frontend_django/base.html" %}
-{% load static govuk_frontend_django %}
+{% extends "govuk-frontend.html" %}
+{% load static %}
 
 {% block title %}Analytical Platform{% endblock title %}
 
@@ -11,6 +11,10 @@
 {% block header %}
     {% include "includes/header.html" %}
 {% endblock header %}
+
+{% block footer %}
+    {% include "includes/footer.html" %}
+{% endblock footer %}
 
 
 {% block body_end %}
