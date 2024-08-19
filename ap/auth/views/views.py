@@ -58,7 +58,8 @@ class OIDCAuthenticationView(View):
                 return self._login_failure()
             else:
                 self._login_success(request, user, token)
-                return redirect("/")
+                redirect_url = request.session.pop("next", "/")
+                return redirect(redirect_url)
         except OAuthError as error:
             if settings.DEBUG:
                 raise error
