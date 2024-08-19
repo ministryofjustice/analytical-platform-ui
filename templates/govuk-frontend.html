@@ -41,8 +41,8 @@
 
   {% block main %}
     {% block beforeContent %}{% endblock %}
-    <div class="govuk-width-container">
-      <main class="govuk-main-wrapper" id="main-content" role="main">
+    <div class="{% block container_class_names %}govuk-width-container{% endblock container_class_names %}">
+      <main class="{% block main_class_names %}govuk-main-wrapper{% endblock main_class_names %}" id="main-content" role="main">
         {% block content %}{% endblock %}
       </main>
     </div>
