@@ -37,12 +37,22 @@ class TestGlueService:
         [
             ("resource", "", "", "", "arn:aws:glue:eu-west-2:123456789012:resource"),
             ("resource", "service", "", "", "arn:aws:service:eu-west-2:123456789012:resource"),
-            ("resource", "service", "region_name", "", "arn:aws:service:region_name:123456789012:resource"),
-            ("resource", "service", "region_name", "account_id", "arn:aws:service:region_name:account_id:resource"),
+            (
+                "resource",
+                "service",
+                "region_name",
+                "",
+                "arn:aws:service:region_name:123456789012:resource",
+            ),
+            (
+                "resource",
+                "service",
+                "region_name",
+                "account_id",
+                "arn:aws:service:region_name:account_id:resource",
+            ),
         ],
     )
     def test_arn(self, glue_service, resource, service, region_name, account_id, expected_arn):
         arn = glue_service.arn(resource, service, region_name, account_id)
         assert arn == expected_arn
-
-

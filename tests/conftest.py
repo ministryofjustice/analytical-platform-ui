@@ -1,7 +1,7 @@
 import pytest
 from model_bakery import baker
 
-from tests.fixtures.aws_fixtures import *
+from tests.fixtures.aws_fixtures import *  # noqa
 
 
 @pytest.fixture

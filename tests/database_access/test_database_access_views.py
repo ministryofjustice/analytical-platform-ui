@@ -1,10 +1,11 @@
 # Third-party
-import pytest
 from django.urls import reverse
+
+import pytest
 
 
 def database_list(client):
-        return client.get(reverse("database_access:list"))
+    return client.get(reverse("database_access:list"))
 
 
 def list_tables(client):
@@ -17,7 +18,7 @@ def table_detail(client):
     return client.get(reverse("database_access:table_detail", kwargs=kwargs))
 
 
-class TestDatabaseAccessViews():
+class TestDatabaseAccessViews:
 
     @pytest.mark.parametrize(
         "view,user,expected_status",

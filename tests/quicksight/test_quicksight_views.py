@@ -1,14 +1,14 @@
 # Third-party
-import pytest
-from unittest.mock import patch
 from django.urls import reverse
+
+import pytest
 
 
 def index(client):
     return client.get(reverse("quicksight:index"))
 
 
-class TestQuicksightViews():
+class TestQuicksightViews:
 
     @pytest.mark.parametrize(
         "view,user,expected_status",

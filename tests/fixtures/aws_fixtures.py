@@ -1,12 +1,10 @@
 # Standard library
-import json
 import os
 
 # Third-party
 import boto3
 import moto
 import pytest
-from django.conf import settings
 
 
 @pytest.fixture(autouse=True)
@@ -67,7 +65,6 @@ def glue(aws_creds):
             },
         ]
 
-
         glue = boto3.client("glue")
 
         for db_name in databases:
@@ -75,9 +72,9 @@ def glue(aws_creds):
 
         for table in tables:
             glue.create_table(
-            DatabaseName=table["database"],
-            TableInput=table["table_input"],
-        )
+                DatabaseName=table["database"],
+                TableInput=table["table_input"],
+            )
 
         yield glue
 
