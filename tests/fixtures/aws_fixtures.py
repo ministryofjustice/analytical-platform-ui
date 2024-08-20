@@ -26,10 +26,7 @@ def iam(aws_creds):
 @pytest.fixture(autouse=True)
 def sts(aws_creds):
     with moto.mock_aws():
-        sts = boto3.client("sts")
-        sts
-
-        yield sts
+        yield boto3.client("sts")
 
 
 @pytest.fixture(autouse=True)
