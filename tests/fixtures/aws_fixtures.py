@@ -24,7 +24,7 @@ def iam(aws_creds):
 @pytest.fixture(autouse=True)
 def sts(aws_creds):
     with moto.mock_aws():
-        yield boto3.client("sts")
+        yield boto3.client("sts", region_name="eu-west-2")
 
 
 @pytest.fixture(autouse=True)
@@ -65,7 +65,7 @@ def glue(aws_creds):
             },
         ]
 
-        glue = boto3.client("glue")
+        glue = boto3.client("glue", region_name="eu-west-2")
 
         for db_name in databases:
             glue.create_database(DatabaseInput={"Name": db_name})
@@ -82,7 +82,7 @@ def glue(aws_creds):
 @pytest.fixture(autouse=True)
 def lake_formation(aws_creds):
     with moto.mock_aws():
-        lake_formation = boto3.client("lakeformation")
+        lake_formation = boto3.client("lakeformation", region_name="eu-west-2")
         lake_formation.grant_permissions(
             Permissions=["DESCRIBE"],
             Principal={
