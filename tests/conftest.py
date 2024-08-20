@@ -1,6 +1,8 @@
 import pytest
 from model_bakery import baker
 
+from tests.fixtures.aws_fixtures import *
+
 
 @pytest.fixture
 def superuser(db):

@@ -34,13 +34,13 @@
 <body class="govuk-template__body govuk-frontend-supported">
   <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
   <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
-  {% block bodyStart %}{% endblock %}
+  {% block body_start %}{% endblock %}
 
   {% block header %}
   {% endblock %}
 
   {% block main %}
-    {% block beforeContent %}{% endblock %}
+    {% block before_content %}{% endblock %}
     <div class="{% block container_class_names %}govuk-width-container{% endblock container_class_names %}">
       <main class="{% block main_class_names %}govuk-main-wrapper{% endblock main_class_names %}" id="main-content" role="main">
         {% block content %}{% endblock %}

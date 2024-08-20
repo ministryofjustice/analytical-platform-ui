@@ -9,7 +9,6 @@ LOGGING["loggers"]["django_structlog"]["level"] = LOG_LEVEL  # noqa: F405
 LOGGING["loggers"]["ap"]["level"] = LOG_LEVEL  # noqa: F405
 
 AUTHENTICATION_BACKENDS = [
-    "rules.permissions.ObjectPermissionBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
 
@@ -34,3 +33,6 @@ AUTHLIB_OAUTH_CLIENTS = {
         },
     },
 }
+
+GLUE_CATALOG_ID = "123456789012"
+DEFAULT_STS_ROLE_TO_ASSUME="arn:aws:iam::123456789012:role/test-role-12345"
