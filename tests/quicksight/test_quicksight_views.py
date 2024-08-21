@@ -18,7 +18,7 @@ class TestQuicksightViews:
             (index, "other_user", False, 302),
         ],
     )
-    def test_permission(self, client, users, view, user, logged_in, expected_status):
+    def test_access(self, client, users, view, user, logged_in, expected_status):
         if logged_in:
             client.force_login(users[user])
         response = view(client)

@@ -32,6 +32,7 @@ jobs:
         # yamllint disable-line rule:line-length
         uses: super-linter/super-linter/slim@b4515bd4ad9d0aa4681960e053916ab991bdbe96 # v6.8.0
         env:
+          FILTER_REGEX_EXCLUDE: tests/.* # Exclude tests from linting
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: main
           VALIDATE_ALL_CODEBASE: false
