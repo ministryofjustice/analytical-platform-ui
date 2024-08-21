@@ -1,3 +1,5 @@
+from django.conf import settings
+
 import pytest
 
 from ap.aws.glue import GlueService
@@ -7,7 +9,7 @@ class TestGlueService:
 
     @pytest.fixture
     def glue_service(self):
-        yield GlueService("123456789012")
+        yield GlueService(settings.GLUE_CATALOG_ID)
 
     def test_get_database_list(self, glue_service):
         databases = glue_service.get_database_list()

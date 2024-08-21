@@ -11,13 +11,15 @@ def index(client):
 class TestQuicksightViews:
 
     @pytest.mark.parametrize(
-        "view,user,expected_status",
+        "view,user,logged_in,expected_status",
         [
-            (index, "superuser", 200),
-            (index, "normal_user", 200),
+            (index, "superuser", True, 200),
+            (index, "normal_user", True, 200),
+            (index, "other_user", False, 302),
         ],
     )
-    def test_permission(self, client, users, view, user, expected_status):
-        client.force_login(users[user])
+    def test_permission(self, client, users, view, user, logged_in, expected_status):
+        if logged_in:
+            client.force_login(users[user])
         response = view(client)
         assert response.status_code == expected_status

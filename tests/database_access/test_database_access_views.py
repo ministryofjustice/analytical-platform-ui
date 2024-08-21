@@ -21,17 +21,21 @@ def table_detail(client):
 class TestDatabaseAccessViews:
 
     @pytest.mark.parametrize(
-        "view,user,expected_status",
+        "view,user,logged_in,expected_status",
         [
-            (database_list, "superuser", 200),
-            (database_list, "normal_user", 200),
-            (list_tables, "superuser", 200),
-            (list_tables, "normal_user", 200),
-            (table_detail, "superuser", 200),
-            (table_detail, "normal_user", 200),
+            (database_list, "superuser", True, 200),
+            (database_list, "normal_user", True, 200),
+            (database_list, "other_user", False, 302),
+            (list_tables, "superuser", True, 200),
+            (list_tables, "normal_user", True, 200),
+            (list_tables, "other_user", False, 302),
+            (table_detail, "superuser", True, 200),
+            (table_detail, "normal_user", True, 200),
+            (table_detail, "other_user", False, 302),
         ],
     )
-    def test_permission(self, client, users, view, user, expected_status):
-        client.force_login(users[user])
+    def test_permission(self, client, users, view, user, logged_in, expected_status):
+        if logged_in:
+            client.force_login(users[user])
         response = view(client)
         assert response.status_code == expected_status
