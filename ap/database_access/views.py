@@ -1,5 +1,6 @@
 from typing import Any
 
+from django.http import Http404
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, TemplateView
 
@@ -25,6 +26,8 @@ class DatabaseDetailView(OIDCLoginRequiredMixin, DetailView):
 
     def get_object(self):
         tables = aws.GlueService().get_table_list(database_name=self.kwargs["database_name"])
+        if not tables:
+            raise Http404("Database not found")
         return {"name": self.kwargs["database_name"], "tables": tables}
 
 
@@ -36,6 +39,8 @@ class TableDetailView(OIDCLoginRequiredMixin, DetailView):
         table = aws.GlueService().get_table_detail(
             database_name=self.kwargs["database_name"], table_name=self.kwargs["table_name"]
         )
+        if not table:
+            raise Http404("Table not found")
         return {
             "name": self.kwargs["table_name"],
             "is_registered_with_lake_formation": table.get("IsRegisteredWithLakeFormation"),

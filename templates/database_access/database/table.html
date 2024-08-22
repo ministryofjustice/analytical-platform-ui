@@ -6,55 +6,36 @@
 <span class="govuk-caption-xl">Table</span>
 <h1 class="govuk-heading-xl">{{ table.name }}</h1>
 
-{% if table %}
+<h2 class="govuk-heading-l">User Access</h2>
+
+  {% if access_queryset %}
   <table class="govuk-table">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header">Registered in Lake Formation</th>
+        <th scope="col" class="govuk-table__header">User</th>
+        <th class="govuk-table__header">Actions</th>
       </tr>
     </thead>
     <tbody class="govuk-table__body">
+      {% for table_access in access_queryset %}
       <tr class="govuk-table__row">
-        <td class="govuk-table__cell">{% if table.is_registered_with_lake_formation %}Yes{% else %}No{% endif %}</td>
+        <td class="govuk-table__cell">{{ table_access.database_access.user.email }}</td>
+        <td class="govuk-table__cell align-right no-wrap">
+            <a class="govuk-button">
+              Manage Permissions
+            </button>
+        </td>
       </tr>
+      {% endfor %}
     </tbody>
   </table>
-
-  {% if table.is_registered_with_lake_formation %}
-    <h2 class="govuk-heading-l">User Access</h2>
-
-    {% if access_queryset %}
-    <table class="govuk-table">
-      <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header">User</th>
-          <th class="govuk-table__header">Actions</th>
-        </tr>
-      </thead>
-      <tbody class="govuk-table__body">
-        {% for table_access in access_queryset %}
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">{{ table_access.database_access.user.email }}</td>
-          <td class="govuk-table__cell align-right no-wrap">
-              <a class="govuk-button">
-                Manage Permissions
-              </button>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% else %}
-      <p class="govuk-body">No users have access to this table.</p>
-    {% endif %}
-
-
-    <a class="govuk-button" href="{{ access_url }}"%}">
-      Grant User Permissions
-    </a>
+  {% else %}
+    <p class="govuk-body">No users have access to this table.</p>
   {% endif %}
-{% else %}
-  <p class="govuk-body">No table found.</p>
-{% endif %}
+
+
+  <a class="govuk-button" href="{{ access_url }}"%}">
+    Grant User Permissions
+  </a>
 
 {% endblock %}
