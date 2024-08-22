@@ -1,6 +1,6 @@
 from typing import Any
 
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 from django.urls import reverse
 from django.views.generic import CreateView, DetailView, TemplateView
 
@@ -65,10 +65,46 @@ class GrantTableAccessView(OIDCLoginRequiredMixin, CreateView):
     template_name = "database_access/database/grant_access.html"
     form_class = forms.AccessForm
 
+    def get_object(self):
+        table = aws.GlueService().get_table_detail(
+            database_name=self.kwargs["database_name"], table_name=self.kwargs["table_name"]
+        )
+        if not table:
+            raise Http404("Table not found")
+
+        return {
+            "name": self.kwargs["table_name"],
+            "database_name": self.kwargs["database_name"],
+        }
+
+    def get_grantable_access(self) -> Any:
+        if self.request.user.is_superuser:
+            return models.AccessLevel.objects.filter(entity=models.AccessLevel.Entity.TABLE)
+
+        user_access = (
+            models.TableAccess.objects.filter(
+                name=self.kwargs["table_name"],
+                database_access__name=self.kwargs["database_name"],
+                database_access__user=self.request.user,
+                access_levels__grantable=True,
+            )
+            .prefetch_related("access_levels")
+            .first()
+        )
+
+        if not user_access:
+            raise HttpResponseForbidden("User does not have grantable access to any tables")
+
+        return user_access.access_levels.all()
+
     def get_form_kwargs(self) -> dict[str, Any]:
         form_kwargs = super().get_form_kwargs()
         form_kwargs.update(
-            {"table_name": self.kwargs["table_name"], "database_name": self.kwargs["database_name"]}
+            {
+                "table_name": self.kwargs["table_name"],
+                "database_name": self.kwargs["database_name"],
+                "grantable_access": self.get_grantable_access(),
+            }
         )
         return form_kwargs
 
@@ -86,3 +122,8 @@ class GrantTableAccessView(OIDCLoginRequiredMixin, CreateView):
                 "table_name": self.kwargs["table_name"],
             },
         )
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["table"] = self.get_object()
+        return context

@@ -1,10 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+    <span class="govuk-caption-xl">Table</span>
+    <h1 class="govuk-heading-xl">{{ table.name }}</h1>
+
     <h2>Grant Access</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Grant Access</button>
     </form>
+
 {% endblock %}

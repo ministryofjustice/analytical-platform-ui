@@ -7,11 +7,14 @@ from . import models
 
 class AccessForm(forms.ModelForm):
     user = forms.ModelChoiceField(queryset=User.objects.all())
+    access_levels = forms.ModelMultipleChoiceField(queryset=None)
 
     def __init__(self, *args, **kwargs):
         self.table_name = kwargs.pop("table_name")
         self.database_name = kwargs.pop("database_name")
+        self.grantable_access = kwargs.pop("grantable_access")
         super().__init__(*args, **kwargs)
+        self.fields["access_levels"].queryset = self.grantable_access
 
     class Meta:
         model = models.TableAccess
