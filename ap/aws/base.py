@@ -60,7 +60,7 @@ class AWSService:
         try:
             return getattr(self.client, method_name)(**kwargs)
         except botocore.exceptions.ClientError as e:
-            # if settings.DEBUG:
-            #     raise e
+            if settings.DEBUG:
+                raise e
             sentry_sdk.capture_exception(e)
             return None

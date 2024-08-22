@@ -2,7 +2,7 @@ from typing import Any
 
 from django.http import Http404, HttpResponseForbidden
 from django.urls import reverse
-from django.views.generic import CreateView, DetailView, TemplateView, UpdateView
+from django.views.generic import CreateView, DetailView, TemplateView
 
 from ap import aws
 from ap.auth.views.mixins import OIDCLoginRequiredMixin
@@ -61,62 +61,41 @@ class TableDetailView(OIDCLoginRequiredMixin, DetailView):
         return context
 
 
-class GrantTableAccessView(OIDCLoginRequiredMixin, UpdateView):
+class GrantTableAccessView(OIDCLoginRequiredMixin, CreateView):
     template_name = "database_access/database/grant_access.html"
     form_class = forms.AccessForm
-    context_object_name = "table"
-    model = models.TableAccess
 
     def get_object(self):
-
         table = aws.GlueService().get_table_detail(
             database_name=self.kwargs["database_name"], table_name=self.kwargs["table_name"]
         )
         if not table:
             raise Http404("Table not found")
 
-        if self.request.user.is_superuser:
-            return models.TableAccess(name=self.kwargs["table_name"])
-
-        object = models.TableAccess.objects.filter(
-            name=self.kwargs["table_name"],
-            database_access__name=self.kwargs["database_name"],
-            database_access__user=self.request.user,
-            access_levels__grantable=True,
-        ).prefetch_related("access_levels").first()
-        if not object:
-            raise Http404()
-        return object
-        # table = aws.GlueService().get_table_detail(
-        #     database_name=self.kwargs["database_name"], table_name=self.kwargs["table_name"]
-        # )
-        # if not table:
-        #     raise Http404("Table not found")
-
-        # return {
-        #     "name": self.kwargs["table_name"],
-        #     "database_name": self.kwargs["database_name"],
-        # }
+        return {
+            "name": self.kwargs["table_name"],
+            "database_name": self.kwargs["database_name"],
+        }
 
     def get_grantable_access(self) -> Any:
         if self.request.user.is_superuser:
             return models.AccessLevel.objects.filter(entity=models.AccessLevel.Entity.TABLE)
 
-        # user_access = (
-        #     models.TableAccess.objects.filter(
-        #         name=self.kwargs["table_name"],
-        #         database_access__name=self.kwargs["database_name"],
-        #         database_access__user=self.request.user,
-        #         access_levels__grantable=True,
-        #     )
-        #     .prefetch_related("access_levels")
-        #     .first()
-        # )
+        user_access = (
+            models.TableAccess.objects.filter(
+                name=self.kwargs["table_name"],
+                database_access__name=self.kwargs["database_name"],
+                database_access__user=self.request.user,
+                access_levels__grantable=True,
+            )
+            .prefetch_related("access_levels")
+            .first()
+        )
 
-        # if not user_access:
-        #     raise HttpResponseForbidden("User does not have grantable access to any tables")
+        if not user_access:
+            raise HttpResponseForbidden("User does not have grantable access to any tables")
 
-        return self.object.access_levels.all()
+        return user_access.access_levels.all()
 
     def get_form_kwargs(self) -> dict[str, Any]:
         form_kwargs = super().get_form_kwargs()
@@ -144,7 +123,7 @@ class GrantTableAccessView(OIDCLoginRequiredMixin, UpdateView):
             },
         )
 
-    # def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-    #     context = super().get_context_data(**kwargs)
-    #     context["table"] = self.get_object()
-    #     return context
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["table"] = self.get_object()
+        return context
