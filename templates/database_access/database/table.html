@@ -28,9 +28,7 @@
       <thead class="govuk-table__head">
         <tr class="govuk-table__row">
           <th scope="col" class="govuk-table__header">User</th>
-          <th class="govuk-table__header">
-            <span class="govuk-visually-hidden">Actions</span>
-          </th>
+          <th class="govuk-table__header">Actions</th>
         </tr>
       </thead>
       <tbody class="govuk-table__body">
@@ -38,13 +36,9 @@
         <tr class="govuk-table__row">
           <td class="govuk-table__cell">{{ table_access.database_access.user.email }}</td>
           <td class="govuk-table__cell align-right no-wrap">
-            <form action="" method="post">
-              {{ csrf_input }}
-              <button class="govuk-button cpanel-button--destructive js-confirm"
-                      data-confirm-message="Are you sure you want to revoke access for user?">
-                Revoke Access
+              <a class="govuk-button">
+                Manage Permissions
               </button>
-            </form>
           </td>
         </tr>
         {% endfor %}
@@ -55,7 +49,7 @@
     {% endif %}
 
 
-    <a class="govuk-button" href="">
+    <a class="govuk-button" href="{{ access_url }}"%}">
       Grant User Permissions
     </a>
   {% endif %}

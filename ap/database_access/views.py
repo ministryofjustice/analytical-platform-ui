@@ -1,9 +1,13 @@
 from typing import Any
 
-from django.views.generic import DetailView, TemplateView
+from django.urls import reverse
+from django.views.generic import CreateView, DetailView, TemplateView
 
 from ap import aws
 from ap.auth.views.mixins import OIDCLoginRequiredMixin
+from ap.database_access import forms
+
+from . import models
 
 
 class DatabaseListView(OIDCLoginRequiredMixin, TemplateView):
@@ -39,4 +43,41 @@ class TableDetailView(OIDCLoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
+        context["access_queryset"] = models.TableAccess.objects.select_related(
+            "database_access__user"
+        )
+        context["access_url"] = reverse(
+            "database_access:grant_table_access",
+            kwargs={
+                "database_name": self.kwargs["database_name"],
+                "table_name": self.kwargs["table_name"],
+            },
+        )
         return context
+
+
+class TableAccessView(OIDCLoginRequiredMixin, CreateView):
+    template_name = "database_access/database/grant_access.html"
+    form_class = forms.AccessForm
+
+    def get_form_kwargs(self) -> dict[str, Any]:
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs.update(
+            {"table_name": self.kwargs["table_name"], "database_name": self.kwargs["database_name"]}
+        )
+        return form_kwargs
+
+    def get_initial(self) -> dict[str, Any]:
+        data = super().get_initial()
+        data["name"] = self.kwargs["table_name"]
+        data["database_name"] = self.kwargs["database_name"]
+        return data
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "database_access:table_detail",
+            kwargs={
+                "database_name": self.kwargs["database_name"],
+                "table_name": self.kwargs["table_name"],
+            },
+        )

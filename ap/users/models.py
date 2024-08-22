@@ -18,6 +18,9 @@ class User(AbstractUser):
     def __repr__(self):
         return f"<User: {self.username} ({self.user_id})>"
 
+    def __str__(self) -> str:
+        return self.email
+
     @staticmethod
     def construct_username(name):
         return sanitize_dns_label(name)
