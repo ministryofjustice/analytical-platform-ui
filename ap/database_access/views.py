@@ -56,7 +56,7 @@ class TableDetailView(OIDCLoginRequiredMixin, DetailView):
         return context
 
 
-class TableAccessView(OIDCLoginRequiredMixin, CreateView):
+class GrantTableAccessView(OIDCLoginRequiredMixin, CreateView):
     template_name = "database_access/database/grant_access.html"
     form_class = forms.AccessForm
 

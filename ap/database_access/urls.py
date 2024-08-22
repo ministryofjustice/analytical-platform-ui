@@ -14,7 +14,7 @@ urlpatterns = [
     ),
     path(
         "<str:database_name>/<str:table_name>/grant-access/",
-        views.TableAccessView.as_view(),
+        views.GrantTableAccessView.as_view(),
         name="grant_table_access",
     ),
 ]
