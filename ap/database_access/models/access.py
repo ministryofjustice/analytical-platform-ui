@@ -61,12 +61,15 @@ class TableAccess(TimeStampedModel):
     class Meta:
         unique_together = ("database_access", "name")
 
-    def get_absolute_url(self):
+    def get_absolute_url(self, viewname: str = "database_access:manage_table_access"):
         return reverse(
-            "database_access:manage_table_access",
+            viewname=viewname,
             kwargs={
                 "database_name": self.database_access.name,
                 "table_name": self.name,
                 "pk": self.pk,
             },
         )
+
+    def get_absolute_revoke_url(self):
+        return self.get_absolute_url(viewname="database_access:revoke_table_access")

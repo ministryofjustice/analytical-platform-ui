@@ -22,4 +22,9 @@ urlpatterns = [
         views.ManageTableAccessView.as_view(),
         name="manage_table_access",
     ),
+    path(
+        "<str:database_name>/<str:table_name>/revoke-access/<int:pk>/",
+        views.RevokeTableAccessView.as_view(),
+        name="revoke_table_access",
+    ),
 ]

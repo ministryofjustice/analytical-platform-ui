@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <span class="govuk-caption-xl">Table</span>
+    <h1 class="govuk-heading-xl">{{ access.name }}</h1>
+
+    <h2>Revoke Access for {{ access.database_access.user }}</h2>
+    <form method="post">{% csrf_token %}
+        <p>Are you sure you want to proceed?</p>
+        {{ form }}
+        <button class="govuk-button" type="submit">Revoke Access</button>
+    </form>
+
+{% endblock %}

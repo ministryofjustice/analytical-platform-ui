@@ -1,8 +1,9 @@
 from typing import Any
 
-from django.http import Http404, HttpResponseForbidden
+from django.db.models.query import QuerySet
+from django.http import Http404
 from django.urls import reverse
-from django.views.generic import CreateView, DetailView, TemplateView, UpdateView
+from django.views.generic import CreateView, DeleteView, DetailView, TemplateView, UpdateView
 from django.views.generic.detail import SingleObjectMixin
 
 from ap import aws
@@ -79,7 +80,7 @@ class TableAccessMixin(SingleObjectMixin):
                 access_levels__grantable=True,
             )
         except models.TableAccess.DoesNotExist:
-            raise HttpResponseForbidden("User does not have grantable permissions for this table")
+            raise Http404()
 
         return models.AccessLevel.objects.filter(
             entity=models.AccessLevel.Entity.TABLE,
@@ -136,9 +137,13 @@ class GrantTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, CreateView)
 
 
 class ManageTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, UpdateView):
-    template_name = "database_access/database/grant_access.html"
+    template_name = "database_access/database/manage_access.html"
     model = models.TableAccess
     form_class = forms.ManageAccessForm
+    context_object_name = "access"
+
+    def get_queryset(self) -> QuerySet[Any]:
+        return super().get_queryset().select_related("database_access__user")
 
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
@@ -148,3 +153,12 @@ class ManageTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, UpdateView
             }
         )
         return form_kwargs
+
+
+class RevokeTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, DeleteView):
+    template_name = "database_access/database/revoke_access.html"
+    model = models.TableAccess
+    context_object_name = "access"
+
+    def get_queryset(self) -> QuerySet[Any]:
+        return super().get_queryset().select_related("database_access__user")
