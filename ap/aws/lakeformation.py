@@ -17,6 +17,7 @@ class LakeFormationService(AWSService):
         catalog_id: str = "",
         resource_catalog_id: str = "",
         region_name: str = "",
+        permissions: list | None = None,
     ):
         client = self.get_client(region_name)
         return client.grant_permissions(
@@ -28,7 +29,7 @@ class LakeFormationService(AWSService):
                     "CatalogId": resource_catalog_id or self.catalog_id,
                 },
             },
-            Permissions=["SELECT"],
+            Permissions=permissions or ["SELECT"],
             CatalogId=catalog_id or self.catalog_id,
         )
 
@@ -47,6 +48,7 @@ class LakeFormationService(AWSService):
         region_name: str = "",
         catalog_id: str = "",
         resource_catalog_id: str = "",
+        permissions: list | None = None,
     ):
         """
         Grant the principal permissions to the database.
@@ -60,6 +62,55 @@ class LakeFormationService(AWSService):
                     "CatalogId": resource_catalog_id or self.catalog_id,
                 },
             },
-            Permissions=["DESCRIBE"],
+            Permissions=permissions or ["DESCRIBE"],
+            CatalogId=catalog_id or self.catalog_id,
+        )
+
+    def revoke_table_permissions(
+        self,
+        database: str,
+        table: str,
+        principal: str,
+        catalog_id: str = "",
+        resource_catalog_id: str = "",
+        region_name: str = "",
+        permissions: list | None = None,
+    ):
+        client = self.get_client(region_name)
+        return client.revoke_permissions(
+            Principal={"DataLakePrincipalIdentifier": principal},
+            Resource={
+                "Table": {
+                    "DatabaseName": database,
+                    "Name": table,
+                    "CatalogId": resource_catalog_id or self.catalog_id,
+                },
+            },
+            Permissions=permissions or ["SELECT"],
+            CatalogId=catalog_id or self.catalog_id,
+        )
+
+    def revoke_database_permissions(
+        self,
+        database: str,
+        principal: str,
+        region_name: str = "",
+        catalog_id: str = "",
+        resource_catalog_id: str = "",
+        permissions: list | None = None,
+    ):
+        """
+        Grant the principal permissions to the database.
+        """
+        client = self.get_client(region_name)
+        return client.revoke_permissions(
+            Principal={"DataLakePrincipalIdentifier": principal},
+            Resource={
+                "Database": {
+                    "Name": database,
+                    "CatalogId": resource_catalog_id or self.catalog_id,
+                },
+            },
+            Permissions=permissions or ["DESCRIBE"],
             CatalogId=catalog_id or self.catalog_id,
         )
