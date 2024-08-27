@@ -41,3 +41,16 @@ class AccessForm(forms.ModelForm):
         instance.save()
         self.save_m2m()
         return instance
+
+
+class ManageAccessForm(forms.ModelForm):
+    access_levels = forms.ModelMultipleChoiceField(queryset=None)
+
+    def __init__(self, *args, **kwargs):
+        self.grantable_access = kwargs.pop("grantable_access")
+        super().__init__(*args, **kwargs)
+        self.fields["access_levels"].queryset = self.grantable_access
+
+    class Meta:
+        model = models.TableAccess
+        fields = ["access_levels"]

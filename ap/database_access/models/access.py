@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from django_extensions.db.models import TimeStampedModel
 
@@ -59,3 +60,13 @@ class TableAccess(TimeStampedModel):
 
     class Meta:
         unique_together = ("database_access", "name")
+
+    def get_absolute_url(self):
+        return reverse(
+            "database_access:manage_table_access",
+            kwargs={
+                "database_name": self.database_access.name,
+                "table_name": self.name,
+                "pk": self.pk,
+            },
+        )
