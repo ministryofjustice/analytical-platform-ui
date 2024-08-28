@@ -9,11 +9,9 @@
 
     <form method="post">
         {% csrf_token %}
-        <div class="govuk-form-group {% if form.errors %}govuk-form-group--error{% endif %}">
-            {{ form.user.as_field_group }}
-            {{ form.access_levels }}
-            <button class="govuk-button">Grant Access</a>
-        </form>
-    </div>
+        {{ form.user.as_field_group }}
+        {{ form.access_levels.as_field_group }}
+        <button class="govuk-button">Grant Access</button>
+    </form>
 
 {% endblock %}

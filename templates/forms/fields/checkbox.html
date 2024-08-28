@@ -1,0 +1,24 @@
+<div class="govuk-form-group">
+    <fieldset class="govuk-fieldset" aria-describedby="{{ field.name }}-hint">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+      <h1 class="govuk-fieldset__heading">
+        {{ field.label}}
+      </h1>
+    </legend>
+    <div id="{{ field.name }}-hint" class="govuk-hint">
+      Select all that apply.
+      {{ field.html_name }}
+    </div>
+    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+
+        {% for value, display in field.field.choices %}
+            <div class="govuk-checkboxes__item">
+            <input class="govuk-checkboxes__input" id="id_{{ field.name }}_{{ forloop.counter }}" name="{{ field.name }}" type="checkbox" value="{{ value }}">
+            <label class="govuk-label govuk-checkboxes__label" for="id_{{ field.name }}_{{ forloop.counter }}">
+                {{ display }}
+            </label>
+            </div>
+        {% endfor %}
+    </div>
+  </fieldset>
+</div>

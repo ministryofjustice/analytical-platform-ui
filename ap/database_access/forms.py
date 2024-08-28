@@ -14,6 +14,7 @@ class AccessForm(forms.ModelForm):
     access_levels = forms.ModelMultipleChoiceField(
         queryset=None,
         widget=forms.CheckboxSelectMultiple,
+        template_name="forms/fields/checkbox.html",
     )
 
     def __init__(self, *args, **kwargs):
