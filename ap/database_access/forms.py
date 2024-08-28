@@ -9,6 +9,7 @@ class AccessForm(forms.ModelForm):
     user = forms.ModelChoiceField(
         queryset=User.objects.all(),
         label="Select a user to grant access to",
+        template_name="forms/fields/select.html",
     )
     access_levels = forms.ModelMultipleChoiceField(
         queryset=None,
@@ -26,17 +27,15 @@ class AccessForm(forms.ModelForm):
         model = models.TableAccess
         fields = ["access_levels"]
 
-    def clean(self):
-        cleaned_data = super().clean()
+    def clean_user(self):
+        user = self.cleaned_data.get("user")
         try:
-            self._meta.model.objects.get(
-                name=self.table_name, database_access__user=cleaned_data.get("user")
-            )
+            self._meta.model.objects.get(name=self.table_name, database_access__user=user)
             raise forms.ValidationError("Selected user already has access to this table.")
         except self._meta.model.DoesNotExist:
             pass
 
-        return cleaned_data
+        return user
 
     def save(self, commit=True):
         instance = super().save(commit=False)

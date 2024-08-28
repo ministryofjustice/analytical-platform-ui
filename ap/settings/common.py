@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     # Django sessions
     "django.contrib.sessions",
     # Django flash messages
+    "django.forms",
     "django.contrib.messages",
     # Django collect static files into a single location
     "django.contrib.staticfiles",
@@ -121,6 +122,7 @@ TEMPLATES = [
     },
 ]
 
+FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
 WSGI_APPLICATION = f"{PROJECT_NAME}.wsgi.application"
 
