@@ -1,6 +1,6 @@
 asgiref==3.8.1
 Authlib==1.3.1
-boto3==1.34.158
+boto3==1.35.8
 cfgv==3.4.0
 Django==5.1
 django-structlog==8.1.0
