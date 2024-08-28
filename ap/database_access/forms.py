@@ -6,8 +6,14 @@ from . import models
 
 
 class AccessForm(forms.ModelForm):
-    user = forms.ModelChoiceField(queryset=User.objects.all())
-    access_levels = forms.ModelMultipleChoiceField(queryset=None)
+    user = forms.ModelChoiceField(
+        queryset=User.objects.all(),
+        label="Select a user to grant access to",
+    )
+    access_levels = forms.ModelMultipleChoiceField(
+        queryset=None,
+        widget=forms.CheckboxSelectMultiple,
+    )
 
     def __init__(self, *args, **kwargs):
         self.table_name = kwargs.pop("table_name")
@@ -24,7 +30,7 @@ class AccessForm(forms.ModelForm):
         cleaned_data = super().clean()
         try:
             self._meta.model.objects.get(
-                name=self.table_name, database_access__user=cleaned_data["user"]
+                name=self.table_name, database_access__user=cleaned_data.get("user")
             )
             raise forms.ValidationError("Selected user already has access to this table.")
         except self._meta.model.DoesNotExist:

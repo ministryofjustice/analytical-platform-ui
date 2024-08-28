@@ -5,11 +5,19 @@
     <span class="govuk-caption-xl">Table</span>
     <h1 class="govuk-heading-xl">{{ table.name }}</h1>
 
-    <h2>Grant Access</h2>
+    <h2 class="govuk-heading-l">Grant Table Access</h2>
+
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Grant Access</button>
-    </form>
+        <div class="govuk-form-group {% if form.errors %}govuk-form-group--error{% endif %}">
+
+            {% include "includes/forms/label.html" with field=form.user %}
+            {% include "includes/forms/error.html" with field=form.user %}
+            {% include "includes/forms/widgets/select.html" with field=form.user choices=form.fields.user.choices %}
+
+            {{ form.access_levels }}
+            <button class="govuk-button">Grant Access</a>
+        </form>
+    </div>
 
 {% endblock %}
