@@ -59,8 +59,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Provides shell_plus, runserver_plus, etc
     "django_extensions",
-    # frontend component integration with govuk_frontend node-js package
-    "govuk_frontend_django",
     # Provide structured log service
     "django_structlog",
     # First party project defined apps
