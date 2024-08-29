@@ -123,6 +123,7 @@ class TableAccess(TimeStampedModel):
         # and tables have to be shared to the same region. If data starts to be shared from other
         # accounts/regions we will need to think of a more dynamic solution eg. check the catalog ID
         region_name = "eu-west-1"
+        # TODO need to add grantable permissions
         lake_formation.grant_table_permissions(
             # call glue API to get the name of the shared db. Alternatively we could infer it based
             # on what is implemented on the module that shares databases e.g. strip _rl if present

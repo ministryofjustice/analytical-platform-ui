@@ -15,6 +15,7 @@ class AccessForm(forms.ModelForm):
         queryset=None,
         widget=forms.CheckboxSelectMultiple,
         template_name="forms/fields/checkbox.html",
+        help_text="Select all that apply",
     )
 
     def __init__(self, *args, **kwargs):
@@ -50,7 +51,12 @@ class AccessForm(forms.ModelForm):
 
 
 class ManageAccessForm(forms.ModelForm):
-    access_levels = forms.ModelMultipleChoiceField(queryset=None)
+    access_levels = forms.ModelMultipleChoiceField(
+        queryset=None,
+        template_name="forms/fields/checkbox.html",
+        widget=forms.CheckboxSelectMultiple,
+        help_text="Select all that apply",
+    )
 
     def __init__(self, *args, **kwargs):
         self.grantable_access = kwargs.pop("grantable_access")
@@ -60,3 +66,6 @@ class ManageAccessForm(forms.ModelForm):
     class Meta:
         model = models.TableAccess
         fields = ["access_levels"]
+
+    def clean_access_levels(self):
+        raise forms.ValidationError("You cannot change access levels.")

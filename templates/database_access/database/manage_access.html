@@ -3,16 +3,15 @@
 {% block content %}
 
     <span class="govuk-caption-xl">Table</span>
-    <h1 class="govuk-heading-xl">{{ table.name }}</h1>
+    <h1 class="govuk-heading-xl">{{ access.name }}</h1>
 
-    <h2>Manage Access for {{ access.database_access.user }}</h2>
+    <h2 class="govuk-heading-m">Manage Access for {{ access.database_access.user }}</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form.access_levels.as_field_group }}
         <button class="govuk-button" type="submit">Grant Access</button>
     </form>
 
-    <p></p>
-    <a href="{{ access.get_absolute_revoke_url }}" class="govuk-button">Revoke access</a>
+    <a href="{{ access.get_absolute_revoke_url }}" class="govuk-button govuk-button--warning">Revoke access</a>
 
 {% endblock %}

@@ -2,14 +2,15 @@
     <label class="govuk-label" for="{{ field.id_for_label }}">
         {{ field.label }}
     </label>
-    {% if field.errors %}
-        <p id="{{ field.name }}-error" class="govuk-error-message">
-            {% for error in field.errors %}
-                <span class="govuk-visually-hidden">Error:</span> {{ error|escape }}
-            {% endfor %}
-        </p>
+    {% if field.help_text %}
+        <div id="{{field.name}}-hint" class="govuk-hint">
+            {{ field.help_text }}
+        </div>
     {% endif %}
-    <select class="govuk-select" id="{{ field.id_for_label }}" name="{{ field.name }}" required>
+    {% if field.errors %}
+        {% include "forms/includes/error.html" with field=field %}
+    {% endif %}
+    <select class="govuk-select" id="{{ field.id_for_label }}" name="{{ field.name }}" {% if field.field.required %} required{% endif %}>
         {% for value, display in field.field.choices %}
             <option value="{{ value }}">{{ display }}</option>
         {% endfor %}
