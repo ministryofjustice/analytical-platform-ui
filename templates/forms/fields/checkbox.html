@@ -16,7 +16,7 @@
     <div class="govuk-checkboxes" data-module="govuk-checkboxes">
         {% for value, display in field.field.choices %}
             <div class="govuk-checkboxes__item">
-            <input class="govuk-checkboxes__input" id="id_{{ field.name }}_{{ forloop.counter }}" name="{{ field.name }}" type="checkbox" value="{{ value }}"{% if value in field.value %} checked{% endif %}>
+            <input class="govuk-checkboxes__input" id="id_{{ field.name }}_{{ forloop.counter }}" name="{{ field.name }}" type="checkbox" value="{{ value }}" {% if value in field.value %}checked{% endif %}>
             <label class="govuk-label govuk-checkboxes__label" for="id_{{ field.name }}_{{ forloop.counter }}">
                 {{ display }}
             </label>
