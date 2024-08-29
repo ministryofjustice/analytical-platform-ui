@@ -66,6 +66,3 @@ class ManageAccessForm(forms.ModelForm):
     class Meta:
         model = models.TableAccess
         fields = ["access_levels"]
-
-    def clean_access_levels(self):
-        raise forms.ValidationError("You cannot change access levels.")
