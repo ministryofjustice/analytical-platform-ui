@@ -1,6 +1,6 @@
 from functools import cached_property
 
-from django.db import models
+from django.db import models, transaction
 from django.urls import reverse
 
 from django_extensions.db.models import TimeStampedModel
@@ -97,6 +97,14 @@ class TableAccess(TimeStampedModel):
             database_name=self.database_access.name, table_name=self.name
         )
 
+    @cached_property
+    def grantable_permissions(self):
+        return list(self.access_levels.filter(grantable=True).values_list("name", flat=True))
+
+    @cached_property
+    def non_grantable_permissions(self):
+        return list(self.access_levels.filter(grantable=False).values_list("name", flat=True))
+
     def get_absolute_url(self, viewname: str = "database_access:manage_table_access"):
         return reverse(
             viewname=viewname,
@@ -118,23 +126,27 @@ class TableAccess(TimeStampedModel):
             service="quicksight",
         )
 
-        # there is no good way to check the region of the source (shared) table, so for now assume
-        # that it will always be eu-west-1, as this is where data lives in the data-prod account,
-        # and tables have to be shared to the same region. If data starts to be shared from other
-        # accounts/regions we will need to think of a more dynamic solution eg. check the catalog ID
-        region_name = "eu-west-1"
-        # TODO need to add grantable permissions
-        lake_formation.grant_table_permissions(
-            # call glue API to get the name of the shared db. Alternatively we could infer it based
-            # on what is implemented on the module that shares databases e.g. strip _rl if present
-            database=self.table_details["DatabaseName"],
-            table=self.name,
-            principal=quicksight_user,
-            resource_catalog_id=self.table_details["CatalogId"],
-            region_name=region_name,
-        )
-
-        return super().save(**kwargs)
+        # if API call fails dont save the model
+        with transaction.atomic():
+            super().save(**kwargs)
+            # there is no good way to check the region of the source (shared) table, so for now
+            # assume that it will always be eu-west-1, as this is where data lives in the data-prod
+            # account, and tables have to be shared to the same region. If data starts to be shared
+            # from other accounts/regions we will need to think of a more dynamic solution eg. check
+            # the catalog ID
+            region_name = "eu-west-1"
+            lake_formation.grant_table_permissions(
+                # call glue API to get the name of the shared db. Alternatively we could infer it
+                # based on what is implemented on the module that shares databases e.g. strip
+                # _resource_link if present
+                database=self.table_details["DatabaseName"],
+                table=self.name,
+                principal=quicksight_user,
+                resource_catalog_id=self.table_details["CatalogId"],
+                region_name=region_name,
+                permissions=self.non_grantable_permissions,
+                permissions_with_grant_option=self.grantable_permissions,
+            )
 
     def delete(self, **kwargs):
         # update LF access

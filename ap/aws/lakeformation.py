@@ -18,6 +18,7 @@ class LakeFormationService(AWSService):
         resource_catalog_id: str = "",
         region_name: str = "",
         permissions: list | None = None,
+        permissions_with_grant_option: list | None = None,
     ):
         client = self.get_client(region_name)
         return client.grant_permissions(
@@ -31,6 +32,7 @@ class LakeFormationService(AWSService):
             },
             Permissions=permissions or ["SELECT"],
             CatalogId=catalog_id or self.catalog_id,
+            PermissionsWithGrantOption=permissions_with_grant_option or [],
         )
 
     def get_client(self, region_name: str = ""):
