@@ -37,8 +37,6 @@ class LakeFormationService(AWSService):
             },
             CatalogId=catalog_id or self.catalog_id,
             Permissions=permissions or [],
-            # TODO grantable permissions must also be in the standard permissions list, so need a
-            # solution for this
             PermissionsWithGrantOption=permissions_with_grant_option or [],
         )
 

@@ -1,8 +1,14 @@
 from django import forms
+from django.db import transaction
+
+import botocore
+import structlog
 
 from ap.users.models import User
 
 from . import models
+
+logger = structlog.get_logger(__name__)
 
 
 class AccessForm(forms.ModelForm):
@@ -39,12 +45,7 @@ class AccessForm(forms.ModelForm):
 
         return user
 
-    def clean(self):
-        cleaned_data = super().clean()
-        if not cleaned_data.get("access_levels"):
-            raise forms.ValidationError("You must select at least one access level.")
-        return cleaned_data
-
+    @transaction.atomic
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.name = self.table_name
@@ -73,14 +74,36 @@ class ManageAccessForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["access_levels"].queryset = self.grantable_access
 
+    def clean(self):
+        cleaned_data = super().clean()
+        access_levels = cleaned_data.get("access_levels")
+        grantable = access_levels.filter(grantable=True).values_list("name", flat=True)
+        if not grantable:
+            return cleaned_data
+
+        non_grantable = access_levels.filter(name__in=grantable, grantable=False)
+        if grantable.count() > non_grantable.count():
+            self.add_error(
+                "access_levels",
+                "All selected grantable permissions need to be a part of the selected non-grantable permissions.",  # noqa
+            )
+
+        return cleaned_data
+
     class Meta:
         model = models.TableAccess
         fields = ["access_levels"]
 
     def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.revoke_lakeformation_permissions()
-        instance.save()
-        self.save_m2m()
-        instance.grant_lakeformation_permissions()
-        return instance
+        try:
+            with transaction.atomic():
+                instance = super().save(commit=False)
+                instance.revoke_lakeformation_permissions()
+                instance.save()
+                self.save_m2m()
+                instance.grant_lakeformation_permissions()
+                return instance
+        except botocore.exceptions.ClientError as error:
+            logger.info("Updating permissions failed, restoring original permissions", error=error)
+            instance.grant_lakeformation_permissions()
+            raise error

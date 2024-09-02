@@ -99,6 +99,15 @@ class TableAccessMixin(SingleObjectMixin):
             },
         )
 
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        try:
+            return super().form_valid(form)
+        except botocore.exceptions.ClientError as error:
+            if error.response["Error"]["Code"] == "InvalidInputException":
+                form.add_error("access_levels", str(error))
+                return self.form_invalid(form)
+            raise error
+
 
 class GrantTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, CreateView):
     template_name = "database_access/database/grant_access.html"
@@ -156,15 +165,6 @@ class ManageTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, UpdateView
             }
         )
         return form_kwargs
-
-    def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        try:
-            return super().form_valid(form)
-        except botocore.exceptions.ClientError as error:
-            if error.response["Error"]["Code"] == "InvalidInputException":
-                form.add_error("access_levels", str(error))
-                return self.form_invalid(form)
-            raise error
 
 
 class RevokeTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, DeleteView):
