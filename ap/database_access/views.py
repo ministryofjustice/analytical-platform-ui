@@ -1,10 +1,13 @@
 from typing import Any
 
 from django.db.models.query import QuerySet
-from django.http import Http404
+from django.forms import BaseModelForm
+from django.http import Http404, HttpResponse
 from django.urls import reverse
 from django.views.generic import CreateView, DeleteView, DetailView, TemplateView, UpdateView
 from django.views.generic.detail import SingleObjectMixin
+
+import botocore
 
 from ap import aws
 from ap.auth.views.mixins import OIDCLoginRequiredMixin
@@ -153,6 +156,15 @@ class ManageTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, UpdateView
             }
         )
         return form_kwargs
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        try:
+            return super().form_valid(form)
+        except botocore.exceptions.ClientError as error:
+            if error.response["Error"]["Code"] == "InvalidInputException":
+                form.add_error("access_levels", str(error))
+                return self.form_invalid(form)
+            raise error
 
 
 class RevokeTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, DeleteView):

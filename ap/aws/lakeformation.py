@@ -1,4 +1,9 @@
+import sentry_sdk
+import structlog
+
 from ap.aws.base import AWSService
+
+logger = structlog.get_logger(__name__)
 
 
 class LakeFormationService(AWSService):
@@ -30,8 +35,10 @@ class LakeFormationService(AWSService):
                     "CatalogId": resource_catalog_id or self.catalog_id,
                 },
             },
-            Permissions=permissions or ["SELECT"],
             CatalogId=catalog_id or self.catalog_id,
+            Permissions=permissions or [],
+            # TODO grantable permissions must also be in the standard permissions list, so need a
+            # solution for this
             PermissionsWithGrantOption=permissions_with_grant_option or [],
         )
 
@@ -73,24 +80,30 @@ class LakeFormationService(AWSService):
         database: str,
         table: str,
         principal: str,
-        catalog_id: str = "",
         resource_catalog_id: str = "",
         region_name: str = "",
         permissions: list | None = None,
+        grantable_permissions: list | None = None,
     ):
         client = self.get_client(region_name)
-        return client.revoke_permissions(
-            Principal={"DataLakePrincipalIdentifier": principal},
-            Resource={
-                "Table": {
-                    "DatabaseName": database,
-                    "Name": table,
-                    "CatalogId": resource_catalog_id or self.catalog_id,
-                },
+        resource = {
+            "Table": {
+                "DatabaseName": database,
+                "Name": table,
+                "CatalogId": resource_catalog_id or self.catalog_id,
             },
-            Permissions=permissions or ["SELECT"],
-            CatalogId=catalog_id or self.catalog_id,
-        )
+        }
+        try:
+            return client.revoke_permissions(
+                Principal={"DataLakePrincipalIdentifier": principal},
+                Resource=resource,
+                Permissions=permissions or [],
+                PermissionsWithGrantOption=grantable_permissions or [],
+            )
+        except client.exceptions.InvalidInputException as error:
+            sentry_sdk.capture_exception(error)
+            logger.info(f"Error revoking permissions for {principal}", error=error)
+            raise error
 
     def revoke_database_permissions(
         self,
@@ -116,3 +129,79 @@ class LakeFormationService(AWSService):
             Permissions=permissions or ["DESCRIBE"],
             CatalogId=catalog_id or self.catalog_id,
         )
+
+    def create_lake_formation_opt_in(
+        self,
+        database: str,
+        principal: str,
+        table: str = "",
+        resource_catalog_id: str = "",
+        region_name: str = "",
+    ):
+        client = self.get_client(region_name or "eu-west-1")
+        if table:
+            resource = {
+                "Table": {
+                    "DatabaseName": database,
+                    "Name": table,
+                    "CatalogId": resource_catalog_id or self.catalog_id,
+                },
+            }
+        else:
+            resource = {
+                "Database": {
+                    "Name": database,
+                    "CatalogId": resource_catalog_id or self.catalog_id,
+                },
+            }
+
+        client.create_lake_formation_opt_in(
+            Principal={"DataLakePrincipalIdentifier": principal}, Resource=resource
+        )
+
+    def delete_lake_formation_opt_in(
+        self,
+        database: str,
+        principal: str,
+        table: str = "",
+        resource_catalog_id: str = "",
+        region_name: str = "",
+    ):
+        client = self.get_client(region_name or "eu-west-1")
+        if table:
+            resource = {
+                "Table": {
+                    "DatabaseName": database,
+                    "Name": table,
+                    "CatalogId": resource_catalog_id or self.catalog_id,
+                },
+            }
+        else:
+            resource = {
+                "Database": {
+                    "Name": database,
+                    "CatalogId": resource_catalog_id or self.catalog_id,
+                },
+            }
+
+        client.delete_lake_formation_opt_in(
+            Principal={"DataLakePrincipalIdentifier": principal}, Resource=resource
+        )
+
+    def list_permissions(self, principal, resource):
+        logger.info(f"Getting permissions for {principal} on {resource}")
+        client = self.get_client(region_name="eu-west-1")
+        response = client.list_permissions(
+            Principal={"DataLakePrincipalIdentifier": principal}, Resource=resource
+        )
+        permissions = response["PrincipalResourcePermissions"]
+
+        if not permissions:
+            return None
+
+        return {
+            "Permissions": response["PrincipalResourcePermissions"][0]["Permissions"],
+            "PermissionsWithGrantOption": response["PrincipalResourcePermissions"][0][
+                "PermissionsWithGrantOption"
+            ],
+        }
