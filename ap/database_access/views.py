@@ -80,15 +80,12 @@ class TableAccessMixin(SingleObjectMixin):
                 name=self.kwargs["table_name"],
                 database_access__name=self.kwargs["database_name"],
                 database_access__user=self.request.user,
-                access_levels__grantable=True,
+                grantable_permissions__isnull=False,
             )
         except models.TableAccess.DoesNotExist:
             raise Http404()
 
-        return models.AccessLevel.objects.filter(
-            entity=models.AccessLevel.Entity.TABLE,
-            name__in=table_access.access_levels.values_list("name", flat=True),
-        )
+        return table_access.grantable_permissions_set.values_list("name", flat=True)
 
     def get_success_url(self) -> str:
         return reverse(
@@ -104,7 +101,7 @@ class TableAccessMixin(SingleObjectMixin):
             return super().form_valid(form)
         except botocore.exceptions.ClientError as error:
             if error.response["Error"]["Code"] == "InvalidInputException":
-                form.add_error("access_levels", str(error))
+                form.add_error(None, str(error))
                 return self.form_invalid(form)
             raise error
 

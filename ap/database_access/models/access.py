@@ -36,9 +36,14 @@ class AccessLevel(models.Model):
 class DatabaseAccess(TimeStampedModel):
     user = models.ForeignKey("users.User", related_name="database_access", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    access_levels = models.ManyToManyField(
+    permissions = models.ManyToManyField(
         "AccessLevel",
-        related_name="database_access",
+        related_name="database_access_set",
+        limit_choices_to={"entity": AccessLevel.Entity.DATABASE},
+    )
+    grantable_permissions = models.ManyToManyField(
+        "AccessLevel",
+        related_name="grantable_database_access_set",
         limit_choices_to={"entity": AccessLevel.Entity.DATABASE},
     )
 
@@ -49,7 +54,7 @@ class DatabaseAccess(TimeStampedModel):
         create = self.pk is None
         super().save(*args, **kwargs)
         if create:
-            self.access_levels.add(
+            self.permissions.add(
                 AccessLevel.objects.get_or_create(
                     name="DESCRIBE", entity=AccessLevel.Entity.DATABASE, grantable=False
                 )[0]
@@ -110,9 +115,14 @@ class TableAccess(TimeStampedModel):
         on_delete=models.CASCADE,
     )
     name = models.CharField(max_length=255)
-    access_levels = models.ManyToManyField(
+    permissions = models.ManyToManyField(
         "AccessLevel",
-        related_name="table_access",
+        related_name="table_access_set",
+        limit_choices_to={"entity": AccessLevel.Entity.TABLE},
+    )
+    grantable_permissions = models.ManyToManyField(
+        "AccessLevel",
+        related_name="grantable_table_access_set",
         limit_choices_to={"entity": AccessLevel.Entity.TABLE},
     )
 
@@ -130,14 +140,6 @@ class TableAccess(TimeStampedModel):
         return aws.GlueService().get_table_detail(
             database_name=self.database_access.name, table_name=self.name
         )
-
-    @property
-    def grantable_permissions(self):
-        return list(self.access_levels.filter(grantable=True).values_list("name", flat=True))
-
-    @property
-    def non_grantable_permissions(self):
-        return list(self.access_levels.filter(grantable=False).values_list("name", flat=True))
 
     def get_absolute_url(self, viewname: str = "database_access:manage_table_access"):
         return reverse(
@@ -171,8 +173,10 @@ class TableAccess(TimeStampedModel):
             principal=quicksight_user,
             resource_catalog_id=self.table_details["CatalogId"],
             region_name=region_name,
-            permissions=self.non_grantable_permissions,
-            permissions_with_grant_option=self.grantable_permissions,
+            permissions=list(self.permissions.values_list("name", flat=True)),
+            permissions_with_grant_option=list(
+                self.grantable_permissions.values_list("name", flat=True)
+            ),
         )
         if create_hybrid_opt_in:
             lake_formation.create_lake_formation_opt_in(
@@ -201,8 +205,8 @@ class TableAccess(TimeStampedModel):
             principal=quicksight_user,
             resource_catalog_id=self.table_details["CatalogId"],
             region_name=region_name,
-            permissions=self.non_grantable_permissions,
-            grantable_permissions=self.grantable_permissions,
+            permissions=list(self.permissions.values_list("name", flat=True)),
+            grantable_permissions=list(self.grantable_permissions.values_list("name", flat=True)),
         )
         if revoke_hybrid_opt_in:
             lake_formation.delete_lake_formation_opt_in(

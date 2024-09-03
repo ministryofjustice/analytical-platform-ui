@@ -17,11 +17,19 @@ class AccessForm(forms.ModelForm):
         label="Select a user to grant access to",
         template_name="forms/fields/select.html",
     )
-    access_levels = forms.ModelMultipleChoiceField(
+    permissions = forms.ModelMultipleChoiceField(
         queryset=None,
         widget=forms.CheckboxSelectMultiple,
         template_name="forms/fields/checkbox.html",
         help_text="Select all that apply",
+        required=True,
+    )
+    grantable_permissions = forms.ModelMultipleChoiceField(
+        queryset=None,
+        widget=forms.CheckboxSelectMultiple,
+        template_name="forms/fields/checkbox.html",
+        help_text="Select all that apply",
+        required=False,
     )
 
     def __init__(self, *args, **kwargs):
@@ -29,11 +37,12 @@ class AccessForm(forms.ModelForm):
         self.database_name = kwargs.pop("database_name")
         self.grantable_access = kwargs.pop("grantable_access")
         super().__init__(*args, **kwargs)
-        self.fields["access_levels"].queryset = self.grantable_access
+        self.fields["permissions"].queryset = self.grantable_access
+        self.fields["grantable_permissions"].queryset = self.grantable_access
 
     class Meta:
         model = models.TableAccess
-        fields = ["access_levels"]
+        fields = ["permissions", "grantable_permissions"]
 
     def clean_user(self):
         user = self.cleaned_data.get("user")
@@ -62,37 +71,47 @@ class AccessForm(forms.ModelForm):
 
 
 class ManageAccessForm(forms.ModelForm):
-    access_levels = forms.ModelMultipleChoiceField(
+    permissions = forms.ModelMultipleChoiceField(
         queryset=None,
-        template_name="forms/fields/checkbox.html",
         widget=forms.CheckboxSelectMultiple,
+        template_name="forms/fields/checkbox.html",
         help_text="Select all that apply",
+        required=True,
     )
+    grantable_permissions = forms.ModelMultipleChoiceField(
+        queryset=None,
+        widget=forms.CheckboxSelectMultiple,
+        template_name="forms/fields/checkbox.html",
+        help_text="Select all that apply",
+        required=False,
+    )
+
+    class Meta:
+        model = models.TableAccess
+        fields = ["permissions", "grantable_permissions"]
 
     def __init__(self, *args, **kwargs):
         self.grantable_access = kwargs.pop("grantable_access")
         super().__init__(*args, **kwargs)
-        self.fields["access_levels"].queryset = self.grantable_access
+        self.fields["permissions"].queryset = self.grantable_access
+        self.fields["grantable_permissions"].queryset = self.grantable_access
 
     def clean(self):
         cleaned_data = super().clean()
-        access_levels = cleaned_data.get("access_levels")
-        grantable = access_levels.filter(grantable=True).values_list("name", flat=True)
-        if not grantable:
+
+        grantable_permissions = cleaned_data.get("grantable_permissions", [])
+        if not grantable_permissions:
             return cleaned_data
 
-        non_grantable = access_levels.filter(name__in=grantable, grantable=False)
-        if grantable.count() > non_grantable.count():
-            self.add_error(
-                "access_levels",
-                "All selected grantable permissions need to be a part of the selected non-grantable permissions.",  # noqa
-            )
+        permissions = cleaned_data.get("permissions", [])
+        for grantable_permission in grantable_permissions:
+            if grantable_permission not in permissions:
+                self.add_error(
+                    "grantable_permissions",
+                    f"{grantable_permission} is not a part of the selected grantable permissions.",
+                )
 
         return cleaned_data
-
-    class Meta:
-        model = models.TableAccess
-        fields = ["access_levels"]
 
     def save(self, commit=True):
         try:

@@ -8,7 +8,8 @@
     <h2 class="govuk-heading-m">Manage Access for {{ access.database_access.user }}</h2>
     <form method="post">
         {% csrf_token %}
-        {{ form.access_levels.as_field_group }}
+        {{ form.permissions.as_field_group }}
+        {{ form.grantable_permissions.as_field_group }}
         <button class="govuk-button" type="submit">Grant Access</button>
     </form>
 
