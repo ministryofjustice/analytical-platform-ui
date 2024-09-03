@@ -9,42 +9,37 @@ from django_extensions.db.models import TimeStampedModel
 from ap import aws
 
 
-class AccessLevel(models.Model):
+class Permission(models.Model):
     class Entity(models.TextChoices):
         DATABASE = "database", "Database"
         TABLE = "table", "Table"
 
     name = models.CharField(max_length=255)
     entity = models.CharField(max_length=255, choices=Entity.choices)
-    grantable = models.BooleanField(default=False)
     display_name = models.CharField(
         max_length=255, blank=True, help_text="Text displayed to users when selecting access levels"
     )
 
     def __str__(self):
-        if self.display_name:
-            return self.display_name
-
-        grantable = "grantable" if self.grantable else "not grantable"
-        return f"{self.name} ({self.entity}, {grantable})"
+        return self.display_name or self.name
 
     class Meta:
         ordering = ("name", "entity")
-        unique_together = ("name", "entity", "grantable")
+        unique_together = ("name", "entity")
 
 
 class DatabaseAccess(TimeStampedModel):
     user = models.ForeignKey("users.User", related_name="database_access", on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     permissions = models.ManyToManyField(
-        "AccessLevel",
+        "Permission",
         related_name="database_access_set",
-        limit_choices_to={"entity": AccessLevel.Entity.DATABASE},
+        limit_choices_to={"entity": Permission.Entity.DATABASE},
     )
     grantable_permissions = models.ManyToManyField(
-        "AccessLevel",
+        "Permission",
         related_name="grantable_database_access_set",
-        limit_choices_to={"entity": AccessLevel.Entity.DATABASE},
+        limit_choices_to={"entity": Permission.Entity.DATABASE},
     )
 
     class Meta:
@@ -55,8 +50,8 @@ class DatabaseAccess(TimeStampedModel):
         super().save(*args, **kwargs)
         if create:
             self.permissions.add(
-                AccessLevel.objects.get_or_create(
-                    name="DESCRIBE", entity=AccessLevel.Entity.DATABASE, grantable=False
+                Permission.objects.get_or_create(
+                    name="DESCRIBE", entity=Permission.Entity.DATABASE
                 )[0]
             )
 
@@ -116,14 +111,14 @@ class TableAccess(TimeStampedModel):
     )
     name = models.CharField(max_length=255)
     permissions = models.ManyToManyField(
-        "AccessLevel",
+        "Permission",
         related_name="table_access_set",
-        limit_choices_to={"entity": AccessLevel.Entity.TABLE},
+        limit_choices_to={"entity": Permission.Entity.TABLE},
     )
     grantable_permissions = models.ManyToManyField(
-        "AccessLevel",
+        "Permission",
         related_name="grantable_table_access_set",
-        limit_choices_to={"entity": AccessLevel.Entity.TABLE},
+        limit_choices_to={"entity": Permission.Entity.TABLE},
     )
 
     class Meta:

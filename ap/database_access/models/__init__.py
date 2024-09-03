@@ -1,3 +1,3 @@
-from .access import AccessLevel, DatabaseAccess, TableAccess
+from .access import DatabaseAccess, Permission, TableAccess
 
-__all__ = ["DatabaseAccess", "TableAccess", "AccessLevel"]
+__all__ = ["DatabaseAccess", "TableAccess", "Permission"]

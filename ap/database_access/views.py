@@ -73,7 +73,7 @@ class TableDetailView(OIDCLoginRequiredMixin, DetailView):
 class TableAccessMixin(SingleObjectMixin):
     def get_grantable_access(self):
         if self.request.user.is_superuser:
-            return models.AccessLevel.objects.filter(entity=models.AccessLevel.Entity.TABLE)
+            return models.Permission.objects.filter(entity=models.Permission.Entity.TABLE)
 
         try:
             table_access = models.TableAccess.objects.get(

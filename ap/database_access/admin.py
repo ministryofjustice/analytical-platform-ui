@@ -3,7 +3,7 @@ from django.contrib import admin
 from . import models
 
 
-@admin.register(models.AccessLevel)
-class AccessLevelAdmin(admin.ModelAdmin):
-    list_display = ("name", "entity", "grantable", "display_name")
+@admin.register(models.Permission)
+class PermissionAdmin(admin.ModelAdmin):
+    list_display = ("name", "entity", "display_name")
     ordering = ("name", "entity")
