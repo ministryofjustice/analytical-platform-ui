@@ -17,8 +17,14 @@ class AccessLevel(models.Model):
     name = models.CharField(max_length=255)
     entity = models.CharField(max_length=255, choices=Entity.choices)
     grantable = models.BooleanField(default=False)
+    display_name = models.CharField(
+        max_length=255, blank=True, help_text="Text displayed to users when selecting access levels"
+    )
 
     def __str__(self):
+        if self.display_name:
+            return self.display_name
+
         grantable = "grantable" if self.grantable else "not grantable"
         return f"{self.name} ({self.entity}, {grantable})"
 
