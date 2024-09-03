@@ -56,6 +56,7 @@ class LakeFormationService(AWSService):
         catalog_id: str = "",
         resource_catalog_id: str = "",
         permissions: list | None = None,
+        grantable_permissions: list | None = None,
     ):
         """
         Grant the principal permissions to the database.
@@ -70,6 +71,7 @@ class LakeFormationService(AWSService):
                 },
             },
             Permissions=permissions or ["DESCRIBE"],
+            PermissionsWithGrantOption=grantable_permissions or [],
             CatalogId=catalog_id or self.catalog_id,
         )
 

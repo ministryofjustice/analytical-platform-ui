@@ -49,11 +49,11 @@ class DatabaseAccess(TimeStampedModel):
         create = self.pk is None
         super().save(*args, **kwargs)
         if create:
-            self.permissions.add(
-                Permission.objects.get_or_create(
-                    name="DESCRIBE", entity=Permission.Entity.DATABASE
-                )[0]
-            )
+            describe = Permission.objects.get_or_create(
+                name="DESCRIBE", entity=Permission.Entity.DATABASE
+            )[0]
+            self.permissions.add(describe)
+            self.grantable_permissions.add(describe)
 
     @cached_property
     def database_details(self):
@@ -70,7 +70,10 @@ class DatabaseAccess(TimeStampedModel):
             service="quicksight",
         )
         lake_formation.grant_database_permissions(
-            database=self.name, principal=quicksight_user, permissions=["DESCRIBE"]
+            database=self.name,
+            principal=quicksight_user,
+            permissions=list(self.permissions.values_list("name", flat=True)),
+            grantable_permissions=list(self.grantable_permissions.values_list("name", flat=True)),
         )
         if create_hybrid_opt_in:
             lake_formation.create_lake_formation_opt_in(
