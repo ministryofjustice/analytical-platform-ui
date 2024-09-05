@@ -13,18 +13,25 @@
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
         <th scope="col" class="govuk-table__header">User</th>
-        <th class="govuk-table__header">Actions</th>
+        <th class="govuk-table__header">Has Grantable Permissions</th>
+        {% if can_manage_access %}
+          <th class="govuk-table__header">Actions</th>
+        {% endif %}
       </tr>
     </thead>
     <tbody class="govuk-table__body">
       {% for table_access in access_queryset %}
       <tr class="govuk-table__row">
         <td class="govuk-table__cell">{{ table_access.database_access.user.email }}</td>
-        <td class="govuk-table__cell align-right no-wrap">
-            <a class="govuk-button" href="{{ table_access.get_absolute_url }}">
-              Manage Permissions
-            </a>
-        </td>
+        <td class="govuk-table__cell">{{ can_manage_access }}</td>
+        {% if can_manage_access %}
+          <td class="govuk-table__cell align-right no-wrap">
+              <a class="govuk-button" href="{{ table_access.get_absolute_url }}">
+                Manage Permissions
+              </a>
+              <a href="{{ table_access.get_absolute_revoke_url }}" class="govuk-button govuk-button--warning">Revoke all access</a>
+          </td>
+        {% endif %}
       </tr>
       {% endfor %}
     </tbody>
@@ -33,9 +40,10 @@
     <p class="govuk-body">No users have access to this table.</p>
   {% endif %}
 
-
-  <a class="govuk-button" href="{{ access_url }}">
-    Grant User Permissions
-  </a>
+  {% if can_manage_access %}
+    <a class="govuk-button" href="{{ access_url }}">
+      Grant User Permissions
+    </a>
+  {% endif %}
 
 {% endblock %}

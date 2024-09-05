@@ -67,6 +67,10 @@ class TableDetailView(OIDCLoginRequiredMixin, DetailView):
                 "table_name": self.kwargs["table_name"],
             },
         )
+        context["can_manage_access"] = self.request.user.can_manage_access(
+            database_name=self.kwargs["database_name"],
+            table_name=self.kwargs["table_name"],
+        )
         return context
 
 
@@ -85,7 +89,7 @@ class TableAccessMixin(SingleObjectMixin):
         except models.TableAccess.DoesNotExist:
             raise Http404()
 
-        return table_access.grantable_permissions_set.values_list("name", flat=True)
+        return table_access.grantable_permissions.all()
 
     def get_success_url(self) -> str:
         return reverse(
