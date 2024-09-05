@@ -21,7 +21,10 @@ class DatabaseListView(OIDCLoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context["databases"] = aws.GlueService().get_database_list()
+        if "my-databases" in self.request.GET.get("sort", {}):
+            context["databases"] = models.DatabaseAccess.objects.filter(user=self.request.user)
+        else:
+            context["databases"] = aws.GlueService().get_database_list()
         return context
 
 

@@ -63,6 +63,9 @@ class DatabaseAccess(TimeStampedModel):
     def target_database(self):
         return self.database_details.get("TargetDatabase", {})
 
+    def get_absolute_url(self):
+        return reverse("database_access:detail", kwargs={"database_name": self.name})
+
     def grant_lakeformation_permissions(self, create_hybrid_opt_in=False):
         lake_formation = aws.LakeFormationService()
         quicksight_user = lake_formation.arn(

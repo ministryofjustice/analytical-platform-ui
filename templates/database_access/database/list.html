@@ -1,9 +1,21 @@
 {% extends "base.html" %}
+{% load database_tags %}
 {% block title %}Analytical Platform - Databases{% endblock title %}
 
 {% block content %}
 <div class="govuk-width-container">
     <h1 class="govuk-heading-xl">Databases</h1>
+    <div class="govuk-form-group">
+        <form id="filter-databases">
+            <label class="govuk-label" for="sort">
+                Filter by
+              </label>
+            <select class="govuk-select" id="sort" name="sort" onchange="document.getElementById('filter-databases').submit();">
+            <option value="all"{% if "all" in request.GET.sort %} selected{% endif %}>All databases</option>
+            <option value="my-databases"{% if "my-databases" in request.GET.sort %} selected{% endif %}>My database access</option>
+            </select>
+        </form>
+      </div>
 
     {% if databases %}
         <table class="govuk-table">
@@ -16,9 +28,9 @@
             <tbody class="govuk-table__body">
             {% for database in databases %}
                 <tr class="govuk-table__row">
-                <td class="govuk-table__cell">{{ database.Name }}</td>
+                <td class="govuk-table__cell">{% database_name database=database %}</td>
                 <td class="govuk-table__cell">
-                    <a href="{% url 'database_access:detail' database_name=database.Name %}" class="govuk-link">View</a>
+                    <a href="{% database_url database=database %}" class="govuk-link">View</a>
                 </td>
                 </tr>
             {% endfor %}
