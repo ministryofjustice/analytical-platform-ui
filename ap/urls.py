@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.urls import include, path
 
+from ap import settings
+
 from . import views
 
 urlpatterns = [
@@ -11,3 +13,8 @@ urlpatterns = [
     path("healthcheck/", views.HealthcheckView.as_view(), name="healthcheck"),
     path("quicksight/", include("ap.quicksight.urls", namespace="quicksight")),
 ]
+
+if settings.DEBUG:
+    from debug_toolbar.toolbar import debug_toolbar_urls
+
+    urlpatterns += debug_toolbar_urls()

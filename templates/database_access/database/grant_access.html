@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <span class="govuk-caption-xl">Table</span>
+    <h1 class="govuk-heading-xl">{{ table.name }}</h1>
+
+    <h2 class="govuk-heading-l">Grant Table Access</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.user.as_field_group }}
+        {{ form.permissions.as_field_group }}
+        {{ form.grantable_permissions.as_field_group }}
+        <button class="govuk-button">Grant Access</button>
+    </form>
+
+{% endblock %}
