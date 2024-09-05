@@ -82,7 +82,7 @@ class ManageAccessForm(forms.ModelForm):
         queryset=None,
         widget=forms.CheckboxSelectMultiple,
         template_name="forms/fields/checkbox.html",
-        help_text="Select all that apply",
+        help_text="Grantable permissions allow the user to grant the selected permissions to other users.",  # noqa
         required=False,
     )
 
