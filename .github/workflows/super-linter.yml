@@ -44,3 +44,5 @@ jobs:
           PYTHON_MYPY_CONFIG_FILE: mypy.ini
           VALIDATE_KUBERNETES_KUBECONFORM: false # Super-Linter doesn't support https://github.com/jtyr/kubeconform-helm
           VALIDATE_CHECKOV: false # TODO failures to remediate at later date
+          VALIDATE_PYTHON_PYINK: false # we are using Black instead
+          VALIDATE_HTML_PRETTIER: false # incompatible with django templating language
