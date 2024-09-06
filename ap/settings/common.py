@@ -31,7 +31,7 @@ DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 PROJECT_ROOT = dirname(DJANGO_ROOT)
 
 # Name of the deployment environment (dev/prod)
-ENV = os.environ.get("APP_ENVIRONMENT", "dev")
+ENV = os.environ.get("APP_ENVIRONMENT", "development")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -41,6 +41,9 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "please_change_me")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", True)
+
+if ENV == "production":
+    DEBUG = False
 
 # Application definition
 
@@ -54,13 +57,12 @@ INSTALLED_APPS = [
     # Django sessions
     "django.contrib.sessions",
     # Django flash messages
+    "django.forms",
     "django.contrib.messages",
     # Django collect static files into a single location
     "django.contrib.staticfiles",
     # Provides shell_plus, runserver_plus, etc
     "django_extensions",
-    # frontend component integration with govuk_frontend node-js package
-    "govuk_frontend_django",
     # Provide structured log service
     "django_structlog",
     # First party project defined apps
@@ -123,6 +125,7 @@ TEMPLATES = [
     },
 ]
 
+FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
 WSGI_APPLICATION = f"{PROJECT_NAME}.wsgi.application"
 

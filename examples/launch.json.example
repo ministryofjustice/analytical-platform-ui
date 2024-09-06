@@ -13,6 +13,9 @@
           "justMyCode": false,
           "preLaunchTask": "aws-sso-process",
           "program": "${workspaceFolder}/manage.py",
+          "env": {
+              "DJANGO_SETTINGS_MODULE": "ap.settings.local"
+          }
       },
       {
           "name": "Python: Debug Tests",

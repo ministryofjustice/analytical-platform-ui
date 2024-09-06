@@ -1,65 +1,49 @@
 {% extends "base.html" %}
+{% block title %}Analytical Platform - Table {{ table.name }}{% endblock title %}
 
 {% block content %}
 
 <span class="govuk-caption-xl">Table</span>
 <h1 class="govuk-heading-xl">{{ table.name }}</h1>
 
-{% if table %}
+<h2 class="govuk-heading-l">User Access</h2>
+
+  {% if access_queryset %}
   <table class="govuk-table">
     <thead class="govuk-table__head">
       <tr class="govuk-table__row">
-        <th scope="col" class="govuk-table__header">Registered in Lake Formation</th>
+        <th scope="col" class="govuk-table__header">User</th>
+        <th class="govuk-table__header">Has Grantable Permissions</th>
+        {% if can_manage_access %}
+          <th class="govuk-table__header">Actions</th>
+        {% endif %}
       </tr>
     </thead>
     <tbody class="govuk-table__body">
+      {% for table_access in access_queryset %}
       <tr class="govuk-table__row">
-        <td class="govuk-table__cell">{% if table.is_registered_with_lake_formation %}Yes{% else %}No{% endif %}</td>
+        <td class="govuk-table__cell">{{ table_access.database_access.user.email }}</td>
+        <td class="govuk-table__cell">{{ can_manage_access }}</td>
+        {% if can_manage_access %}
+          <td class="govuk-table__cell align-right no-wrap">
+              <a class="govuk-button" href="{{ table_access.get_absolute_url }}">
+                Manage Permissions
+              </a>
+              <a href="{{ table_access.get_absolute_revoke_url }}" class="govuk-button govuk-button--warning">Revoke all access</a>
+          </td>
+        {% endif %}
       </tr>
+      {% endfor %}
     </tbody>
   </table>
+  {% else %}
+    <p class="govuk-body">No users have access to this table.</p>
+  {% endif %}
 
-  {% if table.is_registered_with_lake_formation %}
-    <h2 class="govuk-heading-l">User Access</h2>
-
-    {% if access_queryset %}
-    <table class="govuk-table">
-      <thead class="govuk-table__head">
-        <tr class="govuk-table__row">
-          <th scope="col" class="govuk-table__header">User</th>
-          <th class="govuk-table__header">
-            <span class="govuk-visually-hidden">Actions</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody class="govuk-table__body">
-        {% for table_access in access_queryset %}
-        <tr class="govuk-table__row">
-          <td class="govuk-table__cell">{{ table_access.database_access.user.email }}</td>
-          <td class="govuk-table__cell align-right no-wrap">
-            <form action="" method="post">
-              {{ csrf_input }}
-              <button class="govuk-button cpanel-button--destructive js-confirm"
-                      data-confirm-message="Are you sure you want to revoke access for user?">
-                Revoke Access
-              </button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% else %}
-      <p class="govuk-body">No users have access to this table.</p>
-    {% endif %}
-
-
-    <a class="govuk-button" href="">
+  {% if can_manage_access %}
+    <a class="govuk-button" href="{{ access_url }}">
       Grant User Permissions
     </a>
   {% endif %}
-{% else %}
-  <p class="govuk-body">No table found.</p>
-{% endif %}
 
 {% endblock %}
