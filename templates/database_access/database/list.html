@@ -1,9 +1,12 @@
 {% extends "base.html" %}
+{% load database_access_tags %}
 {% block title %}Analytical Platform - Databases{% endblock title %}
 
 {% block content %}
 <div class="govuk-width-container">
     <h1 class="govuk-heading-xl">Databases</h1>
+
+    {% include "database_access/database/includes/filter_form.html" %}
 
     {% if databases %}
         <table class="govuk-table">
@@ -16,9 +19,9 @@
             <tbody class="govuk-table__body">
             {% for database in databases %}
                 <tr class="govuk-table__row">
-                <td class="govuk-table__cell">{{ database.Name }}</td>
+                <td class="govuk-table__cell">{% firstof database.name database.Name %}</td>
                 <td class="govuk-table__cell">
-                    <a href="{% url 'database_access:detail' database_name=database.Name %}" class="govuk-link">View</a>
+                    <a href="{% database_detail_url database=database %}" class="govuk-link">View</a>
                 </td>
                 </tr>
             {% endfor %}
