@@ -21,14 +21,14 @@ class AccessForm(forms.ModelForm):
         queryset=None,
         widget=forms.CheckboxSelectMultiple,
         template_name="forms/fields/checkbox.html",
-        help_text="Select all that apply",
+        help_text="Choose actions the selected user will have on the table",
         required=True,
     )
     grantable_permissions = forms.ModelMultipleChoiceField(
         queryset=None,
         widget=forms.CheckboxSelectMultiple,
         template_name="forms/fields/checkbox.html",
-        help_text="Select all that apply",
+        help_text="Choose actions the selected user can grant to other users",
         required=False,
     )
 
@@ -75,14 +75,14 @@ class ManageAccessForm(forms.ModelForm):
         queryset=None,
         widget=forms.CheckboxSelectMultiple,
         template_name="forms/fields/checkbox.html",
-        help_text="Select all that apply",
+        help_text="Choose actions the selected user will have on the table",
         required=True,
     )
     grantable_permissions = forms.ModelMultipleChoiceField(
         queryset=None,
         widget=forms.CheckboxSelectMultiple,
         template_name="forms/fields/checkbox.html",
-        help_text="Grantable permissions allow the user to grant the selected permissions to other users.",  # noqa
+        help_text="Choose actions the selected user can grant to other users",
         required=False,
     )
 
