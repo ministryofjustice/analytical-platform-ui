@@ -23,7 +23,7 @@
       {% for table_access in access_queryset %}
       <tr class="govuk-table__row">
         <td class="govuk-table__cell">{{ table_access.database_access.user.email }}</td>
-        <td class="govuk-table__cell">{{ can_manage_access }}</td>
+        <td class="govuk-table__cell">{{ table_access.grantable_permissions.exists }}</td>
         {% if can_manage_access %}
           <td class="govuk-table__cell align-right no-wrap">
               <a class="govuk-button" href="{{ table_access.get_absolute_url }}">

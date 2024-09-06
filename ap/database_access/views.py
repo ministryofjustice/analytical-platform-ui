@@ -98,6 +98,7 @@ class TableDetailView(OIDCLoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context["access_queryset"] = (
             models.TableAccess.objects.select_related("database_access__user")
+            .prefetch_related("grantable_permissions")
             .filter(
                 database_access__name=self.kwargs["database_name"], name=self.kwargs["table_name"]
             )
