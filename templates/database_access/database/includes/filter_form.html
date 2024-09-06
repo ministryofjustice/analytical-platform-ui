@@ -4,8 +4,8 @@
             Filter by
           </label>
         <select class="govuk-select" id="filter" name="filter" onchange="document.getElementById('filter-form').submit();">
-        <option value="all"{% if "all" in request.GET.filter %} selected{% endif %}>All</option>
-        <option value="my-access"{% if "my-access" in request.GET.filter %} selected{% endif %}>My access</option>
+            <option value="all" {% if "all" in request.GET.filter %}selected{% endif %}>All</option>
+            <option value="my-access" {% if "my-access" in request.GET.filter %}selected{% endif %}>My access</option>
         </select>
     </form>
 </div>
