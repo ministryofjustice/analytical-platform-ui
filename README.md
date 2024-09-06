@@ -48,7 +48,7 @@ To create a release of the Analytical Platform UI:
  - Before merging your branch to main, bump both the `version` and `appVersion` in `chart/Chart.yaml`
     - We use SemVer without a v prefix, e.g `1.0.0`
     - Release candidates are specified with a `-rcX` postfix, e.g `1.0.0-rc1`
- - Once changes have been merged, go to the repository in GitLab.
+ - Once changes have been merged, go to the repository in GitHub.
  - Go to releases and click the Draft a new release button
  - Click choose a tag and specify the version you set in `chart/Chart.yaml` and click create new tag
  - Click generate release notes, click set as pre-release if the branch is a release candidate
