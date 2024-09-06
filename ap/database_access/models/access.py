@@ -155,6 +155,15 @@ class TableAccess(TimeStampedModel):
     def get_absolute_revoke_url(self):
         return self.get_absolute_url(viewname="database_access:revoke_table_access")
 
+    def get_absolute_table_detail_url(self):
+        return reverse(
+            viewname="database_access:table_detail",
+            kwargs={
+                "database_name": self.database_access.name,
+                "table_name": self.name,
+            },
+        )
+
     def grant_lakeformation_permissions(self, create_hybrid_opt_in=False):
         lake_formation = aws.LakeFormationService()
         quicksight_user = lake_formation.arn(
