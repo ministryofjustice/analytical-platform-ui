@@ -150,7 +150,7 @@ class TableAccessMixin(SingleObjectMixin):
         except botocore.exceptions.ClientError as error:
             if error.response["Error"]["Code"] == "InvalidInputException":
                 sentry_sdk.capture_exception(error)
-                form.add_error(None, str(error))
+                form.add_error(None, "An error occured granting permissions")
                 return self.form_invalid(form)
 
 
