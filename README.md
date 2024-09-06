@@ -51,7 +51,7 @@ To create a release of the Analytical Platform UI:
 - Once changes have been merged, go to the repository in GitHub.
 - Go to releases and click the Draft a new release button
 - Click choose a tag and specify the version you set in `chart/Chart.yaml` and click create new tag
-- Click generate release notes, click set as pre-release if the branch is a release candidate
+- Click generate release notes, click set as prerelease if the branch is a release candidate
 - Click publish release. This will build the image and push the helm chart
 - Once the build has finished, go to the modernisation-platform-environments repository. (You may need to [pull this down](https://github.com/ministryofjustice/modernisation-platform-environments) if you haven't previously)
 - Create a new branch from main and go to `terraform/environments/analytical-platform-compute/helm-charts-applications.tf`
@@ -90,14 +90,14 @@ Create a pull request and follow the release process and your new environment va
 
 There are a 2 of types of secrets that can be added:
 
- - Kubernetes Secrets
- - External Secrets
+- Kubernetes Secrets
+- External Secrets
 
 Both are created through the modernisation-platform-environments repository then referenced in `charts/values.yaml`.
 
 #### Kubernetes Secrets
 
-TODO later as I don't know the whats or whys
+Todo later as I don't know the whats or whys
 
 #### External Secrets
 
@@ -175,7 +175,7 @@ module "<secret_module_name>" {
 }
  ```
 - Follow the same process above to add this to the dev/test/prod.
-- Once the secrets have been added, create a new branch in this repo and go to `charts/values.yaml` and add a block like the example below
+- Once the secrets have been added, create a new branch in this repository and go to `charts/values.yaml` and add a block like the example below
 
  ``` yaml
  - name: EXTERNAL_SECRET_NAME
