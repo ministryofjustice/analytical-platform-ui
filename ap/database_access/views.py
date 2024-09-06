@@ -9,6 +9,7 @@ from django.views.generic.base import ContextMixin
 from django.views.generic.detail import SingleObjectMixin
 
 import botocore
+import sentry_sdk
 
 from ap import aws
 from ap.auth.views.mixins import OIDCLoginRequiredMixin
@@ -147,9 +148,9 @@ class TableAccessMixin(SingleObjectMixin):
             return super().form_valid(form)
         except botocore.exceptions.ClientError as error:
             if error.response["Error"]["Code"] == "InvalidInputException":
+                sentry_sdk.capture_exception(error)
                 form.add_error(None, str(error))
                 return self.form_invalid(form)
-            raise error
 
 
 class GrantTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, CreateView):
