@@ -97,6 +97,8 @@ Both are created through the modernisation-platform-environments repository then
 
 #### Kubernetes Secrets
 
+TODO later as I don't know the whats or whys
+
 #### External Secrets
 
 External secrets are held in AWS Secrets Manager.
