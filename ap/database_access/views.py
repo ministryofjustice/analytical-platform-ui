@@ -101,7 +101,12 @@ class TableDetailView(OIDCLoginRequiredMixin, BreadcrumbsMixin, DetailView):
     def get_breadcrumbs(self):
         return [
             {"text": "Databases", "url": reverse("database_access:list")},
-            {"text": self.kwargs["database_name"], "url": reverse("database_access:detail", kwargs={"database_name": self.kwargs["database_name"]})},
+            {
+                "text": self.kwargs["database_name"],
+                "url": reverse(
+                    "database_access:detail", kwargs={"database_name": self.kwargs["database_name"]}
+                ),
+            },
         ]
 
     def get_object(self):
@@ -183,8 +188,22 @@ class GrantTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, Breadcrumbs
     def get_breadcrumbs(self):
         return [
             {"text": "Databases", "url": reverse("database_access:list")},
-            {"text": self.kwargs["database_name"], "url": reverse("database_access:detail", kwargs={"database_name": self.kwargs["database_name"]})},
-            {"text": self.kwargs["table_name"], "url": reverse("database_access:table_detail", kwargs={"database_name": self.kwargs["database_name"], "table_name": self.kwargs["table_name"]})},
+            {
+                "text": self.kwargs["database_name"],
+                "url": reverse(
+                    "database_access:detail", kwargs={"database_name": self.kwargs["database_name"]}
+                ),
+            },
+            {
+                "text": self.kwargs["table_name"],
+                "url": reverse(
+                    "database_access:table_detail",
+                    kwargs={
+                        "database_name": self.kwargs["database_name"],
+                        "table_name": self.kwargs["table_name"],
+                    },
+                ),
+            },
         ]
 
     def get_object(self):
@@ -231,8 +250,22 @@ class ManageTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, Breadcrumb
     def get_breadcrumbs(self):
         return [
             {"text": "Databases", "url": reverse("database_access:list")},
-            {"text": self.kwargs["database_name"], "url": reverse("database_access:detail", kwargs={"database_name": self.kwargs["database_name"]})},
-            {"text": self.kwargs["table_name"], "url": reverse("database_access:table_detail", kwargs={"database_name": self.kwargs["database_name"], "table_name": self.kwargs["table_name"]})},
+            {
+                "text": self.kwargs["database_name"],
+                "url": reverse(
+                    "database_access:detail", kwargs={"database_name": self.kwargs["database_name"]}
+                ),
+            },
+            {
+                "text": self.kwargs["table_name"],
+                "url": reverse(
+                    "database_access:table_detail",
+                    kwargs={
+                        "database_name": self.kwargs["database_name"],
+                        "table_name": self.kwargs["table_name"],
+                    },
+                ),
+            },
         ]
 
     def get_queryset(self) -> QuerySet[Any]:
@@ -256,8 +289,22 @@ class RevokeTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, Breadcrumb
     def get_breadcrumbs(self):
         return [
             {"text": "Databases", "url": reverse("database_access:list")},
-            {"text": self.kwargs["database_name"], "url": reverse("database_access:detail", kwargs={"database_name": self.kwargs["database_name"]})},
-            {"text": self.kwargs["table_name"], "url": reverse("database_access:table_detail", kwargs={"database_name": self.kwargs["database_name"], "table_name": self.kwargs["table_name"]})},
+            {
+                "text": self.kwargs["database_name"],
+                "url": reverse(
+                    "database_access:detail", kwargs={"database_name": self.kwargs["database_name"]}
+                ),
+            },
+            {
+                "text": self.kwargs["table_name"],
+                "url": reverse(
+                    "database_access:table_detail",
+                    kwargs={
+                        "database_name": self.kwargs["database_name"],
+                        "table_name": self.kwargs["table_name"],
+                    },
+                ),
+            },
         ]
 
     def get_queryset(self) -> QuerySet[Any]:
