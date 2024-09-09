@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load database_access_tags %}
 {% block title %}Analytical Platform - Tables for {{ database.name }}{% endblock title %}
+{% block breadcrumbs %}
+  {% include "includes/breadcrumbs.html" with breadcrumbs=breadcrumbs %}
+{% endblock breadcrumbs%}
 {% block content %}
 
 <div class="govuk-width-container">

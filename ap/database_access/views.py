@@ -41,6 +41,17 @@ class FilterAccessMixin(ContextMixin):
         return context
 
 
+class BreadcrumbsMixin(ContextMixin):
+
+    def get_breadcrumbs(self):
+        raise NotImplementedError()
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["breadcrumbs"] = self.get_breadcrumbs()
+        return context
+
+
 class DatabaseListView(OIDCLoginRequiredMixin, FilterAccessMixin, TemplateView):
     template_name = "database_access/database/list.html"
     context_list_name = "databases"
@@ -52,9 +63,14 @@ class DatabaseListView(OIDCLoginRequiredMixin, FilterAccessMixin, TemplateView):
         return models.DatabaseAccess.objects.filter(user=self.request.user)
 
 
-class DatabaseDetailView(OIDCLoginRequiredMixin, FilterAccessMixin, TemplateView):
+class DatabaseDetailView(OIDCLoginRequiredMixin, FilterAccessMixin, BreadcrumbsMixin, TemplateView):
     template_name = "database_access/database/detail.html"
     context_list_name = "tables"
+
+    def get_breadcrumbs(self):
+        return [
+            {"text": "Databases", "url": reverse("database_access:list")},
+        ]
 
     def get_database(self):
         database = aws.GlueService().get_database_detail(database_name=self.kwargs["database_name"])
@@ -78,9 +94,15 @@ class DatabaseDetailView(OIDCLoginRequiredMixin, FilterAccessMixin, TemplateView
         )
 
 
-class TableDetailView(OIDCLoginRequiredMixin, DetailView):
+class TableDetailView(OIDCLoginRequiredMixin, BreadcrumbsMixin, DetailView):
     template_name = "database_access/database/table.html"
     context_object_name = "table"
+
+    def get_breadcrumbs(self):
+        return [
+            {"text": "Databases", "url": reverse("database_access:list")},
+            {"text": self.kwargs["database_name"], "url": reverse("database_access:detail", kwargs={"database_name": self.kwargs["database_name"]})},
+        ]
 
     def get_object(self):
         table = aws.GlueService().get_table_detail(
@@ -154,9 +176,16 @@ class TableAccessMixin(SingleObjectMixin):
                 return self.form_invalid(form)
 
 
-class GrantTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, CreateView):
+class GrantTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, BreadcrumbsMixin, CreateView):
     template_name = "database_access/database/grant_access.html"
     form_class = forms.AccessForm
+
+    def get_breadcrumbs(self):
+        return [
+            {"text": "Databases", "url": reverse("database_access:list")},
+            {"text": self.kwargs["database_name"], "url": reverse("database_access:detail", kwargs={"database_name": self.kwargs["database_name"]})},
+            {"text": self.kwargs["table_name"], "url": reverse("database_access:table_detail", kwargs={"database_name": self.kwargs["database_name"], "table_name": self.kwargs["table_name"]})},
+        ]
 
     def get_object(self):
         table = aws.GlueService().get_table_detail(
@@ -193,11 +222,18 @@ class GrantTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, CreateView)
         return context
 
 
-class ManageTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, UpdateView):
+class ManageTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, BreadcrumbsMixin, UpdateView):
     template_name = "database_access/database/manage_access.html"
     model = models.TableAccess
     form_class = forms.ManageAccessForm
     context_object_name = "access"
+
+    def get_breadcrumbs(self):
+        return [
+            {"text": "Databases", "url": reverse("database_access:list")},
+            {"text": self.kwargs["database_name"], "url": reverse("database_access:detail", kwargs={"database_name": self.kwargs["database_name"]})},
+            {"text": self.kwargs["table_name"], "url": reverse("database_access:table_detail", kwargs={"database_name": self.kwargs["database_name"], "table_name": self.kwargs["table_name"]})},
+        ]
 
     def get_queryset(self) -> QuerySet[Any]:
         return super().get_queryset().select_related("database_access__user")
@@ -212,10 +248,17 @@ class ManageTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, UpdateView
         return form_kwargs
 
 
-class RevokeTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, DeleteView):
+class RevokeTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, BreadcrumbsMixin, DeleteView):
     template_name = "database_access/database/revoke_access.html"
     model = models.TableAccess
     context_object_name = "access"
+
+    def get_breadcrumbs(self):
+        return [
+            {"text": "Databases", "url": reverse("database_access:list")},
+            {"text": self.kwargs["database_name"], "url": reverse("database_access:detail", kwargs={"database_name": self.kwargs["database_name"]})},
+            {"text": self.kwargs["table_name"], "url": reverse("database_access:table_detail", kwargs={"database_name": self.kwargs["database_name"], "table_name": self.kwargs["table_name"]})},
+        ]
 
     def get_queryset(self) -> QuerySet[Any]:
         return super().get_queryset().select_related("database_access__user")
