@@ -11,11 +11,11 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "sass": "1.77.8"
+    "sass": "1.78.0"
   },
   "dependencies": {
     "@ministryofjustice/frontend": "2.2.0",
-    "govuk-frontend": "5.5.0",
+    "govuk-frontend": "5.6.0",
     "jquery": "3.7.1",
     "nunjucks": "3.2.4"
   }
