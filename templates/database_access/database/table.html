@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block title %}Analytical Platform - Table {{ table.name }}{% endblock title %}
+{% block breadcrumbs %}
+  {% include "includes/breadcrumbs.html" with breadcrumbs=breadcrumbs %}
+{% endblock breadcrumbs%}
 
 {% block content %}
 

@@ -42,6 +42,7 @@
   {% block main %}
     {% block before_content %}{% endblock %}
     <div class="{% block container_class_names %}govuk-width-container{% endblock container_class_names %}">
+      {% block breadcrumbs %}{% endblock %}
       <main class="{% block main_class_names %}govuk-main-wrapper{% endblock main_class_names %}" id="main-content" role="main">
         {% block content %}{% endblock %}
       </main>
