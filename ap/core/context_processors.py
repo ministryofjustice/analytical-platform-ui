@@ -18,6 +18,12 @@ def nav_items(request):
                 "url": reverse("database_access:list"),
                 "active": request.get_full_path() == reverse("database_access:list"),
             },
+            {
+                "name": "Admin",
+                "url": reverse("admin:index"),
+                "active": request.get_full_path() == reverse("database_access:list"),
+                "hide": not request.user.is_staff,
+            },
         ]
     }
 
