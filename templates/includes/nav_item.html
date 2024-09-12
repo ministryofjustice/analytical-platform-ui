@@ -1,3 +1,5 @@
 <li class="{{ level }}item">
-    <a class="{{ level }}link" {% if item.active %}aria-current="page" {% endif %}href="{{ item.url }}">{{ item.name }}</a>
+    {% if not item.hide %}
+        <a class="{{ level }}link" {% if item.active %}aria-current="page" {% endif %}href="{{ item.url }}">{{ item.name }}</a>
+    {% endif %}
 </li>
