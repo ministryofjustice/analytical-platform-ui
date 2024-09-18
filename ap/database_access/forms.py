@@ -47,7 +47,11 @@ class AccessForm(forms.ModelForm):
     def clean_user(self):
         user = self.cleaned_data.get("user")
         try:
-            self._meta.model.objects.get(name=self.table_name, database_access__user=user)
+            self._meta.model.objects.get(
+                name=self.table_name,
+                database_access__name=self.database_name,
+                database_access__user=user,
+            )
             raise forms.ValidationError("Selected user already has access to this table.")
         except self._meta.model.DoesNotExist:
             pass
