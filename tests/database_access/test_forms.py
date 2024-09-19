@@ -51,7 +51,7 @@ class TestAccessForm:
         form = self.create_form(users, form_data, "table_1", "test_db_1")
 
         try:
-            user = form.clean_user()
+            form.clean_user()
             AssertionError("Should Fail")
         except forms.ValidationError:
             assert True
