@@ -1,3 +1,4 @@
+import botocore
 import sentry_sdk
 import structlog
 
@@ -100,7 +101,14 @@ class LakeFormationService(AWSService):
                 Permissions=permissions or [],
                 PermissionsWithGrantOption=grantable_permissions or [],
             )
-        except client.exceptions.InvalidInputException as error:
+        except botocore.exceptions.ClientError as error:
+            msg = error.response["Error"]["Message"]
+            code = error.response["Error"]["Code"]
+            if (
+                code == "InvalidInputException"
+                and "Grantee has no permissions and no grantable permissions on resource" in msg
+            ):
+                return logger.info(f"Nothing to revoke, continuing. Original exception: '{msg}'")
             sentry_sdk.capture_exception(error)
             logger.info(f"Error revoking permissions for {principal}", error=error)
             raise error
@@ -118,17 +126,28 @@ class LakeFormationService(AWSService):
         Grant the principal permissions to the database.
         """
         client = self.get_client(region_name)
-        return client.revoke_permissions(
-            Principal={"DataLakePrincipalIdentifier": principal},
-            Resource={
-                "Database": {
-                    "Name": database,
-                    "CatalogId": resource_catalog_id or self.catalog_id,
+        try:
+            client.revoke_permissions(
+                Principal={"DataLakePrincipalIdentifier": principal},
+                Resource={
+                    "Database": {
+                        "Name": database,
+                        "CatalogId": resource_catalog_id or self.catalog_id,
+                    },
                 },
-            },
-            Permissions=permissions or ["DESCRIBE"],
-            CatalogId=catalog_id or self.catalog_id,
-        )
+                Permissions=permissions or ["DESCRIBE"],
+                CatalogId=catalog_id or self.catalog_id,
+            )
+        except botocore.exceptions.ClientError as error:
+            msg = error.response["Error"]["Message"]
+            code = error.response["Error"]["Code"]
+            if (
+                code == "InvalidInputException"
+                and "Grantee has no permissions and no grantable permissions on resource" in msg
+            ):
+                return logger.info(f"Nothing to revoke, continuing. Original exception: '{msg}'")
+            sentry_sdk.capture_exception(error)
+            raise error
 
     def create_lake_formation_opt_in(
         self,
