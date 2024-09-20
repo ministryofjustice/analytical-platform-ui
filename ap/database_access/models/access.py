@@ -1,9 +1,10 @@
 from functools import cached_property
 
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
 from django.urls import reverse
 
+import botocore
 from django_extensions.db.models import TimeStampedModel
 
 from ap import aws
@@ -228,8 +229,13 @@ class TableAccess(TimeStampedModel):
             )
 
     def delete(self, **kwargs):
-        self.revoke_lakeformation_permissions(revoke_hybrid_opt_in=True)
-        super().delete(**kwargs)
-        if not self.database_access.table_access.exists():
-            # if this was the last table access for the database, revoke database access
-            self.database_access.delete()
+        try:
+            with transaction.atomic():
+                self.revoke_lakeformation_permissions(revoke_hybrid_opt_in=True)
+                if not self.database_access.table_access.exclude(pk=self.pk).exists():
+                    # if this is the last table access for the database, revoke database access
+                    self.database_access.delete()
+                super().delete(**kwargs)
+        except botocore.exceptions.ClientError as error:
+            self.grant_lakeformation_permissions(create_hybrid_opt_in=True)
+            raise error
