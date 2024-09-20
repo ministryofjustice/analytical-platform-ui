@@ -7,7 +7,7 @@ class QuicksightService(base.AWSService):
     aws_service_name = "quicksight"
 
     def get_embed_url(self, user):
-        user_arn = self.arn(resource=f"user/default/{user.email}")
+        user_arn = self.arn(resource=f"user/default/{user.username}")
         response = self._request(
             "generate_embed_url_for_registered_user",
             AwsAccountId=self.account_id,

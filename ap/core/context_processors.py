@@ -32,7 +32,7 @@ def header_context(request):
     return {
         "header_nav_items": [
             {
-                "name": request.user.email if is_logged_in else "",
+                "name": request.user.username if is_logged_in else "",
                 "url": "",
             },
             {

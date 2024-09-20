@@ -70,7 +70,7 @@ class DatabaseAccess(TimeStampedModel):
     def grant_lakeformation_permissions(self, create_hybrid_opt_in=False):
         lake_formation = aws.LakeFormationService()
         quicksight_user = lake_formation.arn(
-            resource=f"user/default/{self.user.email}",
+            resource=f"user/default/{self.user.username}",
             service="quicksight",
         )
         lake_formation.grant_database_permissions(
@@ -93,7 +93,7 @@ class DatabaseAccess(TimeStampedModel):
         # revoke access
         lake_formation = aws.LakeFormationService()
         quicksight_user = lake_formation.arn(
-            resource=f"user/default/{self.user.email}",
+            resource=f"user/default/{self.user.username}",
             service="quicksight",
             region_name=settings.AWS_DEFAULT_REGION,
         )
@@ -168,7 +168,7 @@ class TableAccess(TimeStampedModel):
     def grant_lakeformation_permissions(self, create_hybrid_opt_in=False):
         lake_formation = aws.LakeFormationService()
         quicksight_user = lake_formation.arn(
-            resource=f"user/default/{self.database_access.user.email}",
+            resource=f"user/default/{self.database_access.user.username}",
             service="quicksight",
             region_name=settings.AWS_DEFAULT_REGION,
         )
@@ -201,7 +201,7 @@ class TableAccess(TimeStampedModel):
     def revoke_lakeformation_permissions(self, revoke_hybrid_opt_in=False):
         lake_formation = aws.LakeFormationService()
         quicksight_user = lake_formation.arn(
-            resource=f"user/default/{self.database_access.user.email}",
+            resource=f"user/default/{self.database_access.user.username}",
             service="quicksight",
         )
 
