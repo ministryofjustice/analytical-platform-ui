@@ -31,7 +31,7 @@ class OIDCSubAuthenticationBackend:
         return User.objects.filter(pk=user_id).first()
 
     def _get_username(self, user_info):
-        return user_info.get("username") or User.construct_username(user_info.get("name"))
+        return user_info.get("upn") or user_info.get("preferred_username") or user_info.get("email")
 
     def _create_user(self):
         user_info = self.token.get("userinfo")

@@ -42,7 +42,6 @@ class FilterAccessMixin(ContextMixin):
 
 
 class BreadcrumbsMixin(ContextMixin):
-
     def get_breadcrumbs(self):
         raise NotImplementedError()
 
@@ -162,23 +161,13 @@ class TableAccessMixin(SingleObjectMixin):
 
         return table_access.grantable_permissions.all()
 
-    def get_success_url(self) -> str:
-        return reverse(
-            "database_access:table_detail",
-            kwargs={
-                "database_name": self.kwargs["database_name"],
-                "table_name": self.kwargs["table_name"],
-            },
-        )
-
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
         try:
             return super().form_valid(form)
         except botocore.exceptions.ClientError as error:
-            if error.response["Error"]["Code"] == "InvalidInputException":
-                sentry_sdk.capture_exception(error)
-                form.add_error(None, "An error occured granting permissions")
-                return self.form_invalid(form)
+            sentry_sdk.capture_exception(error)
+            form.add_error(None, "An error occured granting permissions")
+            return self.form_invalid(form)
 
 
 class GrantTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, BreadcrumbsMixin, CreateView):
@@ -281,7 +270,7 @@ class ManageTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, Breadcrumb
         return form_kwargs
 
 
-class RevokeTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, BreadcrumbsMixin, DeleteView):
+class RevokeTableAccessView(OIDCLoginRequiredMixin, BreadcrumbsMixin, DeleteView):
     template_name = "database_access/database/revoke_access.html"
     model = models.TableAccess
     context_object_name = "access"
@@ -309,3 +298,23 @@ class RevokeTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, Breadcrumb
 
     def get_queryset(self) -> QuerySet[Any]:
         return super().get_queryset().select_related("database_access__user")
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "database_access:table_detail",
+            kwargs={
+                "database_name": self.kwargs["database_name"],
+                "table_name": self.kwargs["table_name"],
+            },
+        )
+
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        try:
+            return super().form_valid(form)
+        except botocore.exceptions.ClientError as error:
+            sentry_sdk.capture_exception(error)
+            form.add_error(
+                None,
+                "An error occured revoking permissions. Please try again. If the issue persists, contact the AP support.",  # noqa
+            )
+            return self.form_invalid(form)
