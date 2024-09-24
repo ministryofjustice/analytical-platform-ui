@@ -173,10 +173,17 @@ class LakeFormationService(AWSService):
                     "CatalogId": resource_catalog_id or self.catalog_id,
                 },
             }
-
-        client.create_lake_formation_opt_in(
-            Principal={"DataLakePrincipalIdentifier": principal}, Resource=resource
-        )
+        try:
+            return client.create_lake_formation_opt_in(
+                Principal={"DataLakePrincipalIdentifier": principal}, Resource=resource
+            )
+        except botocore.exceptions.ClientError as error:
+            code = error.response["Error"]["Code"]
+            msg = error.response["Error"]["Message"]
+            if code == "InvalidInputException" and "already exists" in msg:
+                logger.info("Lake Formation opt-in already exists, continuing")
+                return
+            raise error
 
     def delete_lake_formation_opt_in(
         self,
@@ -203,9 +210,16 @@ class LakeFormationService(AWSService):
                 },
             }
 
-        client.delete_lake_formation_opt_in(
-            Principal={"DataLakePrincipalIdentifier": principal}, Resource=resource
-        )
+        try:
+            return client.delete_lake_formation_opt_in(
+                Principal={"DataLakePrincipalIdentifier": principal}, Resource=resource
+            )
+        except botocore.exceptions.ClientError as error:
+            msg = error.response["Error"]["Message"]
+            code = error.response["Error"]["Code"]
+            if code == "InvalidInputException" and "does not exist" in msg:
+                return logger.info("Lake Formation opt-in does not exist, continuing")
+            raise error
 
     def list_permissions(self, principal, resource):
         logger.info(f"Getting permissions for {principal} on {resource}")
