@@ -169,6 +169,15 @@ class TableAccessMixin(SingleObjectMixin):
             form.add_error(None, "An error occured granting permissions")
             return self.form_invalid(form)
 
+    def get_success_url(self) -> str:
+        return reverse(
+            "database_access:table_detail",
+            kwargs={
+                "database_name": self.kwargs["database_name"],
+                "table_name": self.kwargs["table_name"],
+            },
+        )
+
 
 class GrantTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, BreadcrumbsMixin, CreateView):
     template_name = "database_access/database/grant_access.html"
