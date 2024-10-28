@@ -1,6 +1,6 @@
 ##### BUILD
 
-FROM public.ecr.aws/docker/library/node:20.15.0 AS build-node
+FROM public.ecr.aws/docker/library/node:23.1.0 AS build-node
 
 WORKDIR /build
 
