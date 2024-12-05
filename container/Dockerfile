@@ -15,7 +15,7 @@ EOF
 
 ##### FINAL
 
-FROM public.ecr.aws/docker/library/python:3.12.5-alpine3.20
+FROM public.ecr.aws/docker/library/python:3.13.1-alpine3.20
 
 LABEL org.opencontainers.image.vendor="Ministry of Justice" \
       org.opencontainers.image.authors="Analytical Platform (analytical-platform@digital.justice.gov.uk)" \
