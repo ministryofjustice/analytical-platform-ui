@@ -6,27 +6,25 @@
       "integrity": "sha256:503f23cd692325b3cbb8c20a0ecfabb3444b0c786b363e0c82572bd7d71dc099"
     },
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "1.5.0",
-      "resolved": "ghcr.io/devcontainers/features/node@sha256:a124954d7ed085eb90e08e6fcecac8cbcbb866317ab16deb2c7797d63cbf35d6",
-      "integrity": "sha256:a124954d7ed085eb90e08e6fcecac8cbcbb866317ab16deb2c7797d63cbf35d6"
+      "version": "1.6.1",
+      "resolved": "ghcr.io/devcontainers/features/node@sha256:71590121aaf7b2040f3e1e2dfc4bb9a1389277fd5a88a7199094542b82ce5340",
+      "integrity": "sha256:71590121aaf7b2040f3e1e2dfc4bb9a1389277fd5a88a7199094542b82ce5340"
     },
     "ghcr.io/devcontainers/features/python:1": {
-      "version": "1.6.2",
-      "resolved": "ghcr.io/devcontainers/features/python@sha256:adf861c49eb404ce507280936fa626dcfdc4cffeb7f0a975ef400861a0cb3313",
-      "integrity": "sha256:adf861c49eb404ce507280936fa626dcfdc4cffeb7f0a975ef400861a0cb3313"
+      "version": "1.6.5",
+      "resolved": "ghcr.io/devcontainers/features/python@sha256:f5e1557b5745bcc3aa8f12eaa1084b8d63952d73e776c406214d65f593aae6d8",
+      "integrity": "sha256:f5e1557b5745bcc3aa8f12eaa1084b8d63952d73e776c406214d65f593aae6d8"
     },
     "ghcr.io/ministryofjustice/devcontainer-feature/aws:1": {
-      "version": "1.0.0",
-      "resolved": "ghcr.io/ministryofjustice/devcontainer-feature/aws@sha256:bb07a76c8e7a6b630a2056ce959addddee436e3f9936c69b9163eff54f58dbd5",
-      "integrity": "sha256:bb07a76c8e7a6b630a2056ce959addddee436e3f9936c69b9163eff54f58dbd5"
+      "version": "1.1.0",
+      "resolved": "ghcr.io/ministryofjustice/devcontainer-feature/aws@sha256:64240f48a66e28fc065d58d2c3aa75319106ec4293b0a0736402290317b256d5",
+      "integrity": "sha256:64240f48a66e28fc065d58d2c3aa75319106ec4293b0a0736402290317b256d5"
     },
     "ghcr.io/ministryofjustice/devcontainer-feature/container-structure-test:1": {
       "version": "1.0.0",
       "resolved": "ghcr.io/ministryofjustice/devcontainer-feature/container-structure-test@sha256:19eb30f9eb327b667be2002757d55381de87cdb5a79a6e37d293369fe8ad01ad",
       "integrity": "sha256:19eb30f9eb327b667be2002757d55381de87cdb5a79a6e37d293369fe8ad01ad",
-      "dependsOn": [
-        "ghcr.io/devcontainers/features/docker-in-docker:2"
-      ]
+      "dependsOn": ["ghcr.io/devcontainers/features/docker-in-docker:2"]
     },
     "ghcr.io/ministryofjustice/devcontainer-feature/kubernetes:1": {
       "version": "1.0.1",

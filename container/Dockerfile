@@ -53,11 +53,11 @@ EOF
 RUN <<EOF
 apk add --no-cache --virtual .build-deps \
   libffi-dev=3.4.6-r0 \
-  gcc=13.2.1_git20240309-r0 \
-  musl-dev=1.2.5-r0 \
+  gcc=13.2.1_git20240309-r1 \
+  musl-dev=1.2.5-r1 \
 
 apk add --no-cache \
-  libpq-dev=16.3-r0
+  libpq-dev=16.9-r0
 EOF
 
 # Install Python packages and remove APK build dependencies
