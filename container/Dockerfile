@@ -53,7 +53,7 @@ EOF
 RUN <<EOF
 apk add --no-cache --virtual .build-deps \
   libffi-dev=3.4.6-r0 \
-  gcc-13.2.1_git20240309-r1 \
+  gcc=13.2.1_git20240309-r1 \
   musl-dev=1.2.5-r1 \
 
 apk add --no-cache \
