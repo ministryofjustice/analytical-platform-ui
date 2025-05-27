@@ -5,7 +5,7 @@ cfgv==3.4.0
 Django==5.1.9
 django-debug-toolbar==4.4.6
 django-structlog==8.1.0
-django_extensions==3.2.3
+django_extensions==4.1
 gunicorn==23.0.0
 iniconfig==2.0.0
 josepy==1.14.0
