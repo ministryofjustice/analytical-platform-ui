@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "sass": "1.83.4"
+    "sass": "1.89.0"
   },
   "dependencies": {
     "@ministryofjustice/frontend": "3.3.1",
