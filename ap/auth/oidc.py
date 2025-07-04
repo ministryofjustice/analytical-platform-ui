@@ -1,12 +1,11 @@
-from django.conf import settings
-from django.utils import timezone
-
 import boto3
 import botocore
 import botocore.exceptions
 import jwt
 import structlog
 from authlib.integrations.django_client import OAuth
+from django.conf import settings
+from django.utils import timezone
 
 from ap.users.models import User
 

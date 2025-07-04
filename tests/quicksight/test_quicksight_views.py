@@ -1,7 +1,6 @@
 # Third-party
-from django.urls import reverse
-
 import pytest
+from django.urls import reverse
 
 
 def index(client):
@@ -9,7 +8,6 @@ def index(client):
 
 
 class TestQuicksightViews:
-
     @pytest.mark.parametrize(
         "view,user,logged_in,expected_status",
         [
