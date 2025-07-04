@@ -4,7 +4,6 @@ from ap.database_access.forms import AccessForm
 
 
 class TestAccessForm:
-
     def create_form(self, users, form_data, table_name, database_name, grantable_access=None):
         form = AccessForm(
             data=form_data,

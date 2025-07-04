@@ -36,7 +36,6 @@ def users(db, superuser):
 
 @pytest.fixture
 def permissions(db):
-
     return {
         "select_table": baker.make(
             "database_access.Permission",

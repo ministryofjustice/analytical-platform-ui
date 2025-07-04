@@ -7,7 +7,6 @@ from ap.aws.session import BotoSession
 
 
 class TestBotoSession:
-
     @pytest.fixture
     def boto_session(self):
         yield BotoSession()
@@ -20,7 +19,6 @@ class TestBotoSession:
         assert hasattr(credentials, "token")
 
     def test_get_sts_credentials(self, boto_session):
-
         expected_response = {
             "Credentials": {
                 "AccessKeyId": "AccessKeyId",

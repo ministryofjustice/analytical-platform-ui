@@ -1,12 +1,10 @@
-from django.conf import settings
-
 import pytest
+from django.conf import settings
 
 from ap.aws.glue import GlueService
 
 
 class TestGlueService:
-
     @pytest.fixture
     def glue_service(self):
         yield GlueService(settings.GLUE_CATALOG_ID)

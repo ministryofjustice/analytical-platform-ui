@@ -1,10 +1,9 @@
 from functools import cached_property
 
+import botocore
 from django.conf import settings
 from django.db import models, transaction
 from django.urls import reverse
-
-import botocore
 from django_extensions.db.models import TimeStampedModel
 
 from ap import aws
@@ -18,7 +17,9 @@ class Permission(models.Model):
     name = models.CharField(max_length=255)
     entity = models.CharField(max_length=255, choices=Entity.choices)
     display_name = models.CharField(
-        max_length=255, blank=True, help_text="Text displayed to users when selecting access levels"
+        max_length=255,
+        blank=True,
+        help_text="Text displayed to users when selecting access levels",
     )
 
     def __str__(self):

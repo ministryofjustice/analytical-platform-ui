@@ -1,6 +1,5 @@
-from django.urls import reverse
-
 import pytest
+from django.urls import reverse
 
 from ap.core.context_processors import header_context, nav_items
 
@@ -17,7 +16,11 @@ class TestContextProcessors:
             {"name": "Home", "url": "/", "active": True},
             {"name": "QuickSight", "url": reverse("quicksight:index"), "active": False},
             {"name": "Database access", "url": reverse("database_access:list"), "active": False},
-            {"name": "Admin", "url": reverse("admin:index"), "hide": not request_obj.user.is_staff},
+            {
+                "name": "Admin",
+                "url": reverse("admin:index"),
+                "hide": not request_obj.user.is_staff,
+            },
         ]
         assert nav_items(request=request_obj) == {"nav_items": expected}
 

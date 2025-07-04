@@ -6,7 +6,6 @@ from ap.aws.quicksight import QuicksightService
 
 
 class TestQuickSightService:
-
     @pytest.fixture
     def quicksight_service(self):
         yield QuicksightService()

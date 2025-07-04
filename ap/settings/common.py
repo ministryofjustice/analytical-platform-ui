@@ -10,11 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import contextlib
 import os
 from os.path import abspath, dirname, join
 from pathlib import Path
 from socket import gaierror, gethostbyname, gethostname
-from typing import Any, Dict
+from typing import Any
 
 import structlog
 
@@ -224,7 +225,7 @@ for host in ALLOWED_HOSTS:
 try:
     ALLOWED_HOSTS.append(gethostbyname(gethostname()))
 except gaierror:
-    pass
+    contextlib.suppress(gaierror)
 
 # -- HTTP headers
 # Sets the X-Content-Type-Options: nosniff header
@@ -271,7 +272,7 @@ AUTHLIB_OAUTH_CLIENTS = {
 LOG_LEVEL = os.environ.get("LOG_LEVEL", "debug").upper()
 DEFAULT_LOG_FORMATTER = os.environ.get("DEFAULT_LOG_FORMATTER", "plain_console")
 
-LOGGING: Dict[str, Any] = {
+LOGGING: dict[str, Any] = {
     "version": 1,
     "disable_existing_loggers": True,
     "formatters": {

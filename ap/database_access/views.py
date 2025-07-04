@@ -1,5 +1,7 @@
 from typing import Any
 
+import botocore
+import sentry_sdk
 from django.db.models.query import QuerySet
 from django.forms import BaseModelForm
 from django.http import Http404, HttpResponse
@@ -7,9 +9,6 @@ from django.urls import reverse
 from django.views.generic import CreateView, DeleteView, DetailView, TemplateView, UpdateView
 from django.views.generic.base import ContextMixin
 from django.views.generic.detail import SingleObjectMixin
-
-import botocore
-import sentry_sdk
 
 from ap import aws
 from ap.auth.views.mixins import OIDCLoginRequiredMixin
@@ -103,7 +102,8 @@ class TableDetailView(OIDCLoginRequiredMixin, BreadcrumbsMixin, DetailView):
             {
                 "text": self.kwargs["database_name"],
                 "url": reverse(
-                    "database_access:detail", kwargs={"database_name": self.kwargs["database_name"]}
+                    "database_access:detail",
+                    kwargs={"database_name": self.kwargs["database_name"]},
                 ),
             },
         ]
@@ -156,8 +156,8 @@ class TableAccessMixin(SingleObjectMixin):
                 database_access__user=self.request.user,
                 grantable_permissions__isnull=False,
             )
-        except models.TableAccess.DoesNotExist:
-            raise Http404()
+        except models.TableAccess.DoesNotExist as e:
+            raise Http404() from e
 
         return table_access.grantable_permissions.all()
 
@@ -189,7 +189,8 @@ class GrantTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, Breadcrumbs
             {
                 "text": self.kwargs["database_name"],
                 "url": reverse(
-                    "database_access:detail", kwargs={"database_name": self.kwargs["database_name"]}
+                    "database_access:detail",
+                    kwargs={"database_name": self.kwargs["database_name"]},
                 ),
             },
             {
@@ -251,7 +252,8 @@ class ManageTableAccessView(OIDCLoginRequiredMixin, TableAccessMixin, Breadcrumb
             {
                 "text": self.kwargs["database_name"],
                 "url": reverse(
-                    "database_access:detail", kwargs={"database_name": self.kwargs["database_name"]}
+                    "database_access:detail",
+                    kwargs={"database_name": self.kwargs["database_name"]},
                 ),
             },
             {
@@ -290,7 +292,8 @@ class RevokeTableAccessView(OIDCLoginRequiredMixin, BreadcrumbsMixin, DeleteView
             {
                 "text": self.kwargs["database_name"],
                 "url": reverse(
-                    "database_access:detail", kwargs={"database_name": self.kwargs["database_name"]}
+                    "database_access:detail",
+                    kwargs={"database_name": self.kwargs["database_name"]},
                 ),
             },
             {

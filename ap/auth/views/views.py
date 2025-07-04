@@ -1,15 +1,14 @@
 import time
 
+import sentry_sdk
+from authlib.common.security import generate_token
+from authlib.integrations.django_client import OAuthError
 from django.conf import settings
 from django.contrib import auth
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, View
-
-import sentry_sdk
-from authlib.common.security import generate_token
-from authlib.integrations.django_client import OAuthError
 
 from ap.auth.oidc import OIDCSubAuthenticationBackend, oauth
 from ap.auth.utils import pkce_transform

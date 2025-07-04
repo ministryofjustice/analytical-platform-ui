@@ -1,10 +1,9 @@
 from functools import cached_property
 
-from django.conf import settings
-
 import boto3
 import botocore
 import sentry_sdk
+from django.conf import settings
 
 from . import session
 
