@@ -19,6 +19,7 @@ jobs:
     with:
       # VALIDATE_CHECKOV: false # Disabling while in discovery
       # VALIDATE_KUBERNETES_KUBECONFORM is set to false as it cannot process Helm charts
+      # Various Python linters are disabled as we are using Ruff
       super-linter-variables: |
         {
           "VALIDATE_CHECKOV": false,
@@ -26,13 +27,12 @@ jobs:
           "VALIDATE_HTML": false,
           "VALIDATE_HTML_PRETTIER": false,
           "VALIDATE_JSCPD": false,
-          "VALIDATE_KUBERNETES_KUBECONFORM": false,
-          "VALIDATE_YAML": false,
-          # turn these off as we are using ruff for python linting
+          "VALIDATE_KUBERNETES_KUBEFORM": false,
           "VALIDATE_PYTHON_BLACK": false,
           "VALIDATE_PYTHON_ISORT": false,
-          "VALIDATE_PYTHON_FLAKE8": false
+          "VALIDATE_PYTHON_FLAKE8": false,
           "VALIDATE_PYTHON_PYINK": false,
           "VALIDATE_PYTHON_PYLINT": false,
-          "VALIDATE_PYTHON_MYPY": false
+          "VALIDATE_PYTHON_MYPY": false,
+          "VALIDATE_YAML": false
         }
