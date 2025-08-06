@@ -1,33 +1,31 @@
 {
   "version": "0.2.0",
   "configurations": [
-      {
-          "name": "runserver",
-          "type": "debugpy",
-          "request": "launch",
-          "args": [
-              "runserver"
-          ],
-          "django": true,
-          "autoStartBrowser": false,
-          "justMyCode": false,
-          "preLaunchTask": "aws-sso-process",
-          "program": "${workspaceFolder}/manage.py",
-          "env": {
-              "DJANGO_SETTINGS_MODULE": "ap.settings.local"
-          }
-      },
-      {
-          "name": "Python: Debug Tests",
-          "type": "debugpy",
-          "request": "launch",
-          "program": "${file}",
-          "purpose": ["debug-test"],
-          "console": "integratedTerminal",
-          "justMyCode": false,
-          "env": {
-              "DJANGO_SETTINGS_MODULE": "ap.settings.test"
-          }
+    {
+      "name": "runserver",
+      "type": "debugpy",
+      "request": "launch",
+      "args": ["runserver"],
+      "django": true,
+      "autoStartBrowser": false,
+      "justMyCode": false,
+      "preLaunchTask": "aws-sso-process",
+      "program": "${workspaceFolder}/manage.py",
+      "env": {
+        "DJANGO_SETTINGS_MODULE": "ap.settings.local"
       }
+    },
+    {
+      "name": "Python: Debug Tests",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "purpose": ["debug-test"],
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "env": {
+        "DJANGO_SETTINGS_MODULE": "ap.settings.test"
+      }
+    }
   ]
 }
