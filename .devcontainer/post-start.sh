@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euxo pipefail
 
 # Run pre-commit
-pre-commit install
+uv run pre-commit install
