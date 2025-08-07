@@ -51,6 +51,8 @@ EOF
 
 # Install APK packages
 RUN <<EOF
+apk update && apk upgrade --no-cache
+
 apk add --no-cache --virtual .build-deps \
   libffi-dev \
   gcc \
