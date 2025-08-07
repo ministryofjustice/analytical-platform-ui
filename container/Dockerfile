@@ -63,9 +63,19 @@ apk add --no-cache \
 EOF
 
 # Install Python packages and remove APK build dependencies
-COPY requirements.txt /tmp/requirements.txt
+ENV UV_LINK_MODE=copy \
+    UV_COMPILE_BYTECODE=1 \
+    UV_PYTHON_DOWNLOADS=never \
+    UV_PYTHON=/usr/bin/python3.13 \
+    UV_PROJECT_ENVIRONMENT=${APP_ROOT}
+
+COPY pyproject.toml uv.lock ./
 RUN <<EOF
-pip install --no-cache-dir --requirement /tmp/requirements.txt
+curl -L https://github.com/astral-sh/uv/releases/latest/download/uv-x86_64-unknown-linux-musl.tar.gz \
+  | tar xz && mv uv-x86_64-unknown-linux-musl/uv /usr/local/bin/uv
+
+uv venv
+uv sync --locked --no-dev --no-install-project
 
 apk del .build-deps
 EOF
