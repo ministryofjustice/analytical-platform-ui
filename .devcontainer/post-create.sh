@@ -14,11 +14,11 @@ uv venv
 uv sync
 uv run python manage.py migrate --noinput
 
-# # # install npm dependencies and static assets
+# Install npm dependencies and static assets
 npm install
 make build-static
 
-# # # create aws and kube configs
+# Create aws and kube configs
 aws-sso login
 aws-sso exec --profile analytical-platform-compute-development:modernisation-platform-sandbox -- aws eks --region eu-west-2 update-kubeconfig --name analytical-platform-compute-development --alias apc-dev-cluster
 kubectl config use-context apc-dev-cluster
