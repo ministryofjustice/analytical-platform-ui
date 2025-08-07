@@ -15,7 +15,7 @@ EOF
 
 ##### FINAL
 
-FROM public.ecr.aws/docker/library/python:3.13.5-alpine3.18
+FROM public.ecr.aws/docker/library/python:3.13.5-alpine3.22
 
 LABEL org.opencontainers.image.vendor="Ministry of Justice" \
       org.opencontainers.image.authors="Analytical Platform (analytical-platform@digital.justice.gov.uk)" \
@@ -52,12 +52,12 @@ EOF
 # Install APK packages
 RUN <<EOF
 apk add --no-cache --virtual .build-deps \
-  libffi-dev=3.4.6-r0 \
-  gcc=13.2.1_git20240309-r1 \
-  musl-dev=1.2.5-r1 \
+  libffi-dev \
+  gcc \
+  musl-dev \
 
 apk add --no-cache \
-  libpq-dev=16.9-r0
+  libpq-dev
 EOF
 
 # Install Python packages and remove APK build dependencies
