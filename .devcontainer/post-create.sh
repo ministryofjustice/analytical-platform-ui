@@ -7,18 +7,18 @@ npm install --global npm@latest
 # Start Postgres
 docker compose --file contrib/docker-compose-postgres.yml up --detach
 
-# Remove existing virtual environment
-rm -rf .venv
-
-# Install venv, dependencies and run migrations
+# Install venv, dependencies and run migrations. Store venv outside /workspaces for better performance
+export UV_PROJECT_ENVIRONMENT=/home/vscode/.venv
+rm -rf /home/vscode/.venv
+uv venv
 uv sync
-uv run python manage.py migrate
+uv run python manage.py migrate --noinput
 
-# # install npm dependencies and static assets
+# # # install npm dependencies and static assets
 npm install
 make build-static
 
-# # create aws and kube configs
+# # # create aws and kube configs
 aws-sso login
 aws-sso exec --profile analytical-platform-compute-development:modernisation-platform-sandbox -- aws eks --region eu-west-2 update-kubeconfig --name analytical-platform-compute-development --alias apc-dev-cluster
 kubectl config use-context apc-dev-cluster
