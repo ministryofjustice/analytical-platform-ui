@@ -4,9 +4,11 @@
 
 ## Running Locally
 
-The dashboard is run in a DevContainer via Docker. The DevContainer Visual Studio Code extension is recommended, as is Docker Desktop.
+The app can be run in a DevContainer via Docker. The DevContainer Visual Studio Code extension is recommended, as is Docker Desktop.
 
 For more information on Dev Containers, see the [Analytical Platform docs.](https://technical-documentation.data-platform.service.justice.gov.uk/documentation/platform/infrastructure/developing.html#developing-the-data-platform)
+
+Python dependencies are installed and managed by [`uv`](https://docs.astral.sh/uv/). See the `uv` documentation for information about running commands with `uv`.
 
 ### Building the DevContainer
 

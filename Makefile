@@ -28,9 +28,8 @@ db-drop:
 serve:
 	python manage.py runserver
 
-# TODO revert this change
 serve-sso:
-	aws-sso exec --profile analytical-platform-management-production:AdministratorAccess -- python manage.py runserver
+	aws-sso exec --profile analytical-platform-compute-development:platform-engineer-admin -- python manage.py runserver
 
 build-container:
 	@ARCH=`uname -m`; \
