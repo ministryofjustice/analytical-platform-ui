@@ -12,7 +12,7 @@ Python dependencies are installed and managed by [`uv`](https://docs.astral.sh/u
 
 ### Building the DevContainer
 
-To build the dev container, ensure docker desktop is running, then open the AP UI project in Visual Studio Code. Open the command pallet by hitting command+shift+p and search for `Dev Containers: Reopen in container` and hit enter. This will build the dev container.
+To build the dev container, ensure Docker desktop is running, then open the AP UI project in Visual Studio Code. Open the command pallet by hitting command+shift+p and search for `Dev Containers: Reopen in container` and hit enter. This will build the dev container.
 
 If you are using a workspace with multiple applications, search for `Dev Containers: Open folder in Container…` instead, then select the AP UI folder. Once the dev container has finished building, it should install all the required Python and npm dependencies, as well as run the migrations.
 
@@ -26,7 +26,7 @@ If you have the 1password CLI installed on your local machine, you use the follo
 op document get --vault "Analytical Platform" "Analytical Platform UI .env" --out-file .env
 ```
 
-For installation instructions for the 1password CLI see [here](https://developer.1password.com/docs/cli/get-started/).
+For installation instructions for the 1password CLI see [the documentation here](https://developer.1password.com/docs/cli/get-started/).
 
 ### Running Development Server
 
