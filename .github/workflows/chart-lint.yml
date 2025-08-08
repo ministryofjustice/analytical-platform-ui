@@ -1,5 +1,5 @@
 ---
-name: Chart Lint
+name: 🗺️ Chart Lint
 
 on:
   pull_request:
@@ -11,23 +11,6 @@ permissions: {}
 jobs:
   chart-lint:
     name: Chart Lint
-    runs-on: ubuntu-latest
     permissions:
       contents: read
-    steps:
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-
-      - name: Set Up Helm
-        id: setup_helm
-        uses: azure/setup-helm@fe7b79cd5ee1e45176fcad797de68ecaf3ca4814 # v4.2.0
-
-      - name: Set Up Helm Chart Testing
-        id: setup_chart_testing
-        uses: helm/chart-testing-action@e6669bcd63d7cb57cb4380c33043eebe5d111992 # v2.6.1
-
-      - name: Lint Chart
-        id: lint_chart
-        run: |
-          make ct
+    uses: ministryofjustice/analytical-platform-github-actions/.github/workflows/reusable-chart-lint.yml@949059b3345aaf08170204e57a010324f03a985b # v4.5.0
