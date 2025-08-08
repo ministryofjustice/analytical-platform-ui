@@ -1,6 +1,8 @@
-##### BUILD ASSETS
-
-FROM public.ecr.aws/docker/library/node:20.15.0 AS build-node
+##################################################
+# Stage: build-node
+# From: public.ecr.aws/docker/library/node:22.9.0
+##################################################
+FROM public.ecr.aws/docker/library/node:22.9.0 AS build-node
 
 WORKDIR /build
 
@@ -20,7 +22,10 @@ EOF
 FROM ghcr.io/astral-sh/uv:python3.13-alpine@sha256:30b0d0f67eb7a5f79325709fff1bb0a93c991674b0caf04ef4017e7ee5b44be4 AS uv
 
 
-##### BUILD PYTHON
+##################################################
+# Stage: build-python
+# From: docker.io/python:3.13-alpine3.22
+##################################################
 FROM docker.io/python:3.13-alpine3.22@sha256:f196fd275fdad7287ccb4b0a85c2e402bb8c794d205cf6158909041c1ee9f38d AS build-python
 
 ENV UV_COMPILE_BYTECODE=1 \
@@ -37,10 +42,10 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 uv sync --locked --no-install-project --no-editable
 EOF
 
-##### FINAL
-
-#checkov:skip=CKV_DOCKER_2: HEALTHCHECK not required for one-time execution container running a Python script
-
+##################################################
+# Stage: final
+# From: docker.io/python:3.13-alpine3.22
+##################################################
 FROM docker.io/python:3.13-alpine3.22@sha256:f196fd275fdad7287ccb4b0a85c2e402bb8c794d205cf6158909041c1ee9f38d AS final
 
 LABEL org.opencontainers.image.vendor="Ministry of Justice" \
