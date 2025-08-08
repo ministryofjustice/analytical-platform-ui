@@ -1,5 +1,5 @@
 ---
-name: Chart Lint
+name: 🗺️ Chart Lint
 
 on:
   pull_request:
@@ -11,9 +11,9 @@ permissions: {}
 jobs:
   chart-lint:
     name: Chart Lint
-    runs-on: ubuntu-latest
     permissions:
       contents: read
+<<<<<<< HEAD
     steps:
       - name: Checkout
         id: checkout
@@ -31,3 +31,6 @@ jobs:
         id: lint_chart
         run: |
           make ct
+=======
+    uses: ministryofjustice/analytical-platform-github-actions/.github/workflows/reusable-chart-lint.yml@949059b3345aaf08170204e57a010324f03a985b # v4.5.0
+>>>>>>> 436e3d0 (Migrate actions)
