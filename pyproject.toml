@@ -1,5 +1,5 @@
 [project]
-name = "analytical-platform-dashboard-ui"
+name = "analytical-platform-ui"
 version = "0.2.0"
 description = "Analytical Platform UI"
 readme = "README.md"
@@ -57,5 +57,5 @@ select = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "-v --tb=auto --ds=dashboard_service.settings.test"
+addopts = "-v --tb=auto --ds=ap.settings.test"
 testpaths = ["tests"]

@@ -1,8 +1,8 @@
 ##################################################
 # Stage: build-node
-# From: public.ecr.aws/docker/library/node:22.9.0
+# From: docker.io/node:22.18.0-alpine3.22
 ##################################################
-FROM public.ecr.aws/docker/library/node:22.9.0 AS build-node
+FROM docker.io/node:22.18.0-alpine3.22@sha256:1b2479dd35a99687d6638f5976fd235e26c5b37e8122f786fcd5fe231d63de5b AS build-node
 
 WORKDIR /build
 
