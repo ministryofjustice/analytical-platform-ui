@@ -6,7 +6,7 @@ services:
       service: postgres
 
   interfaces:
-    image: ${IMAGE_TAG}
+    image: "${CONTAINER_IMAGE_NAME}:${CONTAINER_IMAGE_TAG}"
     ports: ["8000:8000"]
     depends_on:
       db:

@@ -1,6 +1,7 @@
 #!make
 
-IMAGE_NAME = ghcr.io/ministryofjustice/analytical-platform-ui:local
+CONTAINER_IMAGE_NAME ?= ghcr.io/ministryofjustice/analytical-platform-ui
+CONTAINER_IMAGE_TAG  ?= local
 
 build-static:
 	make build-css
@@ -31,24 +32,23 @@ serve:
 serve-sso:
 	aws-sso exec --profile analytical-platform-compute-development:platform-engineer-admin -- python manage.py runserver
 
-build-container:
-	@ARCH=`uname -m`; \
-	case $$ARCH in \
-	aarch64 | arm64) \
-		echo "Building on $$ARCH architecture"; \
-		docker build --platform linux/amd64 --file container/Dockerfile --tag $(IMAGE_NAME) . ;; \
-	*) \
-		echo "Building on $$ARCH architecture"; \
-		docker build --file container/Dockerfile --tag $(IMAGE_NAME) . ;; \
-	esac
+container-build:
+	@echo "Building container image $(CONTAINER_IMAGE_NAME):$(CONTAINER_IMAGE_TAG)"
+	docker build --platform linux/amd64 --file Dockerfile --tag $(CONTAINER_IMAGE_NAME):$(CONTAINER_IMAGE_TAG) .
 
-cst: build-container
-	container-structure-test test --platform linux/amd64 --config container/test/container-structure-test.yml --image $(IMAGE_NAME)
+container-test: container-build
+	@echo "Testing container image $(CONTAINER_IMAGE_NAME):$(CONTAINER_IMAGE_TAG)"
+	container-structure-test test --platform linux/amd64 --config test/container-structure-test.yml --image $(CONTAINER_IMAGE_NAME):$(CONTAINER_IMAGE_TAG)
 
-test: build-container
+container-scan: container-test
+	@echo "Scanning container image $(CONTAINER_IMAGE_NAME):$(CONTAINER_IMAGE_TAG) for vulnerabilities"
+	trivy image --platform linux/amd64 --severity HIGH,CRITICAL $(CONTAINER_IMAGE_NAME):$(CONTAINER_IMAGE_TAG)
+
+test: container-build
 	@echo
 	@echo "> Running Python Tests (In Docker)..."
-	IMAGE_TAG=ap docker compose --file=contrib/docker-compose-test.yml run --rm interfaces
+	CONTAINER_IMAGE_NAME=$(CONTAINER_IMAGE_NAME) CONTAINER_IMAGE_TAG=$(CONTAINER_IMAGE_TAG) docker compose --file=contrib/docker-compose-test.yml run --rm interfaces
 
-ct:
+chart-lint:
+	@echo "Linting Helm chart"
 	ct lint --charts chart
