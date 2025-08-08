@@ -16,24 +16,15 @@ npm run css
 EOF
 
 ##################################################
-# Stage: uv
-# From: ghcr.io/astral-sh/uv:python3.13-alpine
-##################################################
-FROM ghcr.io/astral-sh/uv:python3.13-alpine@sha256:30b0d0f67eb7a5f79325709fff1bb0a93c991674b0caf04ef4017e7ee5b44be4 AS uv
-
-
-##################################################
 # Stage: build-python
 # From: docker.io/python:3.13-alpine3.22
 ##################################################
-FROM docker.io/python:3.13-alpine3.22@sha256:f196fd275fdad7287ccb4b0a85c2e402bb8c794d205cf6158909041c1ee9f38d AS build-python
+FROM ghcr.io/astral-sh/uv:python3.13-alpine@sha256:30b0d0f67eb7a5f79325709fff1bb0a93c991674b0caf04ef4017e7ee5b44be4 AS build-python
 
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE="copy"
 
 WORKDIR /app
-
-COPY --from=uv /usr/local/bin/uv /usr/local/bin/uv
 
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
