@@ -1,9 +1,8 @@
-from django.conf import settings
-
 import boto3
 import structlog
 from botocore import credentials
 from botocore.session import get_session
+from django.conf import settings
 
 log = structlog.getLogger(__name__)
 
@@ -88,7 +87,7 @@ class AWSCredentialSessionSet(metaclass=SingletonMeta):
         assume_role_name: str | None = None,
         region_name: str | None = None,
     ) -> boto3.Session:
-        credential_session_key = "{}_{}_{}".format(profile_name, assume_role_name, region_name)
+        credential_session_key = f"{profile_name}_{assume_role_name}_{region_name}"
         if credential_session_key in self.credential_sessions:
             log.info(f"Returning existing session for {credential_session_key}")
             return self.credential_sessions[credential_session_key]

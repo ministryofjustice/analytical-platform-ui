@@ -3,10 +3,10 @@
   // for the documentation about the tasks.json format
   "version": "2.0.0",
   "tasks": [
-      {
-          "label": "aws-sso-process",
-          "type": "shell",
-          "command": "aws-sso process --sts-refresh --profile analytical-platform-management-production:AdministratorAccess"
-      }
+    {
+      "label": "aws-sso-process",
+      "type": "shell",
+      "command": "aws-sso process --sts-refresh --profile analytical-platform-management-production:AdministratorAccess"
+    }
   ]
 }

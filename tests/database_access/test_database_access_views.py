@@ -1,7 +1,6 @@
 # Third-party
-from django.urls import reverse
-
 import pytest
+from django.urls import reverse
 
 
 def database_list(client):
@@ -19,7 +18,6 @@ def table_detail(client):
 
 
 class TestDatabaseAccessViews:
-
     @pytest.mark.parametrize(
         "view,user,logged_in,expected_status",
         [

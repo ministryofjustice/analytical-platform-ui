@@ -3,11 +3,9 @@
   "image": "ghcr.io/ministryofjustice/devcontainer-base:latest",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "20.15.0"
+      "version": "22.18.0"
     },
-    "ghcr.io/devcontainers/features/python:1": {
-      "version": "3.12"
-    },
+    "ghcr.io/ministryofjustice/devcontainer-feature/astral:1": {},
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "./features/src/postgresql": {},
     "ghcr.io/ministryofjustice/devcontainer-feature/aws:1": {},
