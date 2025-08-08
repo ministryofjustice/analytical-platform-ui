@@ -14,6 +14,7 @@ jobs:
     permissions:
       contents: read
 <<<<<<< HEAD
+<<<<<<< HEAD
     steps:
       - name: Checkout
         id: checkout
@@ -34,3 +35,6 @@ jobs:
 =======
     uses: ministryofjustice/analytical-platform-github-actions/.github/workflows/reusable-chart-lint.yml@949059b3345aaf08170204e57a010324f03a985b # v4.5.0
 >>>>>>> 436e3d0 (Migrate actions)
+=======
+    uses: ministryofjustice/analytical-platform-github-actions/.github/workflows/reusable-chart-lint.yml@949059b3345aaf08170204e57a010324f03a985b # v4.5.0
+>>>>>>> 436e3d0d0b7cc70c5715520f7f7cafa1db6b7aa3
