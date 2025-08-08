@@ -3,7 +3,7 @@ revision = 3
 requires-python = ">=3.13"
 
 [[package]]
-name = "analytical-platform-dashboard-ui"
+name = "analytical-platform-ui"
 version = "0.2.0"
 source = { virtual = "." }
 dependencies = [
