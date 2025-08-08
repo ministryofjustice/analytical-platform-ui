@@ -8,7 +8,6 @@ npm install --global npm@latest
 docker compose --file contrib/docker-compose-postgres.yml up --detach
 
 # Install venv, dependencies and run migrations. Store venv outside /workspaces for better performance
-export UV_PROJECT_ENVIRONMENT=/home/vscode/.venv
 rm -rf /home/vscode/.venv
 uv venv
 uv sync
