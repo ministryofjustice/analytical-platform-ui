@@ -1,8 +1,11 @@
 ---
-name: CodeQL Analysis
+name: 🔬 CodeQL Analysis
 
 on:
   pull_request:
+    branches:
+      - main
+  push:
     branches:
       - main
 
@@ -11,31 +14,9 @@ permissions: {}
 jobs:
   codeql-analysis:
     name: CodeQL Analysis
-    runs-on: ubuntu-latest
     permissions:
       contents: read
       security-events: write
-    strategy:
-      fail-fast: false
-      matrix:
-        language: ["javascript", "python"]
-    steps:
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-
-      - name: Initialise CodeQL
-        id: initialise_codeql
-        uses: github/codeql-action/init@ff0a06e83cb2de871e5a09832bc6a81e7276941f # v3.28.18
-        with:
-          languages: ${{ matrix.language }}
-
-      - name: CodeQL Autobuild
-        id: codeql_autobuild
-        uses: github/codeql-action/autobuild@ff0a06e83cb2de871e5a09832bc6a81e7276941f # v3.28.18
-
-      - name: CodeQL Analysis
-        id: codeql_analysis
-        uses: github/codeql-action/analyze@ff0a06e83cb2de871e5a09832bc6a81e7276941f # v3.28.18
-        with:
-          category: "language:${{ matrix.language }}"
+    uses: ministryofjustice/analytical-platform-github-actions/.github/workflows/reusable-codeql-analysis.yml@949059b3345aaf08170204e57a010324f03a985b # v4.5.0
+    with:
+      languages: '["actions", "javascript", "python"]'

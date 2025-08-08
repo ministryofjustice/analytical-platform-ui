@@ -8,7 +8,7 @@ commandTests:
   - name: "alpine"
     command: "grep"
     args: ["VERSION_ID", "/etc/os-release"]
-    expectedOutput: ["VERSION_ID=3.20.1"]
+    expectedOutput: ["VERSION_ID=3.22"]
 
   - name: "whoami"
     command: "whoami"
@@ -27,7 +27,7 @@ commandTests:
   - name: "python"
     command: "python"
     args: ["--version"]
-    expectedOutput: ["Python 3.12.4"]
+    expectedOutput: ["Python 3.13"]
 
 fileExistenceTests:
   - name: "/app"
