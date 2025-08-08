@@ -2,4 +2,4 @@
 set -euxo pipefail
 
 # Run pre-commit
-uv run pre-commit install
+UV_PROJECT_ENVIRONMENT=/home/vscode/.venv uv run pre-commit install
