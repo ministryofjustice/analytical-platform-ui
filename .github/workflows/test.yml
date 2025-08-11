@@ -34,7 +34,7 @@ jobs:
           file: test.Dockerfile
           push: false
           load: true
-          tags: ghcr.io/ministryofjustice/analytical-platform-ui:${{ github.sha }}
+          tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
 
       - name: Run Python Tests
         id: run_python_tests
