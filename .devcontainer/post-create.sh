@@ -19,5 +19,7 @@ make build-static
 
 # Create aws and kube configs
 aws-sso login
+aws-sso setup profiles --force
+
 aws-sso exec --profile analytical-platform-compute-development:modernisation-platform-sandbox -- aws eks --region eu-west-2 update-kubeconfig --name analytical-platform-compute-development --alias analytical-platform-compute-development
 kubectl config use-context analytical-platform-compute-development

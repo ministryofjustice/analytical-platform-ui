@@ -13,8 +13,6 @@ dependencies = [
     "gunicorn==23.0.0",
     "psycopg[binary]==3.2.9",
     "pyjwt==2.10.1",
-    "pytest==8.3.3",
-    "pytest-django==4.9.0",
     "python-dotenv==1.0.1",
     "requests==2.32.4",
     "sentry-sdk==2.20.0",
@@ -28,6 +26,8 @@ dev = [
     "moto[all]==5.0.18",
     "django-debug-toolbar==4.4.6",
     "pre-commit==4.0.1",
+    "pytest==8.3.3",
+    "pytest-django==4.9.0",
     "pytest-dotenv==0.5.2",
     "ruff==0.12.2",
 ]
