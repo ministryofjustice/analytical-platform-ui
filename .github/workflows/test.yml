@@ -42,5 +42,5 @@ jobs:
           docker compose --file contrib/docker-compose-test.yml run --rm interfaces
         env:
           NETWORK: default
-          CONTAINER_IMAGE_NAME: ghcr.io/ministryofjustice/analytical-platform-ui
+          CONTAINER_IMAGE_NAME: ghcr.io/${{ github.repository }}
           CONTAINER_IMAGE_TAG: ${{ github.sha }}
