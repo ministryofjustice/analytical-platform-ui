@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import contextlib
 import os
+import sys
 from os.path import abspath, dirname, join
 from pathlib import Path
 from socket import gaierror, gethostbyname, gethostname
@@ -41,7 +42,9 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "please_change_me")
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", True)
+DEBUG = os.environ.get("DEBUG", False)
+
+TESTING = "test" in sys.argv or "PYTEST_VERSION" in os.environ
 
 if ENV == "production":
     DEBUG = False
