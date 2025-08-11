@@ -12,11 +12,11 @@
   "license": "MIT",
   "devDependencies": {
     "prettier": "3.6.2",
-    "sass": "1.83.4"
+    "sass": "1.90.0"
   },
   "dependencies": {
-    "@ministryofjustice/frontend": "3.3.1",
-    "govuk-frontend": "5.8.0",
+    "@ministryofjustice/frontend": "5.1.5",
+    "govuk-frontend": "5.11.1",
     "jquery": "3.7.1",
     "nunjucks": "3.2.4"
   }
