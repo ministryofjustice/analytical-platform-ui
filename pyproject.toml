@@ -11,8 +11,6 @@ dependencies = [
     "django-extensions==3.2.3",
     "django-structlog==8.1.0",
     "gunicorn==23.0.0",
-    "model-bakery==1.20.1",
-    "moto[all]==5.0.18",
     "psycopg[binary]==3.2.9",
     "pyjwt==2.10.1",
     "pytest==8.3.3",
@@ -26,6 +24,8 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "model-bakery==1.20.1",
+    "moto[all]==5.0.18",
     "django-debug-toolbar==4.4.6",
     "pre-commit==4.0.1",
     "pytest-dotenv==0.5.2",
