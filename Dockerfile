@@ -33,9 +33,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
 <<EOF
 if [[ "${BUILD_DEV}" == "true" ]]; then
-  uv sync --locked --no-install-project --no-editable --no-dev
-else
   uv sync --locked --no-install-project --no-editable
+else
+  uv sync --locked --no-install-project --no-editable --no-dev
 fi
 EOF
 
