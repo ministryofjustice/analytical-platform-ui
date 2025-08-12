@@ -49,7 +49,7 @@ requires-dist = [
     { name = "pytest-django", specifier = "==4.11.1" },
     { name = "python-dotenv", specifier = "==1.1.1" },
     { name = "requests", specifier = "==2.32.4" },
-    { name = "sentry-sdk", specifier = "==2.20.0" },
+    { name = "sentry-sdk", specifier = "==2.34.1" },
     { name = "uvicorn", extras = ["standard"], specifier = "==0.32.0" },
 ]
 
@@ -1205,15 +1205,15 @@ wheels = [
 
 [[package]]
 name = "sentry-sdk"
-version = "2.20.0"
+version = "2.34.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/68/e8/6a366c0cd5e129dda6ecb20ff097f70b18182c248d4c27e813c21f98992a/sentry_sdk-2.20.0.tar.gz", hash = "sha256:afa82713a92facf847df3c6f63cec71eb488d826a50965def3d7722aa6f0fdab", size = 300125, upload-time = "2025-01-14T09:50:46.072Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3a/38/10d6bfe23df1bfc65ac2262ed10b45823f47f810b0057d3feeea1ca5c7ed/sentry_sdk-2.34.1.tar.gz", hash = "sha256:69274eb8c5c38562a544c3e9f68b5be0a43be4b697f5fd385bf98e4fbe672687", size = 336969, upload-time = "2025-07-30T11:13:37.93Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e6/0f/6f7e6cd0f4a141752caef3f79300148422fdf2b8b68b531f30b2b0c0cbda/sentry_sdk-2.20.0-py2.py3-none-any.whl", hash = "sha256:c359a1edf950eb5e80cffd7d9111f3dbeef57994cb4415df37d39fda2cf22364", size = 322576, upload-time = "2025-01-14T09:50:44.472Z" },
+    { url = "https://files.pythonhosted.org/packages/2d/3e/bb34de65a5787f76848a533afbb6610e01fbcdd59e76d8679c254e02255c/sentry_sdk-2.34.1-py2.py3-none-any.whl", hash = "sha256:b7a072e1cdc5abc48101d5146e1ae680fa81fe886d8d95aaa25a0b450c818d32", size = 357743, upload-time = "2025-07-30T11:13:36.145Z" },
 ]
 
 [[package]]
