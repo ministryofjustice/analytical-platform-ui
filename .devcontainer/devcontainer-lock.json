@@ -1,14 +1,14 @@
 {
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
-      "version": "2.11.0",
-      "resolved": "ghcr.io/devcontainers/features/docker-in-docker@sha256:503f23cd692325b3cbb8c20a0ecfabb3444b0c786b363e0c82572bd7d71dc099",
-      "integrity": "sha256:503f23cd692325b3cbb8c20a0ecfabb3444b0c786b363e0c82572bd7d71dc099"
+      "version": "2.12.2",
+      "resolved": "ghcr.io/devcontainers/features/docker-in-docker@sha256:842d2ed40827dc91b95ef727771e170b0e52272404f00dba063cee94eafac4bb",
+      "integrity": "sha256:842d2ed40827dc91b95ef727771e170b0e52272404f00dba063cee94eafac4bb"
     },
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "1.6.1",
-      "resolved": "ghcr.io/devcontainers/features/node@sha256:71590121aaf7b2040f3e1e2dfc4bb9a1389277fd5a88a7199094542b82ce5340",
-      "integrity": "sha256:71590121aaf7b2040f3e1e2dfc4bb9a1389277fd5a88a7199094542b82ce5340"
+      "version": "1.6.3",
+      "resolved": "ghcr.io/devcontainers/features/node@sha256:3c35dff2aedeaeb86f03e10c265c29b56a1b3609324d83d6e901dbb6032543a4",
+      "integrity": "sha256:3c35dff2aedeaeb86f03e10c265c29b56a1b3609324d83d6e901dbb6032543a4"
     },
     "ghcr.io/ministryofjustice/devcontainer-feature/astral:1": {
       "version": "1.0.0",
@@ -29,9 +29,9 @@
       ]
     },
     "ghcr.io/ministryofjustice/devcontainer-feature/kubernetes:1": {
-      "version": "1.0.1",
-      "resolved": "ghcr.io/ministryofjustice/devcontainer-feature/kubernetes@sha256:0ec758e44468ba2a8b70b87613762ab04e50f7bb5eac8f2aea592cff213dbde5",
-      "integrity": "sha256:0ec758e44468ba2a8b70b87613762ab04e50f7bb5eac8f2aea592cff213dbde5"
+      "version": "1.0.2",
+      "resolved": "ghcr.io/ministryofjustice/devcontainer-feature/kubernetes@sha256:d24f235b7578a71a60fce981d250fa300e9f353911561648c31a7022fd8ded6a",
+      "integrity": "sha256:d24f235b7578a71a60fce981d250fa300e9f353911561648c31a7022fd8ded6a"
     }
   }
 }
