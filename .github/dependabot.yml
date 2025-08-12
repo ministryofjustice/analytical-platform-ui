@@ -37,3 +37,11 @@ updates:
     commit-message:
       prefix: ":dependabot: uv"
       include: "scope"
+    groups:
+      development-dependencies:
+        dependency-type: "development"
+      production-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
