@@ -29,9 +29,9 @@
         "ms-vsliveshare.vsliveshare"
       ],
       "settings": {
-        "python.defaultInterpreterPath": "/home/vscode/.venv/bin/python",
+        "python.defaultInterpreterPath": "${containerEnv:UV_PROJECT_ENVIRONMENT}/bin/python",
         "python.terminal.activateEnvInCurrentTerminal": true,
-        "python.venvFolders": ["/home/vscode/.venv"]
+        "python.venvFolders": ["${containerEnv:UV_PROJECT_ENVIRONMENT}"]
       }
     }
   }
