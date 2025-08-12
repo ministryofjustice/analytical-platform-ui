@@ -36,7 +36,7 @@ jobs:
           load: true
           tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
           build-args: |
-            BUILD_DEV="true"
+            BUILD_DEV=true
 
       - name: Run Python Tests
         id: run_python_tests

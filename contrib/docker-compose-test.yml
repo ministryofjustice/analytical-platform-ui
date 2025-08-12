@@ -25,5 +25,5 @@ services:
       PYTHONUNBUFFERED: "1"
       SECRET_KEY: "1234567890"
       ENABLE_DB_SSL: "False"
-    entrypoint: uv run pytest
+    entrypoint: pytest
     command: ./tests --color=yes
