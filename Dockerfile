@@ -19,7 +19,7 @@ EOF
 # Stage: build-python
 # From: docker.io/python:3.13-alpine3.22
 ##################################################
-FROM ghcr.io/astral-sh/uv:python3.13-alpine@sha256:30b0d0f67eb7a5f79325709fff1bb0a93c991674b0caf04ef4017e7ee5b44be4 AS build-python
+FROM ghcr.io/astral-sh/uv:python3.13-alpine@sha256:56ee08d1fcbae0f9fa915d2ba61bc599fa1e239df3cea183a6e554dbc5b178c7 AS build-python
 
 ARG BUILD_DEV="false"
 
