@@ -21,6 +21,8 @@ EOF
 ##################################################
 FROM ghcr.io/astral-sh/uv:python3.13-alpine@sha256:30b0d0f67eb7a5f79325709fff1bb0a93c991674b0caf04ef4017e7ee5b44be4 AS build-python
 
+ARG BUILD_DEV="false"
+
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE="copy"
 
@@ -30,7 +32,11 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
 <<EOF
-uv sync --locked --no-install-project --no-editable
+if [[ "${BUILD_DEV}" == "true" ]]; then
+  uv sync --locked --no-install-project --no-editable
+else
+  uv sync --locked --no-install-project --no-editable --no-dev
+fi
 EOF
 
 ##################################################

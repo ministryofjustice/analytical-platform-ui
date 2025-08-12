@@ -24,7 +24,9 @@
       "version": "1.0.0",
       "resolved": "ghcr.io/ministryofjustice/devcontainer-feature/container-structure-test@sha256:19eb30f9eb327b667be2002757d55381de87cdb5a79a6e37d293369fe8ad01ad",
       "integrity": "sha256:19eb30f9eb327b667be2002757d55381de87cdb5a79a6e37d293369fe8ad01ad",
-      "dependsOn": ["ghcr.io/devcontainers/features/docker-in-docker:2"]
+      "dependsOn": [
+        "ghcr.io/devcontainers/features/docker-in-docker:2"
+      ]
     },
     "ghcr.io/ministryofjustice/devcontainer-feature/kubernetes:1": {
       "version": "1.0.1",
