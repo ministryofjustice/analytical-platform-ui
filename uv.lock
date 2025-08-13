@@ -39,7 +39,7 @@ requires-dist = [
     { name = "boto3", specifier = "==1.40.8" },
     { name = "django", specifier = "==5.1.10" },
     { name = "django-extensions", specifier = "==4.1" },
-    { name = "django-structlog", specifier = "==8.1.0" },
+    { name = "django-structlog", specifier = "==9.1.1" },
     { name = "gunicorn", specifier = "==23.0.0" },
     { name = "psycopg", extras = ["binary"], specifier = "==3.2.9" },
     { name = "pyjwt", specifier = "==2.10.1" },
@@ -370,7 +370,7 @@ wheels = [
 
 [[package]]
 name = "django-structlog"
-version = "8.1.0"
+version = "9.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
@@ -378,9 +378,9 @@ dependencies = [
     { name = "django-ipware" },
     { name = "structlog" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/68/09/8430550d4cdc85245b74afbe78e49143a71d5760f5d086372bd2a14bdac9/django_structlog-8.1.0.tar.gz", hash = "sha256:0229b9a2efbd24a4e3500169788e53915c2429521e34e41dd58ccc56039bef3f", size = 20693, upload-time = "2024-05-24T22:59:17.247Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6b/8c/cc2711def7a365ce5ff4cee73a57f7ca329369a02715adf7090b208f71fe/django_structlog-9.1.1.tar.gz", hash = "sha256:14342c6c824581f1e063c88a8bc52314cd67995a3bd4a4fc8c27ea37ccd78947", size = 22948, upload-time = "2025-04-07T12:56:35.262Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1a/b2/a52adecee4c7d4f728f47df96f6149cdcf9425154e2efee8c9c3664b6a18/django_structlog-8.1.0-py3-none-any.whl", hash = "sha256:1072564bd6f36e8d3ba9893e7b31c1c46e94301189fedaecc0fb8a46525a3214", size = 16091, upload-time = "2024-05-24T22:59:14.747Z" },
+    { url = "https://files.pythonhosted.org/packages/ec/c5/c43b4182464e0dada9674c3e9602222023808ad3be39663074b5f9080a8c/django_structlog-9.1.1-py3-none-any.whl", hash = "sha256:5b6ac3abdf6549e94ccb35160b1f10266f1627c3ac77844571235a08a1ddae66", size = 18087, upload-time = "2025-04-07T12:56:33.394Z" },
 ]
 
 [[package]]
