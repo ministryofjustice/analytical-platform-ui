@@ -34,7 +34,7 @@ serve-sso:
 
 container-build:
 	@echo "Building container image $(CONTAINER_IMAGE_NAME):$(CONTAINER_IMAGE_TAG)"
-	docker build --platform linux/amd64 --file Dockerfile --tag $(CONTAINER_IMAGE_NAME):$(CONTAINER_IMAGE_TAG) .
+	docker build --platform linux/amd64 --file Dockerfile --build-arg BUILD_DEV="true" --tag $(CONTAINER_IMAGE_NAME):$(CONTAINER_IMAGE_TAG) .
 
 container-test: container-build
 	@echo "Testing container image $(CONTAINER_IMAGE_NAME):$(CONTAINER_IMAGE_TAG)"
