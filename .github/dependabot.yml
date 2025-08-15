@@ -37,3 +37,4 @@ updates:
     commit-message:
       prefix: ":dependabot: uv"
       include: "scope"
+    open-pull-requests-limit: 15
