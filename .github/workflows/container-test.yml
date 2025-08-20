@@ -14,3 +14,6 @@ jobs:
     permissions:
       contents: read
     uses: ministryofjustice/analytical-platform-github-actions/.github/workflows/reusable-container-test.yml@feat/allow-specifying-locations
+    with:
+      clean-actions-runner: false
+      configuration-file: tests/container-structure-test.yml
