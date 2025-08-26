@@ -24,7 +24,7 @@ dependencies = [
 dev = [
     "django-debug-toolbar==6.0.0",
     "model-bakery==1.20.5",
-    "moto[all]==5.1.10",
+    "moto[all]==5.1.11",
     "pre-commit==4.3.0",
     "pytest==8.4.1",
     "pytest-django==4.11.1",
