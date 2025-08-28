@@ -26,12 +26,42 @@
         "GitHub.vscode-github-actions",
         "GitHub.vscode-pull-request-github",
         "ms-python.python",
-        "ms-vsliveshare.vsliveshare"
+        "ms-vsliveshare.vsliveshare",
+        "ms-ossdata.vscode-pgsql"
       ],
       "settings": {
         "python.defaultInterpreterPath": "${containerEnv:UV_PROJECT_ENVIRONMENT}/bin/python",
         "python.terminal.activateEnvInCurrentTerminal": true,
-        "python.venvFolders": ["${containerEnv:UV_PROJECT_ENVIRONMENT}"]
+        "python.venvFolders": ["${containerEnv:UV_PROJECT_ENVIRONMENT}"],
+        "pgsql.serverGroups": [
+          {
+            "name": "Servers",
+            "id": "800A70B7-F119-4024-8930-2FE52CE789D1"
+          }
+        ],
+        "pgsql.connections": [
+          {
+            "applicationName": "vscode-pgsql",
+            "authenticationType": "SqlLogin",
+            "clientEncoding": "utf8",
+            "connectTimeout": 15,
+            "database": "ap",
+            "displayName": "docker-compose",
+            "emptyPasswordInput": false,
+            "expiresOn": 0,
+            "groupId": "800A70B7-F119-4024-8930-2FE52CE789D1",
+            "hostaddr": "127.0.0.1",
+            "id": "D9C05E16-5256-451C-A0FD-A48853988C30",
+            "password": "ap",
+            "port": "5432",
+            "profileName": "docker-compose",
+            "savePassword": true,
+            "server": "docker-compose",
+            "sshPassword": "",
+            "sslmode": "disable",
+            "user": "ap"
+          }
+        ]
       }
     }
   }
