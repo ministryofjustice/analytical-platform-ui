@@ -8,9 +8,8 @@ from tests.fixtures.aws_fixtures import *  # noqa
 def superuser(db):
     return baker.make(
         "users.User",
-        username="testing_superuser_id",
         is_superuser=True,
-        name="alice",
+        email="superuser@example.com",
     )
 
 
@@ -20,15 +19,12 @@ def users(db, superuser):
         "superuser": superuser,
         "normal_user": baker.make(
             "users.User",
-            user_id="testing_normal_user_id",
-            username="bob",
-            name="bob",
+            email="normal_user@example.com",
             is_superuser=False,
         ),
         "other_user": baker.make(
             "users.User",
-            username="carol",
-            name="carol",
-            user_id="testing_other_user_id",
+            email="carol@example.com",
+            is_superuser=False,
         ),
     }
