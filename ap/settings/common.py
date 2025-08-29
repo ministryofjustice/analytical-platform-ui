@@ -74,7 +74,6 @@ INSTALLED_APPS = [
     "ap.core",
     "ap.database_access",
     "ap.users",
-    "ap.quicksight",
 ]
 
 MIDDLEWARE = [
@@ -217,13 +216,6 @@ LOGOUT_REDIRECT_URL = "/"
 
 # Whitelist values for the HTTP Host header, to prevent certain attacks
 ALLOWED_HOSTS = [host for host in os.environ.get("ALLOWED_HOSTS", "").split() if host]
-
-# set this before adding the IP address below
-# TODO We may be able to set this in terraform instead, we should check this
-QUICKSIGHT_DOMAINS = []
-for host in ALLOWED_HOSTS:
-    prefix = "*" if host.startswith(".") else ""
-    QUICKSIGHT_DOMAINS.append(f"https://{prefix}{host}")
 
 try:
     ALLOWED_HOSTS.append(gethostbyname(gethostname()))

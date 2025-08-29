@@ -9,11 +9,6 @@ def nav_items(request):
         "nav_items": [
             {"name": "Home", "url": "/", "active": request.get_full_path() == "/"},
             {
-                "name": "QuickSight",
-                "url": reverse("quicksight:index"),
-                "active": request.get_full_path() == "/quicksight/",
-            },
-            {
                 "name": "Database access",
                 "url": reverse("database_access:list"),
                 "active": request.get_full_path() == reverse("database_access:list"),
