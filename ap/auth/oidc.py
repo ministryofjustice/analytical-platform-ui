@@ -26,34 +26,24 @@ class OIDCSubAuthenticationBackend:
         self.token = token
 
     def filter_users_by_claims(self):
-        user_id = self.token.get("userinfo", {}).get("oid")
-        return User.objects.filter(pk=user_id).first()
-
-    def _get_username(self, user_info):
-        return user_info.get("upn") or user_info.get("preferred_username") or user_info.get("email")
+        oid = self.token.get("userinfo", {}).get("oid")
+        user = User.objects.filter(entra_oid=oid).first()
+        return user
 
     def _create_user(self):
         user_info = self.token.get("userinfo")
         return User.objects.create(
-            pk=user_info.get("oid"),
-            username=self._get_username(user_info),
-            nickname=user_info.get("nickname", ""),
             email=user_info.get("email"),
-            name=user_info.get("name", ""),
+            entra_oid=user_info.get("oid"),
         )
 
     def _update_user(self, user):
         user_info = self.token.get("userinfo")
         # Update the non-key information to sync the user's info
         # with user profile from idp when the user's username is not changed.
-        if user.username != self._get_username(user_info):
-            return user
 
         if user.email != user_info.get("email"):
             user.email = user_info.get("email")
-            user.save()
-        if user.name != user_info.get("name"):
-            user.name = user_info.get("name", "")
             user.save()
         return user
 
