@@ -10,6 +10,7 @@ class GlueService(base.AWSService):
 
     def get_database_list(self, catalog_id=None):
         databases = self._request("get_databases", CatalogId=catalog_id or self.catalog_id)
+
         if not databases:
             return []
         return databases["DatabaseList"]
