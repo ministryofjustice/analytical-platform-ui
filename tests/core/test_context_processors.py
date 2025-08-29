@@ -14,7 +14,6 @@ class TestContextProcessors:
     def test_nav_items(self, request_obj):
         expected = [
             {"name": "Home", "url": "/", "active": True},
-            {"name": "QuickSight", "url": reverse("quicksight:index"), "active": False},
             {"name": "Database access", "url": reverse("database_access:list"), "active": False},
             {
                 "name": "Admin",

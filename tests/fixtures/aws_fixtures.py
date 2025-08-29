@@ -110,9 +110,3 @@ def lake_formation(aws_creds):
             },
         )
         yield lake_formation
-
-
-@pytest.fixture(autouse=True)
-def quicksight(aws_creds):
-    with moto.mock_aws():
-        yield boto3.client("quicksight", region_name="eu-west-2")
