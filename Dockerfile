@@ -2,7 +2,7 @@
 # Stage: build-node
 # From: docker.io/node:22.18.0-alpine3.22
 ##################################################
-FROM docker.io/node:22.18.0-alpine3.22@sha256:1b2479dd35a99687d6638f5976fd235e26c5b37e8122f786fcd5fe231d63de5b AS build-node
+FROM docker.io/node:24.7.0-alpine3.22@sha256:be4d5e92ac68483ec71440bf5934865b4b7fcb93588f17a24d411d15f0204e4f AS build-node
 
 WORKDIR /build
 
