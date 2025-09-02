@@ -33,3 +33,8 @@ class RAMService(base.AWSService):
         ):
             resources.extend(page.get("resources", []))
         return resources
+
+    def list_all_resources(self) -> list[dict]:
+        shares = self.get_resource_shares()
+        share_arns = [share["resourceShareArn"] for share in shares]
+        return self.list_resources(share_arns)
