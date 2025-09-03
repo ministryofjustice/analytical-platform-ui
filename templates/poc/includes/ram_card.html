@@ -1,0 +1,6 @@
+<div class="govuk-summary-card__title-wrapper">
+    <h2 class="govuk-summary-card__title">
+        <a href="{{ ram_share.get_absolute_url }}" class="govuk-link">{{ ram_share.name }}</a>
+    </h2>
+    <strong class="govuk-tag {{ ram_share.ram_share_status_class}}">{{ ram_share.get_status_display }}</strong>
+</div>

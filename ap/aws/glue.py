@@ -1,4 +1,8 @@
+import structlog
+
 from . import base
+
+logger = structlog.get_logger(__name__)
 
 
 class GlueService(base.AWSService):
@@ -52,7 +56,7 @@ class GlueService(base.AWSService):
         kwargs = kwargs or {}
         kwargs.setdefault("CatalogId", self.catalog_id)
         kwargs.setdefault("DatabaseInput", {"Name": database_name})
-        response = self._request("create_database", **kwargs)
+        response = self.client.create_database(**kwargs)
         return response
 
     def create_resource_link_database(self, resource):
@@ -86,10 +90,14 @@ class GlueService(base.AWSService):
             "DatabaseName": database_name,
             "Region": region_name,
         }
-        response = self.create_database(
-            DatabaseInput={
-                "Name": f"{account_id}_{database_name}_rl",
-                "TargetDatabase": target_database,
-            },
-        )
+        resource_link_name = f"{account_id}_{database_name}"
+        try:
+            response = self.create_database(
+                DatabaseInput={
+                    "Name": resource_link_name,
+                    "TargetDatabase": target_database,
+                },
+            )
+        except self.client.exceptions.AlreadyExistsException:
+            return logger.info(f"Resource link already exists for {resource_link_name}")
         return response

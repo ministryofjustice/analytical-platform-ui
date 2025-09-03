@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}RAM Share Resources{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <h1 class="govuk-heading-xl">RAM Share Resources</h1>
+
+                <!-- RAM Share Information -->
+                <div class="govuk-summary-card">
+                  {% include "poc/includes/ram_card.html" with ram_share=ram_share %}
+                    <div class="govuk-summary-card__content">
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    ARN
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    <code class="govuk-!-font-size-16">{{ ram_share.arn }}</code>
+                                </dd>
+                            </div>
+
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Account ID
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ ram_share.account_id }}
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+
+                <!-- Resources Section -->
+                <h2 class="govuk-heading-l govuk-!-margin-top-6">Shared Resources</h2>
+
+                {% if resources %}
+                    <p class="govuk-body">{{ resources|length }} resource{{ resources|length|pluralize }} found.</p>
+
+                    {% for resource in resources %}
+                        <div class="govuk-summary-card">
+                            <div class="govuk-summary-card__title-wrapper">
+                                <h3 class="govuk-summary-card__title">
+                                    {{ resource.type }}
+                                </h3>
+                                {% if resource.status == 'AVAILABLE' %}
+                                    <strong class="govuk-tag govuk-tag--green">{{ resource.status }}</strong>
+                                {% elif resource.status == 'PENDING' %}
+                                    <strong class="govuk-tag govuk-tag--yellow">{{ resource.status }}</strong>
+                                {% elif resource.status == 'FAILED' %}
+                                    <strong class="govuk-tag govuk-tag--red">{{ resource.status }}</strong>
+                                {% else %}
+                                    <strong class="govuk-tag">{{ resource.status }}</strong>
+                                {% endif %}
+                            </div>
+
+                            <div class="govuk-summary-card__content">
+                                <dl class="govuk-summary-list">
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            Resource ARN
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            <code class="govuk-!-font-size-16">{{ resource.arn }}</code>
+                                        </dd>
+                                    </div>
+
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            Type
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            {{ resource.type }}
+                                        </dd>
+                                    </div>
+
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            Resource Share ARN
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            <code class="govuk-!-font-size-16">{{ resource.resourceShareArn }}</code>
+                                        </dd>
+                                    </div>
+
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            Region Scope
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            {{ resource.resourceRegionScope }}
+                                        </dd>
+                                    </div>
+
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            Created
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            {{ resource.creationTime|date:"j F Y \a\t H:i" }}
+                                        </dd>
+                                    </div>
+
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            Last Updated
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            {{ resource.lastUpdatedTime|date:"j F Y \a\t H:i" }}
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                {% else %}
+                    <div class="govuk-panel govuk-panel--confirmation">
+                        <h3 class="govuk-panel__title">
+                            No resources found
+                        </h3>
+                        <div class="govuk-panel__body">
+                            This RAM share has no associated resources to display.
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

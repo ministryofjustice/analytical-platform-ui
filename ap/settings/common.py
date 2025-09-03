@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "ap.auth",
     "ap.core",
     "ap.users",
+    "ap.poc",
 ]
 
 MIDDLEWARE = [

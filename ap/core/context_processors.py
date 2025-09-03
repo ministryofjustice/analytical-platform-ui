@@ -13,6 +13,11 @@ def nav_items(request):
                 "url": reverse("admin:index"),
                 "hide": not request.user.is_staff,
             },
+            {
+                "name": "RAM Shares",
+                "url": reverse("poc:index"),
+                "hide": not request.user.is_authenticated,
+            },
         ]
     }
 
