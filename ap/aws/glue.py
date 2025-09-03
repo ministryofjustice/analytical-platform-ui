@@ -101,3 +101,17 @@ class GlueService(base.AWSService):
         except self.client.exceptions.AlreadyExistsException:
             return logger.info(f"Resource link already exists for {resource_link_name}")
         return response
+
+    def delete_database(self, database_name, catalog_id=None):
+        response = self._request(
+            "delete_database", CatalogId=catalog_id or self.catalog_id, Name=database_name
+        )
+        return response
+
+    def delete_resource_link_database(self, resource: dict):
+        arn = resource.get("arn")
+        account_id = arn.split(":")[4]
+        database_name = arn.split("/")[-1]
+        resource_link_name = f"{account_id}_{database_name}"
+        response = self.delete_database(resource_link_name)
+        return response

@@ -8,15 +8,20 @@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
                 <h1 class="govuk-heading-xl">RAM Shares</h1>
-
-                <!-- Refresh Button -->
+                <!-- Refresh and Delete Buttons -->
                 <div class="govuk-button-group govuk-!-margin-bottom-6">
-                    <form method="post" action="{% url 'poc:refresh_ram_shares' %}">
-                        {% csrf_token %}
-                        <button type="submit" class="govuk-button" data-module="govuk-button">
-                            Refresh RAM Shares
-                        </button>
-                    </form>
+                  <form method="post" action="{% url 'poc:refresh_ram_shares' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+                      Refresh RAM Shares
+                    </button>
+                  </form>
+                  <form method="post" action="{% url 'poc:delete_ram_shares' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+                      Delete RAM Shares
+                    </button>
+                  </form>
                 </div>
 
                 {% if ram_shares %}

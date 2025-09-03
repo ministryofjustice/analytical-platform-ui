@@ -34,3 +34,11 @@ class RefreshRAMSharesView(View):
             messages.error(request, f"Failed to refresh RAM shares: {str(e)}")
 
         return HttpResponseRedirect(reverse("poc:index"))
+
+
+class DeleteRAMSharesView(View):
+    def post(self, request, *args, **kwargs):
+        for obj in RAMShare.objects.all():
+            obj.delete()
+        messages.success(request, "RAM shares have been successfully deleted.")
+        return HttpResponseRedirect(reverse("poc:index"))

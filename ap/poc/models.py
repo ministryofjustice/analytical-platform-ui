@@ -1,8 +1,11 @@
-from django.db import models
+import structlog
+from django.db import models, transaction
 from django.urls import reverse
 from django_extensions.db.models import TimeStampedModel
 
 from ap import aws
+
+logger = structlog.get_logger()
 
 
 class RAMShare(TimeStampedModel):
@@ -52,3 +55,15 @@ class RAMShare(TimeStampedModel):
             except glue_service.client.exceptions.AlreadyExistsException as err:
                 print(f"Resource link already exists: {err}")
                 continue
+
+    @transaction.atomic
+    def delete(self):
+        glue_service = aws.GlueService()
+        for resource in self.get_shared_resources():
+            if resource.get("type") != "glue:Database":
+                continue
+            try:
+                glue_service.delete_resource_link_database(resource)
+            except glue_service.client.exceptions.EntityNotFoundException as err:
+                logger.info(f"Resource link not found: {err}")
+        return super().delete()

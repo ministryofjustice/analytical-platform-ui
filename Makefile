@@ -52,3 +52,7 @@ test: container-build
 chart-lint:
 	@echo "Linting Helm chart"
 	ct lint --charts chart
+
+lint:
+	ruff check --fix
+	ruff format
