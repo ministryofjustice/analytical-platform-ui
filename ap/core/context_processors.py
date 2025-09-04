@@ -14,7 +14,7 @@ def nav_items(request):
                 "hide": not request.user.is_staff,
             },
             {
-                "name": "RAM Shares",
+                "name": "Shared Resources",
                 "url": reverse("poc:index"),
                 "hide": not request.user.is_superuser,
             },

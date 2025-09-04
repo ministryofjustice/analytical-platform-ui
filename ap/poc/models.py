@@ -67,3 +67,21 @@ class RAMShare(TimeStampedModel):
             except glue_service.client.exceptions.EntityNotFoundException as err:
                 logger.info(f"Resource link not found: {err}")
         return super().delete()
+
+
+class SharedResource(TimeStampedModel):
+    arn = models.CharField(max_length=512, unique=True, help_text="Resource Share ARN")
+    resource_type = models.CharField(max_length=128, help_text="Resource Type")
+    account_id = models.CharField(max_length=12, help_text="AWS Account ID")
+
+    @transaction.atomic
+    def delete(self):
+        if self.resource_type != "glue:Database":
+            return super().delete()
+
+        glue_service = aws.GlueService()
+        try:
+            glue_service.delete_resource_link_database({"arn": self.arn})
+        except glue_service.client.exceptions.EntityNotFoundException as err:
+            logger.info(f"Resource link not found: {err}")
+        return super().delete()

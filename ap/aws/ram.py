@@ -7,7 +7,7 @@ from . import base
 class RAMService(base.AWSService):
     aws_service_name = "ram"
 
-    def get_resource_shares(self, **kwargs: Any) -> list[dict]:
+    def get_resource_shares(self, **kwargs: Any) -> Generator[dict]:
         kwargs = kwargs or {}
         kwargs.setdefault("resourceOwner", "OTHER-ACCOUNTS")
         kwargs.setdefault("resourceShareStatus", "ACTIVE")
@@ -33,4 +33,6 @@ class RAMService(base.AWSService):
     def list_all_resources(self) -> list[dict]:
         shares = self.get_resource_shares()
         share_arns = [share["resourceShareArn"] for share in shares]
+        if not share_arns:
+            return []
         return self.list_resources(share_arns)

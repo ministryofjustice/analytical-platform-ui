@@ -54,5 +54,5 @@ chart-lint:
 	ct lint --charts chart
 
 lint:
-	ruff check --fix
 	ruff format
+	ruff check --fix

@@ -1,7 +1,7 @@
 from django.db import transaction
 
 from ap import aws
-from ap.poc.models import RAMShare
+from ap.poc.models import RAMShare, SharedResource
 
 
 @transaction.atomic
@@ -34,9 +34,29 @@ def create_or_update_ram_objects():
         # obj.update_resource_links()
 
     # remove cancelled ram shares
-    delete_ram_shares(exclude_arns=arns)
+    delete_shared_resources(exclude_arns=arns)
 
 
-def delete_ram_shares(exclude_arns):
+def delete_shared_resources(exclude_arns):
     for ram_share in RAMShare.objects.exclude(arn__in=exclude_arns):
         ram_share.delete()
+
+
+def create_or_update_shared_resources():
+    ram_service = aws.RAMService()
+    for resource in ram_service.list_all_resources():
+        arn = resource["arn"]
+        account_id = arn.split(":")[4]
+        obj, created = SharedResource.objects.get_or_create(
+            arn=resource["arn"],
+            defaults={
+                "resource_type": resource.get("type", ""),
+                "account_id": account_id,
+            },
+        )
+        if not created:
+            continue
+
+        if obj.resource_type in ["glue:Database"]:
+            glue_service = aws.GlueService()
+            glue_service.create_resource_link_database(resource)

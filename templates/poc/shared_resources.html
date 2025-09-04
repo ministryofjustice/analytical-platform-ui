@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Shared Resources{% endblock %}
+
+{% block content %}
+<h1 class="govuk-heading-xl">Shared Resources</h1>
+
+<!-- Action Buttons -->
+<div class="govuk-button-group govuk-!-margin-bottom-6">
+    <form method="post" action="{% url 'poc:refresh_shared_resources' %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+            Refresh Shared Resources
+        </button>
+    </form>
+    <form method="post" action="{% url 'poc:delete_shared_resources' %}" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+            Delete All Resources
+        </button>
+    </form>
+</div>
+
+{% if ram_shares %}
+    <p class="govuk-body">{{ ram_shares|length }} shared resource{{ ram_shares|length|pluralize }} found.</p>
+
+    <div class="govuk-table__wrapper">
+        <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m">Shared Resources</caption>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Resource ARN</th>
+                    <th scope="col" class="govuk-table__header">Type</th>
+                    <th scope="col" class="govuk-table__header">Account ID</th>
+                    <th scope="col" class="govuk-table__header">Created</th>
+                    <th scope="col" class="govuk-table__header">Last Modified</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                {% for resource in ram_shares %}
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">
+                            <code class="govuk-!-font-size-14">{{ resource.arn|truncatechars:60 }}</code>
+                            {% if resource.arn|length > 60 %}
+                                <details class="govuk-details govuk-!-margin-top-1 govuk-!-margin-bottom-0" data-module="govuk-details">
+                                    <summary class="govuk-details__summary">
+                                        <span class="govuk-details__summary-text">
+                                            Show full ARN
+                                        </span>
+                                    </summary>
+                                    <div class="govuk-details__text">
+                                        <code class="govuk-!-font-size-14">{{ resource.arn }}</code>
+                                    </div>
+                                </details>
+                            {% endif %}
+                        </td>
+                        <td class="govuk-table__cell">
+                            <strong class="govuk-tag govuk-tag--blue">{{ resource.resource_type }}</strong>
+                        </td>
+                        <td class="govuk-table__cell">{{ resource.account_id }}</td>
+                        <td class="govuk-table__cell">
+                            <time datetime="{{ resource.created|date:'Y-m-d H:i' }}">
+                                {{ resource.created|date:"j M Y" }}<br>
+                                <span class="govuk-!-font-size-14 govuk-body-s">{{ resource.created|date:"H:i" }}</span>
+                            </time>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <time datetime="{{ resource.modified|date:'Y-m-d H:i' }}">
+                                {{ resource.modified|date:"j M Y" }}<br>
+                                <span class="govuk-!-font-size-14 govuk-body-s">{{ resource.modified|date:"H:i" }}</span>
+                            </time>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% else %}
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h2 class="govuk-panel__title">
+            No shared resources found
+        </h2>
+        <div class="govuk-panel__body">
+            There are currently no shared resources to display. Use the "Refresh Shared Resources" button to load data from AWS.
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
