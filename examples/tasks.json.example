@@ -6,7 +6,7 @@
     {
       "label": "aws-sso-process",
       "type": "shell",
-      "command": "kubectl config use-context analytical-platform-next-poc-hub-development:platform-engineer-admin && aws-sso login && aws-sso process --sts-refresh --profile analytical-platform-next-poc-hub-development:platform-engineer-admin"
+      "command": "aws-sso login && aws-sso process --sts-refresh --profile analytical-platform-next-poc-hub-development:platform-engineer-admin"
     }
   ]
 }
