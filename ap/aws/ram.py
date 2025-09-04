@@ -1,3 +1,4 @@
+from collections.abc import Generator
 from typing import Any
 
 from . import base
@@ -12,27 +13,22 @@ class RAMService(base.AWSService):
         kwargs.setdefault("resourceShareStatus", "ACTIVE")
         paginator = self.client.get_paginator("get_resource_shares")
 
-        shares: list[dict] = []
         for page in paginator.paginate(**kwargs, PaginationConfig={"PageSize": 100}):
-            shares.extend(
-                share
-                for share in page.get("resourceShares", [])
-                if share.get("name", "").startswith("LakeFormation-V4")
-            )
-        return shares
+            for share in page.get("resourceShares", []):
+                if share.get("name", "").startswith("LakeFormation-V4"):
+                    yield share
 
-    def list_resources(self, resource_share_arns: list[str], **kwargs: Any) -> list[dict]:
+    def list_resources(self, resource_share_arns: list[str], **kwargs: Any) -> Generator[dict]:
         kwargs = kwargs or {}
         kwargs.setdefault("resourceOwner", "OTHER-ACCOUNTS")
         paginator = self.client.get_paginator("list_resources")
-        resources: list[dict] = []
+
         for page in paginator.paginate(
             resourceShareArns=resource_share_arns,
             **kwargs,
             PaginationConfig={"PageSize": 100},
         ):
-            resources.extend(page.get("resources", []))
-        return resources
+            yield from page.get("resources", [])
 
     def list_all_resources(self) -> list[dict]:
         shares = self.get_resource_shares()

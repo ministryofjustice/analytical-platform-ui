@@ -53,7 +53,7 @@ class RAMShare(TimeStampedModel):
             try:
                 glue_service.create_resource_link_database(resource)
             except glue_service.client.exceptions.AlreadyExistsException as err:
-                print(f"Resource link already exists: {err}")
+                logger.info(f"Resource link already exists: {err}")
                 continue
 
     @transaction.atomic

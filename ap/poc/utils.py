@@ -7,7 +7,9 @@ from ap.poc.models import RAMShare
 @transaction.atomic
 def create_or_update_ram_objects():
     ram_service = aws.RAMService()
+    arns = []
     for resource_share in ram_service.get_resource_shares():
+        arns.append(resource_share["resourceShareArn"])
         obj, created = RAMShare.objects.get_or_create(
             arn=resource_share["resourceShareArn"],
             defaults={
@@ -30,3 +32,11 @@ def create_or_update_ram_objects():
         obj.account_id = resource_share["owningAccountId"]
         obj.save()
         # obj.update_resource_links()
+
+    # remove cancelled ram shares
+    delete_ram_shares(exclude_arns=arns)
+
+
+def delete_ram_shares(exclude_arns):
+    for ram_share in RAMShare.objects.exclude(arn__in=exclude_arns):
+        ram_share.delete()
