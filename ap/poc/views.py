@@ -21,7 +21,7 @@ class RAMShareResourcesView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["resources"] = self.object.get_shared_resources()
+        context["resources"] = list(self.object.get_shared_resources())
         return context
 
 
