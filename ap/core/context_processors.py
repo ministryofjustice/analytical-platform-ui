@@ -16,7 +16,7 @@ def nav_items(request):
             {
                 "name": "RAM Shares",
                 "url": reverse("poc:index"),
-                "hide": not request.user.is_authenticated,
+                "hide": not request.user.is_superuser,
             },
         ]
     }

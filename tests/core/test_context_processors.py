@@ -19,6 +19,11 @@ class TestContextProcessors:
                 "url": reverse("admin:index"),
                 "hide": not request_obj.user.is_staff,
             },
+            {
+                "name": "RAM Shares",
+                "url": reverse("poc:index"),
+                "hide": not request_obj.user.is_superuser,
+            },
         ]
         assert nav_items(request=request_obj) == {"nav_items": expected}
 
