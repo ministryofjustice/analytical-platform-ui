@@ -15,6 +15,9 @@ class RAMService(base.AWSService):
 
         for page in paginator.paginate(**kwargs, PaginationConfig={"PageSize": 100}):
             for share in page.get("resourceShares", []):
+                # temporary change so that we only create resources from the Producer POC account
+                if share.get("owningAccountId") != "720819236209":
+                    continue
                 if share.get("name", "").startswith("LakeFormation-V4"):
                     yield share
 
