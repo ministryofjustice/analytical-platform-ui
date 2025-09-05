@@ -1,10 +1,12 @@
 # Standard library
 import os
+from datetime import UTC, datetime
 
 # Third-party
 import boto3
 import moto
 import pytest
+from django.conf import settings
 
 
 @pytest.fixture(autouse=True)
@@ -90,7 +92,7 @@ def lake_formation(aws_creds):
             },
             Resource={
                 "Table": {
-                    "CatalogId": "123456789012",
+                    "CatalogId": settings.PRODUCER_ACCOUNT_ID,
                     "DatabaseName": "test_database",
                     "Name": "test_table",
                 },
@@ -110,3 +112,65 @@ def lake_formation(aws_creds):
             },
         )
         yield lake_formation
+
+
+@pytest.fixture(autouse=True)
+def ram(aws_creds):
+    with moto.mock_aws():
+        ram_client = boto3.client("ram", region_name="eu-west-2")
+
+        # Create sample resource shares
+        sample_shares = [
+            {
+                "name": "LakeFormation-V4-TestShare1",
+                "owningAccountId": settings.PRODUCER_ACCOUNT_ID,
+                "resourceShareArn": "arn:aws:ram:eu-west-2:123456789012:resource-share/test-share-1",  # noqa
+                "status": "ACTIVE",
+                "lastUpdatedTime": datetime.now(UTC),
+                "creationTime": datetime.now(UTC),
+            },
+            {
+                "name": "LakeFormation-V4-TestShare2",
+                "owningAccountId": settings.PRODUCER_ACCOUNT_ID,
+                "resourceShareArn": "arn:aws:ram:eu-west-2:123456789012:resource-share/test-share-2",  # noqa
+                "status": "PENDING",
+                "lastUpdatedTime": datetime.now(UTC),
+                "creationTime": datetime.now(UTC),
+            },
+            {
+                "name": "OtherShare-NotLakeFormation",
+                "owningAccountId": settings.PRODUCER_ACCOUNT_ID,
+                "resourceShareArn": "arn:aws:ram:eu-west-2:123456789012:resource-share/other-share",
+                "status": "ACTIVE",
+                "lastUpdatedTime": datetime.now(UTC),
+                "creationTime": datetime.now(UTC),
+            },
+        ]
+
+        # Mock the resource shares data
+        ram_client._sample_shares = sample_shares
+
+        # Create sample resources for the shares
+        sample_resources = [
+            {
+                "arn": "arn:aws:glue:eu-west-2:123456789012:table/test_database/test_table_1",
+                "type": "glue:Table",
+                "resourceShareArn": "arn:aws:ram:eu-west-2:123456789012:resource-share/test-share-1",  # noqa
+                "status": "AVAILABLE",
+                "creationTime": datetime.now(UTC),
+                "lastUpdatedTime": datetime.now(UTC),
+                "resourceRegionScope": "REGIONAL",
+            },
+            {
+                "arn": "arn:aws:glue:eu-west-2:123456789012:database/test_database",
+                "type": "glue:Database",
+                "resourceShareArn": "arn:aws:ram:eu-west-2:123456789012:resource-share/test-share-1",  # noqa
+                "creationTime": datetime.now(UTC),
+                "lastUpdatedTime": datetime.now(UTC),
+                "resourceRegionScope": "REGIONAL",
+            },
+        ]
+
+        ram_client._sample_resources = sample_resources
+
+        yield ram_client

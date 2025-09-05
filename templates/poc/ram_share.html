@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}RAM Shares{% endblock %}
+
+{% block content %}
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <h1 class="govuk-heading-xl">RAM Shares</h1>
+                <!-- Refresh and Delete Buttons -->
+                <div class="govuk-button-group govuk-!-margin-bottom-6">
+                  <form method="post" action="{% url 'poc:refresh_ram_shares' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="govuk-button" data-module="govuk-button">
+                      Refresh RAM Shares
+                    </button>
+                  </form>
+                  <form method="post" action="{% url 'poc:delete_ram_shares' %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+                      Delete RAM Shares
+                    </button>
+                  </form>
+                </div>
+
+                {% if ram_shares %}
+                    <p class="govuk-body">{{ ram_shares|length }} RAM share{{ ram_shares|length|pluralize }} found.</p>
+
+                    {% for ram_share in ram_shares %}
+                        <div class="govuk-summary-card">
+                          {% include "poc/includes/ram_card.html" with ram_share=ram_share %}
+                            <div class="govuk-summary-card__content">
+                                <dl class="govuk-summary-list">
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            ARN
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            <code class="govuk-!-font-size-16">{{ ram_share.arn }}</code>
+                                        </dd>
+                                    </div>
+
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            Account ID
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            {{ ram_share.account_id }}
+                                        </dd>
+                                    </div>
+
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            Created
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            {{ ram_share.created|date:"j F Y \a\t H:i" }}
+                                        </dd>
+                                    </div>
+
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">
+                                            Last modified
+                                        </dt>
+                                        <dd class="govuk-summary-list__value">
+                                            {{ ram_share.modified|date:"j F Y \a\t H:i" }}
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                {% else %}
+                    <h2 class="govuk-heading-m">
+                        No RAM shares found
+                    </h2>
+                    <p class="govuk-body">There are currently no RAM shares to display.</p>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</div>
+{% endblock %}

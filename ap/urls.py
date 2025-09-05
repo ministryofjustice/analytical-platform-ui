@@ -9,6 +9,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include("ap.auth.urls")),
     path("healthcheck/", views.HealthcheckView.as_view(), name="healthcheck"),
+    path("poc/", include("ap.poc.urls", namespace="poc")),
 ]
 
 if settings.DEBUG and not settings.TESTING:

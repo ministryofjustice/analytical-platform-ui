@@ -19,12 +19,16 @@ class TestContextProcessors:
                 "url": reverse("admin:index"),
                 "hide": not request_obj.user.is_staff,
             },
+            {
+                "name": "Shared Resources",
+                "url": reverse("poc:index"),
+                "hide": not request_obj.user.is_superuser,
+            },
         ]
         assert nav_items(request=request_obj) == {"nav_items": expected}
 
     def test_header_context(self, request_obj):
         expected_nav_items = [
-            {"name": request_obj.user.username, "url": ""},
             {"name": "Sign out", "url": reverse("logout")},
         ]
 

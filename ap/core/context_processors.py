@@ -13,6 +13,11 @@ def nav_items(request):
                 "url": reverse("admin:index"),
                 "hide": not request.user.is_staff,
             },
+            {
+                "name": "Shared Resources",
+                "url": reverse("poc:index"),
+                "hide": not request.user.is_superuser,
+            },
         ]
     }
 
@@ -21,10 +26,6 @@ def header_context(request):
     is_logged_in = request.user.is_authenticated
     return {
         "header_nav_items": [
-            {
-                "name": request.user.username if is_logged_in else "",
-                "url": "",
-            },
             {
                 "name": "Sign out" if is_logged_in else "Sign in",
                 "url": reverse("logout") if is_logged_in else reverse("login"),

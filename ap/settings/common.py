@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "ap.auth",
     "ap.core",
     "ap.users",
+    "ap.poc",
 ]
 
 MIDDLEWARE = [
@@ -328,3 +329,6 @@ IAM_BEARER_ROLE_ARN = os.environ.get("IAM_BEARER_ROLE_ARN")
 DEFAULT_STS_ROLE_TO_ASSUME = os.environ.get("DEFAULT_STS_ROLE_TO_ASSUME", None)
 
 AWS_DEFAULT_REGION = os.environ.get("AWS_DEFAULT_REGION", "eu-west-2")
+
+# TODO should be removed - for the poc only
+PRODUCER_ACCOUNT_ID = "720819236209"
