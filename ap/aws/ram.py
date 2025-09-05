@@ -1,6 +1,8 @@
 from collections.abc import Generator
 from typing import Any
 
+from django.conf import settings
+
 from . import base
 
 
@@ -16,7 +18,7 @@ class RAMService(base.AWSService):
         for page in paginator.paginate(**kwargs, PaginationConfig={"PageSize": 100}):
             for share in page.get("resourceShares", []):
                 # temporary change so that we only create resources from the Producer POC account
-                if share.get("owningAccountId") != "720819236209":
+                if share.get("owningAccountId") != settings.PRODUCER_ACCOUNT_ID:
                     continue
                 if share.get("name", "").startswith("LakeFormation-V4"):
                     yield share

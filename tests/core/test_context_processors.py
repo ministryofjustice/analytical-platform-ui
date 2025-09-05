@@ -20,7 +20,7 @@ class TestContextProcessors:
                 "hide": not request_obj.user.is_staff,
             },
             {
-                "name": "RAM Shares",
+                "name": "Shared Resources",
                 "url": reverse("poc:index"),
                 "hide": not request_obj.user.is_superuser,
             },

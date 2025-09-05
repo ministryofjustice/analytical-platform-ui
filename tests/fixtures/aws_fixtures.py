@@ -6,6 +6,7 @@ from datetime import UTC, datetime
 import boto3
 import moto
 import pytest
+from django.conf import settings
 
 
 @pytest.fixture(autouse=True)
@@ -91,7 +92,7 @@ def lake_formation(aws_creds):
             },
             Resource={
                 "Table": {
-                    "CatalogId": "123456789012",
+                    "CatalogId": settings.PRODUCER_ACCOUNT_ID,
                     "DatabaseName": "test_database",
                     "Name": "test_table",
                 },
@@ -122,7 +123,7 @@ def ram(aws_creds):
         sample_shares = [
             {
                 "name": "LakeFormation-V4-TestShare1",
-                "owningAccountId": "123456789012",
+                "owningAccountId": settings.PRODUCER_ACCOUNT_ID,
                 "resourceShareArn": "arn:aws:ram:eu-west-2:123456789012:resource-share/test-share-1",  # noqa
                 "status": "ACTIVE",
                 "lastUpdatedTime": datetime.now(UTC),
@@ -130,7 +131,7 @@ def ram(aws_creds):
             },
             {
                 "name": "LakeFormation-V4-TestShare2",
-                "owningAccountId": "123456789012",
+                "owningAccountId": settings.PRODUCER_ACCOUNT_ID,
                 "resourceShareArn": "arn:aws:ram:eu-west-2:123456789012:resource-share/test-share-2",  # noqa
                 "status": "PENDING",
                 "lastUpdatedTime": datetime.now(UTC),
@@ -138,7 +139,7 @@ def ram(aws_creds):
             },
             {
                 "name": "OtherShare-NotLakeFormation",
-                "owningAccountId": "123456789012",
+                "owningAccountId": settings.PRODUCER_ACCOUNT_ID,
                 "resourceShareArn": "arn:aws:ram:eu-west-2:123456789012:resource-share/other-share",
                 "status": "ACTIVE",
                 "lastUpdatedTime": datetime.now(UTC),

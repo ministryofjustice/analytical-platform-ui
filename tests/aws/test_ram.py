@@ -1,5 +1,7 @@
 from unittest.mock import MagicMock, patch
 
+from django.conf import settings
+
 from ap.aws.ram import RAMService
 
 
@@ -34,19 +36,19 @@ class TestRAMService:
                         "name": "LakeFormation-V4-TestShare1",
                         "resourceShareArn": "arn:aws:ram:eu-west-2:123456789012:resource-share/test-share-1",  # noqa
                         "status": "ACTIVE",
-                        "owningAccountId": "123456789012",
+                        "owningAccountId": settings.PRODUCER_ACCOUNT_ID,
                     },
                     {
                         "name": "OtherShare-NotLakeFormation",
                         "resourceShareArn": "arn:aws:ram:eu-west-2:123456789012:resource-share/other-share",  # noqa
                         "status": "ACTIVE",
-                        "owningAccountId": "123456789012",
+                        "owningAccountId": settings.PRODUCER_ACCOUNT_ID,
                     },
                     {
                         "name": "LakeFormation-V4-TestShare2",
                         "resourceShareArn": "arn:aws:ram:eu-west-2:123456789012:resource-share/test-share-2",  # noqa
                         "status": "PENDING",
-                        "owningAccountId": "123456789012",
+                        "owningAccountId": settings.PRODUCER_ACCOUNT_ID,
                     },
                 ]
             }
@@ -113,6 +115,7 @@ class TestRAMService:
                     {
                         "name": "LakeFormation-V4-TestShare1",
                         "resourceShareArn": "arn:aws:ram:eu-west-2:123456789012:resource-share/test-share-1",  # noqa
+                        "owningAccountId": settings.PRODUCER_ACCOUNT_ID,
                     }
                 ]
             },
@@ -259,8 +262,22 @@ class TestRAMService:
 
         # Mock multiple pages to test lazy loading
         mock_pages = [
-            {"resourceShares": [{"name": "LakeFormation-V4-Share1"}]},
-            {"resourceShares": [{"name": "LakeFormation-V4-Share2"}]},
+            {
+                "resourceShares": [
+                    {
+                        "name": "LakeFormation-V4-Share1",
+                        "owningAccountId": settings.PRODUCER_ACCOUNT_ID,
+                    }
+                ]
+            },
+            {
+                "resourceShares": [
+                    {
+                        "name": "LakeFormation-V4-Share2",
+                        "owningAccountId": settings.PRODUCER_ACCOUNT_ID,
+                    }
+                ]
+            },
         ]
         mock_paginator.paginate.return_value = iter(mock_pages)
 
