@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Table {{table.Name}}{% endblock %}
+
+{% block content %}
+<h1 class="govuk-heading-xl">{{table.Name}}</h1>
+<p class="govuk-body">Database: {{database.TargetDatabase.DatabaseName}}</p>
+<p class="govuk-body">Catalogue ID: {{database.TargetDatabase.CatalogId}}</p>
+
+<h1 class="govuk-heading-l">Permissions</h1>
+
+{% if table.IsRegisteredWithLakeFormation %}
+
+    {% if table_permissions %}
+        <p class="govuk-body">{{ table_permissions|length }} permission set{{ table_permissions|length|pluralize }} found.</p>
+        <div class="govuk-table__wrapper">
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">User</th>
+                        <th scope="col" class="govuk-table__header">Permissions</th>
+                        <th scope="col" class="govuk-table__header">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    {% for permission in table_permissions %}
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <p class="govuk-body">{{ permission.principal_name }}</p>
+                            </td>
+                            <td class="govuk-table__cell">
+                                <p class="govuk-body">{{ permission.permissions|join:", "  }}</p>
+                            </td>
+                            <td class="govuk-table__cell">
+                                <form method="post" action="{% url 'poc:revoke_table_permissions' database.TargetDatabase.CatalogId database.Name table.Name %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="principal" value="{{ permission.principal }}">
+                                    <input type="hidden" name="permissions" value="{{ permission.permissions|join:', ' }}">
+                                    <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+                                        Revoke Permissions
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    {% else %}
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h2 class="govuk-panel__title">
+                No permissions found on this table.
+            </h2>
+        </div>
+    {% endif %}
+
+<div class="govuk-button-group govuk-!-margin-bottom-6">
+    <form method="post" action="{% url 'poc:grant_table_permissions' database.TargetDatabase.CatalogId database.Name table.Name %}" style="display: inline;">
+        {% csrf_token %}
+        <input class="govuk-input govuk-!-margin-bottom-2" name="user" type="text">
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+            Grant Permissions
+        </button>
+    </form>
+</div>
+
+
+{% endif %}
+
+{% endblock %}

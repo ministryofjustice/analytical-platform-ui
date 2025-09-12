@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Database {{database.TargetDatabase.DatabaseName}}{% endblock %}
+
+{% block content %}
+<h1 class="govuk-heading-xl">{{database.TargetDatabase.DatabaseName}}</h1>
+<p class="govuk-body">Catalogue ID: {{database.TargetDatabase.CatalogId}}</p>
+
+{% if tables %}
+    <h1 class="govuk-heading-l">Tables</h1>
+    <p class="govuk-body">{{ tables|length }} table{{ tables|length|pluralize }} found.</p>
+    <div class="govuk-table__wrapper">
+        <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m">Tables</caption>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Name</th>
+                    <th scope="col" class="govuk-table__header">Created</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                {% for table in tables %}
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{% url 'poc:table_detail' database.TargetDatabase.CatalogId database.Name table.Name %}">{{ table.Name|truncatechars:60 }}</a>
+                            {% if table.Name|length > 60 %}
+                                <details class="govuk-details govuk-!-margin-top-1 govuk-!-margin-bottom-0" data-module="govuk-details">
+                                    <summary class="govuk-details__summary">
+                                        <span class="govuk-details__summary-text">
+                                            Show full name
+                                        </span>
+                                    </summary>
+                                    <div class="govuk-details__text">
+                                        <p class="govuk-body">{{ table.Name }}</p>
+                                    </div>
+                                </details>
+                            {% endif %}
+                        </td>
+                        <td class="govuk-table__cell">
+                            <time datetime="{{ table.CreateTime|date:'Y-m-d H:i' }}">
+                                {{ table.CreateTime|date:"j M Y" }}
+                            </time>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% else %}
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h2 class="govuk-panel__title">
+            No tables found
+        </h2>
+        <div class="govuk-panel__body">
+            There are currently no tables to display.
+        </div>
+    </div>
+{% endif %}
+
+<h1 class="govuk-heading-l">Permissions</h1>
+
+{% if database_permissions %}
+    <p class="govuk-body">{{ database_permissions|length }} permission set{{ database_permissions|length|pluralize }} found.</p>
+    <div class="govuk-table__wrapper">
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">User</th>
+                    <th scope="col" class="govuk-table__header">Permissions</th>
+                    <th scope="col" class="govuk-table__header">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                {% for permission in database_permissions %}
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">
+                            <p class="govuk-body">{{ permission.principal_name }}</p>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <p class="govuk-body">{{ permission.permissions|join:", "  }}</p>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <form method="post" action="{% url 'poc:revoke_database_permissions' database.TargetDatabase.CatalogId database.Name %}" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="principal" value="{{ permission.principal }}">
+                                <input type="hidden" name="permissions" value="{{ permission.permissions|join:', ' }}">
+                                <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+                                    Revoke Permissions
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% else %}
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h2 class="govuk-panel__title">
+            No permissions found on this database.
+        </h2>
+    </div>
+{% endif %}
+
+<div class="govuk-button-group govuk-!-margin-bottom-6">
+    <form method="post" action="{% url 'poc:grant_database_permissions' database.TargetDatabase.CatalogId database.Name %}" style="display: inline;">
+        {% csrf_token %}
+        <input class="govuk-input govuk-!-margin-bottom-2" name="user" type="text">
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+            Grant Permissions
+        </button>
+    </form>
+</div>
+
+{% endblock %}
