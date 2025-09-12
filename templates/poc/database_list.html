@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Databases{% endblock %}
+
+{% block content %}
+<h1 class="govuk-heading-xl">Databases</h1>
+
+{% if databases %}
+    <p class="govuk-body">{{ databases|length }} database{{ ram_shares|length|pluralize }} found.</p>
+    <div class="govuk-table__wrapper">
+        <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m">Databases</caption>
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Name</th>
+                    <th scope="col" class="govuk-table__header">Catalogue ID</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                {% for database in databases %}
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{% url 'poc:database_detail' database.TargetDatabase.CatalogId database.Name %}">{{ database.TargetDatabase.DatabaseName|truncatechars:60 }}</a>
+                            {% if database.TargetDatabase.DatabaseName|length > 60 %}
+                                <details class="govuk-details govuk-!-margin-top-1 govuk-!-margin-bottom-0" data-module="govuk-details">
+                                    <summary class="govuk-details__summary">
+                                        <span class="govuk-details__summary-text">
+                                            Show full name
+                                        </span>
+                                    </summary>
+                                    <div class="govuk-details__text">
+                                        <p class="govuk-body">{{ database.TargetDatabase.DatabaseName }}</p>
+                                    </div>
+                                </details>
+                            {% endif %}
+                        </td>
+                        <td class="govuk-table__cell">{{ database.TargetDatabase.CatalogId }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% else %}
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h2 class="govuk-panel__title">
+            No Databases found
+        </h2>
+        <div class="govuk-panel__body">
+            There are currently no databases to display.
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

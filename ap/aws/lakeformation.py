@@ -223,7 +223,7 @@ class LakeFormationService(AWSService):
 
     def list_permissions(self, principal, resource):
         logger.info(f"Getting permissions for {principal} on {resource}")
-        client = self.get_client(region_name="eu-west-1")
+        client = self.get_client()
         response = client.list_permissions(
             Principal={"DataLakePrincipalIdentifier": principal}, Resource=resource
         )
@@ -238,3 +238,32 @@ class LakeFormationService(AWSService):
                 "PermissionsWithGrantOption"
             ],
         }
+
+    def list_object_permissions(self, resource_type, resource):
+        logger.info(f"Getting permissions for {resource_type} on {resource}")
+        client = self.get_client()
+        response = client.list_permissions(ResourceType=resource_type, Resource=resource)
+
+        result = []
+        for permission in response.get("PrincipalResourcePermissions", []):
+            principal_identifier = permission["Principal"]["DataLakePrincipalIdentifier"]
+            user_permissions = permission["Permissions"]
+            if "/users/" in principal_identifier:
+                principal_name = principal_identifier.rsplit("/", 1)[-1]
+
+                existing_permission = next(
+                    (p for p in result if p["principal_name"] == principal_name), None
+                )
+
+                if existing_permission:
+                    existing_permission["permissions"].extend(user_permissions)
+                else:
+                    result.append(
+                        {
+                            "principal": principal_identifier,
+                            "principal_name": principal_name,
+                            "permissions": user_permissions,
+                        }
+                    )
+
+        return result
