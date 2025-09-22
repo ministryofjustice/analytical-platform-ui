@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@ministryofjustice/frontend": "5.1.5",
-    "govuk-frontend": "5.11.2",
+    "govuk-frontend": "5.12.0",
     "jquery": "3.7.1",
     "nunjucks": "3.2.4"
   }
