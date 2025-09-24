@@ -40,4 +40,9 @@ urlpatterns = [
         views.RevokeTablePermissionsView.as_view(),
         name="revoke_table_permissions",
     ),
+    path(
+        "databases/<int:resource_catalog_id>/<str:database_rl_name>/<str:table_name>/create_data_filter/",
+        views.CreateDataFilterView.as_view(),
+        name="create_data_filter",
+    ),
 ]

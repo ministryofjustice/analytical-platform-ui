@@ -267,3 +267,15 @@ class LakeFormationService(AWSService):
                     )
 
         return result
+
+    def list_data_filters(self, resource_catalog_id=None, database_name="", table_name=""):
+        client = self.get_client()
+        response = client.list_data_cells_filter(
+            Table={
+                "CatalogId": resource_catalog_id or self.catalog_id,
+                "DatabaseName": database_name,
+                "Name": table_name,
+            },
+        )
+
+        return response.get("DataCellsFilters", [])

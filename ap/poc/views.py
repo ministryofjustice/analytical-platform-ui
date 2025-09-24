@@ -2,9 +2,10 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.views import View
-from django.views.generic import ListView, TemplateView
+from django.views.generic import FormView, ListView, TemplateView
 
 from ap import aws
+from ap.poc.forms import CreateDataFilterForm
 
 from .models import SharedResource
 from .utils import (
@@ -178,6 +179,12 @@ class TableDetailView(TemplateView):
 
             context["table_permissions"] = table_permissions
 
+            context["data_filters"] = lake_formation.list_data_filters(
+                resource_catalog_id=resource_catalog_id,
+                database_name=database_name,
+                table_name=table["name"],
+            )
+
         context["database"] = database
         context["table"] = table
         return context
@@ -256,3 +263,21 @@ class RevokeTablePermissionsView(View):
         return HttpResponseRedirect(
             reverse("poc:table_detail", args=[resource_catalog_id, database_rl_name, table_name])
         )
+
+
+class CreateDataFilterView(FormView):
+    template_name = "poc/create_data_filter.html"
+    form_class = CreateDataFilterForm
+
+    def get_form(self):
+        database_rl_name = self.kwargs.get("database_rl_name")
+        table_name = self.kwargs.get("table_name")
+        glue = aws.GlueService()
+        table = transform_table(glue.get_table_detail(database_rl_name, table_name))
+
+        form = CreateDataFilterForm()
+        form.fields["include_columns"].choices = [
+            (col["Name"], col["Name"]) for col in table.get("columns", [])
+        ]
+
+        return form

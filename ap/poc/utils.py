@@ -92,6 +92,7 @@ def transform_table(table):
         "rl_catalog_id": table["CatalogId"],
         "created": table["CreateTime"],
         "lf_registerd": table["IsRegisteredWithLakeFormation"],
+        "columns": table["StorageDescriptor"]["Columns"],
     }
 
     if "TargetTable" in table:
