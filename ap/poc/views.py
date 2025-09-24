@@ -7,7 +7,13 @@ from django.views.generic import ListView, TemplateView
 from ap import aws
 
 from .models import SharedResource
-from .utils import create_or_update_shared_resources
+from .utils import (
+    create_or_update_shared_resources,
+    transform_database,
+    transform_database_list,
+    transform_table,
+    transform_table_list,
+)
 
 
 class SharedResourceListView(ListView):
@@ -51,7 +57,8 @@ class DatabaseListView(TemplateView):
 
     def get_context_data(self, **kwargs):
         glue = aws.GlueService()
-        databases = glue.get_database_list()
+        databases = transform_database_list(glue.get_database_list())
+
         context = super().get_context_data(**kwargs)
         context["databases"] = databases
         return context
@@ -64,21 +71,18 @@ class DatabaseDetailView(TemplateView):
         context = super().get_context_data(**kwargs)
         database_rl_name = kwargs.get("database_rl_name")
         glue = aws.GlueService()
-        database = glue.get_database_detail(database_rl_name)
-        tables = glue.get_table_list(
-            database["TargetDatabase"]["DatabaseName"], database["TargetDatabase"]["CatalogId"]
-        )
+        database = transform_database(glue.get_database_detail(database_rl_name))
 
         if database:
-            tables = glue.get_table_list(
-                database["TargetDatabase"]["DatabaseName"], database["TargetDatabase"]["CatalogId"]
+            tables = transform_table_list(
+                glue.get_table_list(database["name"], database["catalog_id"])
             )
 
             context["tables"] = tables
 
             resource = {
                 "Database": {
-                    "CatalogId": database["CatalogId"],
+                    "CatalogId": database["rl_catalog_id"],
                     "Name": database_rl_name,
                 },
             }
@@ -153,16 +157,18 @@ class TableDetailView(TemplateView):
         database_rl_name = kwargs.get("database_rl_name")
         table_name = kwargs.get("table_name")
         glue = aws.GlueService()
-        database = glue.get_database_detail(database_rl_name)
-        database_name = database["TargetDatabase"]["DatabaseName"]
-        table = glue.get_table_detail(database_name, table_name, resource_catalog_id)
+        database = transform_database(glue.get_database_detail(database_rl_name))
+        database_name = database["name"]
+        table = transform_table(
+            glue.get_table_detail(database_name, table_name, resource_catalog_id)
+        )
 
         if table:
             resource = {
                 "Table": {
                     "CatalogId": resource_catalog_id,
                     "DatabaseName": database_name,
-                    "Name": table["Name"],
+                    "Name": table["name"],
                 },
             }
             lake_formation = aws.LakeFormationService()
@@ -191,8 +197,8 @@ class GrantTablePermissionsView(View):
 
             table_permissions = ["SELECT", "DESCRIBE"]
             glue = aws.GlueService()
-            database = glue.get_database_detail(database_rl_name)
-            database_name = database["TargetDatabase"]["DatabaseName"]
+            database = transform_database(glue.get_database_detail(database_rl_name))
+            database_name = database["name"]
             lake_formation = aws.LakeFormationService()
 
             # Grants describe permission on
@@ -200,10 +206,15 @@ class GrantTablePermissionsView(View):
                 database=database_rl_name,
                 principal=principal,
             )
+
+            table = transform_table(
+                glue.get_table_detail(database_name, table_name, resource_catalog_id)
+            )
+
             lake_formation.grant_table_permissions(
                 database=database_name,
-                table=table_name,
-                resource_catalog_id=resource_catalog_id,
+                table=table["name"],
+                resource_catalog_id=table["catalog_id"],
                 principal=principal,
                 permissions=table_permissions,
             )

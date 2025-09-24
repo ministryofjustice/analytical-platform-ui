@@ -20,8 +20,8 @@
                 {% for database in databases %}
                     <tr class="govuk-table__row">
                         <td class="govuk-table__cell">
-                            <a class="govuk-link" href="{% url 'poc:database_detail' database.TargetDatabase.CatalogId database.Name %}">{{ database.TargetDatabase.DatabaseName|truncatechars:60 }}</a>
-                            {% if database.TargetDatabase.DatabaseName|length > 60 %}
+                            <a class="govuk-link" href="{% url 'poc:database_detail' database.catalog_id database.rl_name %}">{{ database.name|truncatechars:60 }}</a>
+                            {% if database.name|length > 60 %}
                                 <details class="govuk-details govuk-!-margin-top-1 govuk-!-margin-bottom-0" data-module="govuk-details">
                                     <summary class="govuk-details__summary">
                                         <span class="govuk-details__summary-text">
@@ -29,12 +29,12 @@
                                         </span>
                                     </summary>
                                     <div class="govuk-details__text">
-                                        <p class="govuk-body">{{ database.TargetDatabase.DatabaseName }}</p>
+                                        <p class="govuk-body">{{ database.name }}</p>
                                     </div>
                                 </details>
                             {% endif %}
                         </td>
-                        <td class="govuk-table__cell">{{ database.TargetDatabase.CatalogId }}</td>
+                        <td class="govuk-table__cell">{{ database.catalog_id }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
