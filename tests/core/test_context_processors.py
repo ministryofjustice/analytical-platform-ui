@@ -24,6 +24,10 @@ class TestContextProcessors:
                 "url": reverse("poc:index"),
                 "hide": not request_obj.user.is_superuser,
             },
+            {
+                "name": "Databases",
+                "url": reverse("poc:databases"),
+            },
         ]
         assert nav_items(request=request_obj) == {"nav_items": expected}
 
