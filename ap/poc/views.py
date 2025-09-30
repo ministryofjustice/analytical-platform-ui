@@ -10,6 +10,7 @@ from ap.poc.forms import CreateDataFilterForm
 from .models import SharedResource
 from .utils import (
     create_or_update_shared_resources,
+    transform_data_filter,
     transform_database,
     transform_database_list,
     transform_table,
@@ -269,15 +270,228 @@ class CreateDataFilterView(FormView):
     template_name = "poc/create_data_filter.html"
     form_class = CreateDataFilterForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        resource_catalog_id = str(self.kwargs.get("resource_catalog_id"))
+        database_rl_name = self.kwargs.get("database_rl_name")
+        table_name = self.kwargs.get("table_name")
+        context.update(
+            {
+                "resource_catalog_id": resource_catalog_id,
+                "database_rl_name": database_rl_name,
+                "table_name": table_name,
+            }
+        )
+        return context
+
     def get_form(self):
         database_rl_name = self.kwargs.get("database_rl_name")
         table_name = self.kwargs.get("table_name")
         glue = aws.GlueService()
         table = transform_table(glue.get_table_detail(database_rl_name, table_name))
 
-        form = CreateDataFilterForm()
+        form = self.form_class(**self.get_form_kwargs())
         form.fields["include_columns"].choices = [
             (col["Name"], col["Name"]) for col in table.get("columns", [])
         ]
 
         return form
+
+    def form_valid(self, form):
+        try:
+            resource_catalog_id = str(self.kwargs.get("resource_catalog_id"))
+            database_rl_name = self.kwargs.get("database_rl_name")
+            table_name = self.kwargs.get("table_name")
+
+            glue = aws.GlueService()
+            database = glue.get_database_detail(database_rl_name)
+            database_name = database["TargetDatabase"]["DatabaseName"]
+
+            lake_formation = aws.LakeFormationService()
+
+            lake_formation.create_data_filter(
+                resource_catalog_id=resource_catalog_id,
+                database_name=database_name,
+                table_name=table_name,
+                name=form.cleaned_data["name"],
+                include_columns=form.cleaned_data["include_columns"],
+                filter_expression=form.cleaned_data["row_filter_expression"],
+            )
+            messages.success(
+                self.request, f"Data filter {form.cleaned_data['name']} created successfully."
+            )
+        except Exception as e:
+            messages.error(self.request, f"Failed to create data filter: {str(e)}")
+
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        messages.error(self.request, "There was an error with your submission.")
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        resource_catalog_id = str(self.kwargs.get("resource_catalog_id"))
+        database_rl_name = self.kwargs.get("database_rl_name")
+        table_name = self.kwargs.get("table_name")
+        return reverse("poc:table_detail", args=[resource_catalog_id, database_rl_name, table_name])
+
+
+class DeleteDataFilterView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            resource_catalog_id = str(kwargs.get("resource_catalog_id"))
+            database_rl_name = kwargs.get("database_rl_name")
+            table_name = kwargs.get("table_name")
+            filter_name = kwargs.get("filter_name")
+
+            glue = aws.GlueService()
+            database = glue.get_database_detail(database_rl_name)
+            database_name = database["TargetDatabase"]["DatabaseName"]
+
+            lake_formation = aws.LakeFormationService()
+
+            lake_formation.delete_data_filter(
+                resource_catalog_id=resource_catalog_id,
+                database_name=database_name,
+                table_name=table_name,
+                name=filter_name,
+            )
+
+            messages.success(request, f"Data filter {filter_name} deleted successfully.")
+        except Exception as e:
+            messages.error(request, f"Failed to delete data filter: {str(e)}")
+
+        return HttpResponseRedirect(
+            reverse("poc:table_detail", args=[resource_catalog_id, database_rl_name, table_name])
+        )
+
+
+class DataFilterDetailView(TemplateView):
+    template_name = "poc/data_filter_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        resource_catalog_id = str(kwargs.get("resource_catalog_id"))
+        database_rl_name = kwargs.get("database_rl_name")
+        table_name = kwargs.get("table_name")
+        filter_name = kwargs.get("filter_name")
+        glue = aws.GlueService()
+        database = transform_database(glue.get_database_detail(database_rl_name))
+        database_name = database["name"]
+        table = transform_table(
+            glue.get_table_detail(database_name, table_name, resource_catalog_id)
+        )
+
+        lake_formation = aws.LakeFormationService()
+        data_filter = transform_data_filter(
+            lake_formation.get_data_filter(
+                resource_catalog_id=resource_catalog_id,
+                database_name=database_name,
+                table_name=table_name,
+                filter_name=filter_name,
+            )
+        )
+
+        resource = {
+            "DataCellsFilter": {
+                "TableCatalogId": resource_catalog_id,
+                "DatabaseName": database_name,
+                "TableName": table_name,
+                "Name": filter_name,
+            },
+        }
+
+        filter_permissions = lake_formation.list_object_permissions(
+            resource_type="TABLE", resource=resource
+        )
+
+        context["database"] = database
+        context["table"] = table
+        context["data_filter"] = data_filter
+        context["filter_permissions"] = filter_permissions
+        return context
+
+
+class GrantFilterPermissionsView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            username = request.POST.get("user")
+            resource_catalog_id = str(kwargs.get("resource_catalog_id"))
+            database_rl_name = kwargs.get("database_rl_name")
+            table_name = kwargs.get("table_name")
+            filter_name = kwargs.get("filter_name")
+
+            iam = aws.IAMService()
+            role = iam.get_role(role_name=f"{username}")
+            principal = role.get("Arn")
+
+            table_permissions = ["SELECT", "DESCRIBE"]
+            glue = aws.GlueService()
+            database = transform_database(glue.get_database_detail(database_rl_name))
+            database_name = database["name"]
+            lake_formation = aws.LakeFormationService()
+
+            # Grants describe permission on
+            lake_formation.grant_database_permissions(
+                database=database_rl_name,
+                principal=principal,
+            )
+
+            table = transform_table(
+                glue.get_table_detail(database_name, table_name, resource_catalog_id)
+            )
+
+            lake_formation.grant_filter_permissions(
+                database=database_name,
+                table=table["name"],
+                filter_name=filter_name,
+                resource_catalog_id=table["catalog_id"],
+                principal=principal,
+                permissions=table_permissions,
+            )
+            messages.success(request, "Permissions granted.")
+        except Exception as e:
+            messages.error(request, f"Failed to grant permissions: {str(e)}")
+
+        return HttpResponseRedirect(
+            reverse(
+                "poc:data_filter_detail",
+                args=[resource_catalog_id, database_rl_name, table_name, filter_name],
+            )
+        )
+
+
+class RevokeFilterPermissionsView(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            principal = request.POST.get("principal")
+            permissions = request.POST.get("permissions").split(", ")
+            resource_catalog_id = str(kwargs.get("resource_catalog_id"))
+            database_rl_name = kwargs.get("database_rl_name")
+            table_name = kwargs.get("table_name")
+            filter_name = kwargs.get("filter_name")
+            table_permissions = permissions
+            glue = aws.GlueService()
+            database = glue.get_database_detail(database_rl_name)
+            database_name = database["TargetDatabase"]["DatabaseName"]
+            lake_formation = aws.LakeFormationService()
+
+            lake_formation.revoke_filter_permissions(
+                database=database_name,
+                table=table_name,
+                filter_name=filter_name,
+                resource_catalog_id=resource_catalog_id,
+                principal=principal,
+                permissions=table_permissions,
+            )
+
+            messages.success(request, "Permissions Revoked.")
+        except Exception as e:
+            messages.error(request, f"Failed to revoke permissions: {str(e)}")
+
+        return HttpResponseRedirect(
+            reverse(
+                "poc:data_filter_detail",
+                args=[resource_catalog_id, database_rl_name, table_name, filter_name],
+            )
+        )

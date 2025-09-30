@@ -16,12 +16,12 @@ urlpatterns = [
         name="database_detail",
     ),
     path(
-        "databases/<int:resource_catalog_id>/<str:database_rl_name>/grant_database_permissions/",
+        "databases/<int:resource_catalog_id>/<str:database_rl_name>/grant_permissions/",
         views.GrantDatabasePermissionsView.as_view(),
         name="grant_database_permissions",
     ),
     path(
-        "databases/<int:resource_catalog_id>/<str:database_rl_name>/revoke_database_permissions/",
+        "databases/<int:resource_catalog_id>/<str:database_rl_name>/revoke_permissions/",
         views.RevokeDatabasePermissionsView.as_view(),
         name="revoke_database_permissions",
     ),
@@ -31,12 +31,12 @@ urlpatterns = [
         name="table_detail",
     ),
     path(
-        "databases/<int:resource_catalog_id>/<str:database_rl_name>/<str:table_name>/grant_table_permissions/",
+        "databases/<int:resource_catalog_id>/<str:database_rl_name>/<str:table_name>/grant_permissions/",
         views.GrantTablePermissionsView.as_view(),
         name="grant_table_permissions",
     ),
     path(
-        "databases/<int:resource_catalog_id>/<str:database_rl_name>/<str:table_name>/revoke_table_permissions/",
+        "databases/<int:resource_catalog_id>/<str:database_rl_name>/<str:table_name>/revoke_permissions/",
         views.RevokeTablePermissionsView.as_view(),
         name="revoke_table_permissions",
     ),
@@ -44,5 +44,25 @@ urlpatterns = [
         "databases/<int:resource_catalog_id>/<str:database_rl_name>/<str:table_name>/create_data_filter/",
         views.CreateDataFilterView.as_view(),
         name="create_data_filter",
+    ),
+    path(
+        "databases/<int:resource_catalog_id>/<str:database_rl_name>/<str:table_name>/<str:filter_name>/",
+        views.DataFilterDetailView.as_view(),
+        name="data_filter_detail",
+    ),
+    path(
+        "databases/<int:resource_catalog_id>/<str:database_rl_name>/<str:table_name>/<str:filter_name>/delete/",
+        views.DeleteDataFilterView.as_view(),
+        name="delete_data_filter",
+    ),
+    path(
+        "databases/<int:resource_catalog_id>/<str:database_rl_name>/<str:table_name>/<str:filter_name>/grant_permissions/",
+        views.GrantFilterPermissionsView.as_view(),
+        name="grant_filter_permissions",
+    ),
+    path(
+        "databases/<int:resource_catalog_id>/<str:database_rl_name>/<str:table_name>/<str:filter_name>/revoke_permissions/",
+        views.RevokeFilterPermissionsView.as_view(),
+        name="revoke_filter_permissions",
     ),
 ]

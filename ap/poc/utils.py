@@ -91,7 +91,7 @@ def transform_table(table):
         "rl_name": table["Name"],
         "rl_catalog_id": table["CatalogId"],
         "created": table["CreateTime"],
-        "lf_registerd": table["IsRegisteredWithLakeFormation"],
+        "lf_registered": table["IsRegisteredWithLakeFormation"],
         "columns": table["StorageDescriptor"]["Columns"],
     }
 
@@ -112,3 +112,21 @@ def transform_table_list(tables):
         table_list.append(transform_table(table))
 
     return table_list
+
+
+def transform_data_filter(filter):
+    filter_data = {
+        "name": filter["Name"],
+    }
+
+    if "AllRowsWildcard" in filter["RowFilter"]:
+        filter_data["row_filter_expression"] = None
+    else:
+        filter_data["row_filter_expression"] = filter["RowFilter"]["FilterExpression"]
+
+    if "ColumnWildcard" in filter:
+        filter_data["column_names"] = "ALL"
+    else:
+        filter_data["column_names"] = filter["ColumnNames"]
+
+    return filter_data

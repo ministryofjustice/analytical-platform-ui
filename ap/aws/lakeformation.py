@@ -41,6 +41,34 @@ class LakeFormationService(AWSService):
             PermissionsWithGrantOption=permissions_with_grant_option or [],
         )
 
+    def grant_filter_permissions(
+        self,
+        database: str,
+        table: str,
+        filter_name: str,
+        principal: str,
+        catalog_id: str = "",
+        resource_catalog_id: str = "",
+        region_name: str = "",
+        permissions: list | None = None,
+        permissions_with_grant_option: list | None = None,
+    ):
+        client = self.get_client(region_name)
+        return client.grant_permissions(
+            Principal={"DataLakePrincipalIdentifier": principal},
+            Resource={
+                "DataCellsFilter": {
+                    "DatabaseName": database,
+                    "TableName": table,
+                    "TableCatalogId": resource_catalog_id or self.catalog_id,
+                    "Name": filter_name,
+                },
+            },
+            CatalogId=catalog_id or self.catalog_id,
+            Permissions=permissions or [],
+            PermissionsWithGrantOption=permissions_with_grant_option or [],
+        )
+
     def get_client(self, region_name: str = ""):
         region_name = region_name or self.region_name
         if region_name not in self.clients:
@@ -92,6 +120,45 @@ class LakeFormationService(AWSService):
                 "DatabaseName": database,
                 "Name": table,
                 "CatalogId": resource_catalog_id or self.catalog_id,
+            },
+        }
+        try:
+            return client.revoke_permissions(
+                Principal={"DataLakePrincipalIdentifier": principal},
+                Resource=resource,
+                Permissions=permissions or [],
+                PermissionsWithGrantOption=grantable_permissions or [],
+            )
+        except botocore.exceptions.ClientError as error:
+            msg = error.response["Error"]["Message"]
+            code = error.response["Error"]["Code"]
+            if (
+                code == "InvalidInputException"
+                and "Grantee has no permissions and no grantable permissions on resource" in msg
+            ):
+                return logger.info(f"Nothing to revoke, continuing. Original exception: '{msg}'")
+            sentry_sdk.capture_exception(error)
+            logger.info(f"Error revoking permissions for {principal}", error=error)
+            raise error
+
+    def revoke_filter_permissions(
+        self,
+        database: str,
+        table: str,
+        filter_name: str,
+        principal: str,
+        resource_catalog_id: str = "",
+        region_name: str = "",
+        permissions: list | None = None,
+        grantable_permissions: list | None = None,
+    ):
+        client = self.get_client(region_name)
+        resource = {
+            "DataCellsFilter": {
+                "DatabaseName": database,
+                "TableName": table,
+                "TableCatalogId": resource_catalog_id or self.catalog_id,
+                "Name": filter_name,
             },
         }
         try:
@@ -268,6 +335,19 @@ class LakeFormationService(AWSService):
 
         return result
 
+    def get_data_filter(
+        self, resource_catalog_id=None, database_name="", table_name="", filter_name=""
+    ):
+        client = self.get_client()
+        response = client.get_data_cells_filter(
+            TableCatalogId=resource_catalog_id or self.catalog_id,
+            DatabaseName=database_name,
+            TableName=table_name,
+            Name=filter_name,
+        )
+
+        return response.get("DataCellsFilter", {})
+
     def list_data_filters(self, resource_catalog_id=None, database_name="", table_name=""):
         client = self.get_client()
         response = client.list_data_cells_filter(
@@ -279,3 +359,94 @@ class LakeFormationService(AWSService):
         )
 
         return response.get("DataCellsFilters", [])
+
+    def create_data_filter(
+        self,
+        resource_catalog_id=None,
+        database_name="",
+        table_name="",
+        name="",
+        include_columns=None,
+        filter_expression="",
+    ):
+        client = self.get_client()
+        table_resource = {
+            "TableCatalogId": resource_catalog_id or self.catalog_id,
+            "DatabaseName": database_name,
+            "TableName": table_name,
+            "Name": name,
+        }
+
+        if filter_expression:
+            table_resource["RowFilter"] = {"FilterExpression": filter_expression}
+        else:
+            table_resource["RowFilter"] = {"AllRowsWildcard": {}}
+
+        if include_columns:
+            table_resource["ColumnNames"] = include_columns
+        else:
+            table_resource["ColumnWildcard"] = {"ExcludedColumnNames": []}
+
+        try:
+            response = client.create_data_cells_filter(TableData=table_resource)
+        except botocore.exceptions.ClientError as error:
+            if error.response["Error"]["Code"] == "AlreadyExistsException":
+                logger.info("Data filter already exists")
+            raise error
+
+        return response
+
+    def update_data_filter(
+        self,
+        resource_catalog_id=None,
+        database_name="",
+        table_name="",
+        name="",
+        include_columns=None,
+        filter_expression="",
+    ):
+        client = self.get_client()
+        table_resource = {
+            "TableCatalogId": resource_catalog_id or self.catalog_id,
+            "DatabaseName": database_name,
+            "TableName": table_name,
+            "Name": name,
+        }
+
+        if filter_expression:
+            table_resource["RowFilter"] = {"FilterExpression": filter_expression}
+        else:
+            table_resource["RowFilter"] = {"AllRowsWildcard": {}}
+
+        if include_columns:
+            table_resource["ColumnNames"] = include_columns
+        else:
+            table_resource["ColumnWildcard"] = {"ExcludedColumnNames": []}
+
+        try:
+            response = client.update_data_cells_filter(TableData=table_resource)
+        except botocore.exceptions.ClientError as error:
+            raise error
+
+        return response
+
+    def delete_data_filter(
+        self,
+        resource_catalog_id=None,
+        database_name="",
+        table_name="",
+        name="",
+    ):
+        client = self.get_client()
+        try:
+            response = client.delete_data_cells_filter(
+                TableCatalogId=resource_catalog_id or self.catalog_id,
+                DatabaseName=database_name,
+                TableName=table_name,
+                Name=name,
+            )
+        except botocore.exceptions.ClientError as error:
+            logger.info(f"Error deleting data filter {name} on {table_name}: {error}")
+            raise error
+
+        return response

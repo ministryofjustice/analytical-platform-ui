@@ -9,7 +9,7 @@
 
 <h1 class="govuk-heading-l">Permissions</h1>
 
-{% if table.lf_registerd %}
+{% if table.lf_registered %}
 
     {% if table_permissions %}
         <p class="govuk-body">{{ table_permissions|length }} permission set{{ table_permissions|length|pluralize }} found.</p>
@@ -80,12 +80,15 @@
                     {% for data_filter in data_filters %}
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
-                                <p class="govuk-body">{{ data_filter.Name }}</p>
+                                <a href="{% url 'poc:data_filter_detail' database.catalog_id database.rl_name table.rl_name data_filter.Name %}" class="govuk-link">{{ data_filter.Name }}</a>
                             </td>
                             <td class="govuk-table__cell">
-                                <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
-                                    Delete Filter
-                                </button>
+                                <form action="{% url 'poc:delete_data_filter' database.catalog_id database.rl_name table.rl_name data_filter.Name %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+                                        Delete Filter
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     {% endfor %}
