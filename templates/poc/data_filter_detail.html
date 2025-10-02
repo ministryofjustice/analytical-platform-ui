@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Data Filter {{data_filter.name}}{% endblock %}
+
+{% block content %}
+<h1 class="govuk-heading-xl">{{data_filter.name}}</h1>
+<p class="govuk-body">Database: {{database.name}}</p>
+<p class="govuk-body">Table: {{table.name}}</p>
+<p class="govuk-body">Catalogue ID: {{database.catalog_id}}</p>
+
+<h1 class="govuk-heading-l">Filter Properties</h1>
+
+<table class="govuk-table">
+    <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Included Columns</th>
+            <td class="govuk-table__cell">
+                {% if data_filter.column_names == "ALL" %}
+                    All columns
+                {% else %}
+                    {{ data_filter.column_names|join:", " }}
+                {% endif %}
+            </td>
+        </tr>
+        {% if data_filter.row_filter_expression %}
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">Row Filter Expression</th>
+            <td class="govuk-table__cell">SELECT * from {{table.name}} WHERE {{ data_filter.row_filter_expression }}</td>
+        </tr>
+        {% endif %}
+    </tbody>
+</table>
+
+<h1 class="govuk-heading-l">Permissions</h1>
+
+{% if filter_permissions %}
+    <p class="govuk-body">{{ filter_permissions|length }} permission set{{ filter_permissions|length|pluralize }} found.</p>
+    <div class="govuk-table__wrapper">
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">User</th>
+                    <th scope="col" class="govuk-table__header">Permissions</th>
+                    <th scope="col" class="govuk-table__header">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                {% for permission in filter_permissions %}
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">
+                            <p class="govuk-body">{{ permission.principal_name }}</p>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <p class="govuk-body">{{ permission.permissions|join:", "  }}</p>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <form method="post" action="{% url 'poc:revoke_filter_permissions' database.catalog_id database.rl_name table.rl_name data_filter.name %}" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="principal" value="{{ permission.principal }}">
+                                <input type="hidden" name="permissions" value="{{ permission.permissions|join:', ' }}">
+                                <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+                                    Revoke Permissions
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% else %}
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h2 class="govuk-panel__title">
+            No permissions found on this data filter.
+        </h2>
+    </div>
+{% endif %}
+
+<div class="govuk-button-group govuk-!-margin-bottom-6">
+    <form method="post" action="{% url 'poc:grant_filter_permissions' database.catalog_id database.rl_name table.rl_name data_filter.name %}" style="display: inline;">
+        {% csrf_token %}
+        <input class="govuk-input govuk-!-margin-bottom-2" name="user" type="text">
+        <button type="submit" class="govuk-button" data-module="govuk-button">
+            Grant Permissions
+        </button>
+    </form>
+</div>
+
+{% endblock %}

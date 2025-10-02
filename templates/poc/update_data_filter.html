@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Update Data Filter{% endblock %}
+
+{% block content %}
+
+<h1 class="govuk-heading-l">Update Data Filter for Table</h1>
+
+<form method="post" action="{% url 'poc:update_data_filter' resource_catalog_id database_rl_name table_name filter_name%}">
+    {% csrf_token %}
+    <div class="govuk-form-group">
+            <label class="govuk-label" for="{{ form.name.id_for_label }}">
+                Filter Name
+        </label>
+        {{ form.name }}
+    </div>
+
+    <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                {{ form.include_columns.label }}
+            </legend>
+            <div class="govuk-hint">
+                Select the columns to include in this data filter. Selecting none will include all columns.
+            </div>
+            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                {% for choice in form.include_columns %}
+                <div class="govuk-checkboxes__item">
+                    {{ choice.tag }}
+                    <label class="govuk-label govuk-checkboxes__label" for="{{ choice.id_for_label }}">
+                        {{ choice.choice_label }}
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+        </fieldset>
+    </div>
+
+    <div class="govuk-form-group">
+        <label class="govuk-label" for="{{ form.row_filter_expression.id_for_label }}">
+            Filter Expression
+        </label>
+        <div id="{{ form.row_filter_expression.id_for_label }}-hint" class="govuk-hint">
+            Enter a SQL-like filter expression, for example: column_name = 'value'
+        </div>
+        {{ form.row_filter_expression }}
+    </div>
+    <button type="submit" class="govuk-button" data-module="govuk-button">Update Data Filter</button>
+</form>
+
+{% endblock %}

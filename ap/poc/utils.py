@@ -60,3 +60,73 @@ def create_or_update_shared_resources():
         if obj.resource_type in ["glue:Database"]:
             glue_service = aws.GlueService()
             glue_service.create_resource_link_database(resource)
+
+
+def transform_database(database):
+    db = {
+        "rl_name": database["Name"],
+        "rl_catalog_id": database["CatalogId"],
+    }
+
+    if "TargetDatabase" in database:
+        db["name"] = database["TargetDatabase"]["DatabaseName"]
+        db["catalog_id"] = database["TargetDatabase"]["CatalogId"]
+    else:
+        db["name"] = database["Name"]
+        db["catalog_id"] = database["CatalogId"]
+
+    return db
+
+
+def transform_database_list(databases):
+    db_list = []
+    for db in databases:
+        db_list.append(transform_database(db))
+
+    return db_list
+
+
+def transform_table(table):
+    tbl = {
+        "rl_name": table["Name"],
+        "rl_catalog_id": table["CatalogId"],
+        "created": table["CreateTime"],
+        "lf_registered": table["IsRegisteredWithLakeFormation"],
+        "columns": table["StorageDescriptor"]["Columns"],
+    }
+
+    if "TargetTable" in table:
+        tbl["name"] = table["TargetTable"]["Name"]
+        tbl["catalog_id"] = table["TargetTable"]["CatalogId"]
+        tbl["original_database_name"] = table["TargetTable"]["DatabaseName"]
+    else:
+        tbl["name"] = table["Name"]
+        tbl["catalog_id"] = table["CatalogId"]
+
+    return tbl
+
+
+def transform_table_list(tables):
+    table_list = []
+    for table in tables:
+        table_list.append(transform_table(table))
+
+    return table_list
+
+
+def transform_data_filter(filter):
+    filter_data = {
+        "name": filter["Name"],
+    }
+
+    if "AllRowsWildcard" in filter["RowFilter"]:
+        filter_data["row_filter_expression"] = None
+    else:
+        filter_data["row_filter_expression"] = filter["RowFilter"]["FilterExpression"]
+
+    if "ColumnWildcard" in filter:
+        filter_data["column_names"] = "ALL"
+    else:
+        filter_data["column_names"] = filter["ColumnNames"]
+
+    return filter_data
