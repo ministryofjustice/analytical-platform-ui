@@ -336,6 +336,101 @@ class CreateDataFilterView(FormView):
         return reverse("poc:table_detail", args=[resource_catalog_id, database_rl_name, table_name])
 
 
+class UpdateDataFilterView(FormView):
+    template_name = "poc/update_data_filter.html"
+    form_class = CreateDataFilterForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            {
+                "resource_catalog_id": str(self.kwargs.get("resource_catalog_id")),
+                "database_rl_name": self.kwargs.get("database_rl_name"),
+                "table_name": self.kwargs.get("table_name"),
+                "filter_name": self.kwargs.get("filter_name"),
+            }
+        )
+        return context
+
+    def get_form(self):
+        database_rl_name = self.kwargs.get("database_rl_name")
+        table_name = self.kwargs.get("table_name")
+        glue = aws.GlueService()
+        table = transform_table(glue.get_table_detail(database_rl_name, table_name))
+
+        form = self.form_class(**self.get_form_kwargs())
+        form.fields["name"].widget.attrs["readonly"] = True
+        form.fields["include_columns"].choices = [
+            (col["Name"], col["Name"]) for col in table.get("columns", [])
+        ]
+
+        return form
+
+    def get_initial(self):
+        resource_catalog_id = str(self.kwargs.get("resource_catalog_id"))
+        database_rl_name = self.kwargs.get("database_rl_name")
+        table_name = self.kwargs.get("table_name")
+        filter_name = self.kwargs.get("filter_name")
+        glue = aws.GlueService()
+        database = transform_database(glue.get_database_detail(database_rl_name))
+        database_name = database["name"]
+
+        lake_formation = aws.LakeFormationService()
+        data_filter = transform_data_filter(
+            lake_formation.get_data_filter(
+                resource_catalog_id=resource_catalog_id,
+                database_name=database_name,
+                table_name=table_name,
+                filter_name=filter_name,
+            )
+        )
+
+        initial = {
+            "name": data_filter["name"],
+            "include_columns": data_filter.get("column_names", []),
+            "row_filter_expression": data_filter.get("row_filter_expression", ""),
+        }
+        return initial
+
+    def form_valid(self, form):
+        try:
+            resource_catalog_id = str(self.kwargs.get("resource_catalog_id"))
+            database_rl_name = self.kwargs.get("database_rl_name")
+            table_name = self.kwargs.get("table_name")
+
+            glue = aws.GlueService()
+            database = glue.get_database_detail(database_rl_name)
+            database_name = database["TargetDatabase"]["DatabaseName"]
+
+            lake_formation = aws.LakeFormationService()
+
+            lake_formation.update_data_filter(
+                resource_catalog_id=resource_catalog_id,
+                database_name=database_name,
+                table_name=table_name,
+                name=form.cleaned_data["name"],
+                include_columns=form.cleaned_data["include_columns"],
+                filter_expression=form.cleaned_data["row_filter_expression"],
+            )
+            messages.success(
+                self.request, f"Data filter {form.cleaned_data['name']} updated successfully."
+            )
+        except Exception as e:
+            messages.error(self.request, f"Failed to update data filter: {str(e)}")
+
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        messages.error(self.request, "There was an error with your submission.")
+        return super().form_invalid(form)
+
+    def get_success_url(self):
+        resource_catalog_id = str(self.kwargs.get("resource_catalog_id"))
+        database_rl_name = self.kwargs.get("database_rl_name")
+        table_name = self.kwargs.get("table_name")
+        return reverse("poc:table_detail", args=[resource_catalog_id, database_rl_name, table_name])
+
+
 class DeleteDataFilterView(View):
     def post(self, request, *args, **kwargs):
         try:

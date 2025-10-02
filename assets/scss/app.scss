@@ -5,3 +5,7 @@ $govuk-assets-path: "/static/assets/";
 @import "node_modules/@ministryofjustice/frontend/moj/all";
 
 /* stylelint-enable */
+
+.govuk-button-group--aligned {
+    align-items: center !important;
+}

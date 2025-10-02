@@ -46,6 +46,11 @@ urlpatterns = [
         name="create_data_filter",
     ),
     path(
+        "databases/<int:resource_catalog_id>/<str:database_rl_name>/<str:table_name>/<str:filter_name>/update_data_filter/",
+        views.UpdateDataFilterView.as_view(),
+        name="update_data_filter",
+    ),
+    path(
         "databases/<int:resource_catalog_id>/<str:database_rl_name>/<str:table_name>/<str:filter_name>/",
         views.DataFilterDetailView.as_view(),
         name="data_filter_detail",

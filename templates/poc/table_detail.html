@@ -83,12 +83,17 @@
                                 <a href="{% url 'poc:data_filter_detail' database.catalog_id database.rl_name table.rl_name data_filter.Name %}" class="govuk-link">{{ data_filter.Name }}</a>
                             </td>
                             <td class="govuk-table__cell">
-                                <form action="{% url 'poc:delete_data_filter' database.catalog_id database.rl_name table.rl_name data_filter.Name %}" method="post">
-                                    {% csrf_token %}
-                                    <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
-                                        Delete Filter
-                                    </button>
-                                </form>
+                                <div class="govuk-button-group govuk-button-group--aligned">
+                                    <a href="{% url 'poc:update_data_filter' database.catalog_id database.rl_name table.rl_name data_filter.Name %}" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                                        Update Filter
+                                    </a>
+                                    <form action="{% url 'poc:delete_data_filter' database.catalog_id database.rl_name table.rl_name data_filter.Name %}" method="post">
+                                        {% csrf_token %}
+                                        <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+                                            Delete Filter
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}
