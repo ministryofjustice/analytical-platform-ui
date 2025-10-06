@@ -18,3 +18,27 @@ class CreateDataFilterForm(forms.Form):
         widget=forms.TextInput(attrs={"class": "govuk-input"}),
         required=False,
     )
+
+
+class UserChoiceForm(forms.Form):
+    user_email = forms.ChoiceField(
+        label="User Email",
+        choices=[],
+        widget=forms.Select(
+            attrs={
+                "class": "govuk-select",
+                "aria-label": "Select user email",
+            }
+        ),
+        required=True,
+    )
+
+    def __init__(self, users, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        user_choices = [("", "Select a user...")]
+
+        # Add user choices
+        user_choices.extend([(user.email, user.email) for user in users])
+
+        self.fields["user_email"].choices = user_choices

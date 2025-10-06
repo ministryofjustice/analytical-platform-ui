@@ -1,7 +1,10 @@
 from django.db import transaction
+from django.utils.text import slugify
 
 from ap import aws
+from ap.poc.forms import UserChoiceForm
 from ap.poc.models import RAMShare, SharedResource
+from ap.users.models import User
 
 
 @transaction.atomic
@@ -130,3 +133,31 @@ def transform_data_filter(filter):
         filter_data["column_names"] = filter["ColumnNames"]
 
     return filter_data
+
+
+def get_username(email):
+    return slugify(email.split("@")[0])
+
+
+def create_user_choice_form(permissions):
+    principal_emails = [principal["email"] for principal in permissions]
+    users = User.objects.all()
+    users_without_permissions = []
+
+    for user in users:
+        if user.email not in principal_emails:
+            users_without_permissions.append(user)
+
+    return UserChoiceForm(users=users_without_permissions)
+
+
+def transform_permissions(permissions):
+    users = User.objects.all()
+
+    for user in users:
+        username = get_username(user.email)
+        for perm in permissions:
+            if perm["principal_name"] == username:
+                perm["email"] = user.email
+
+    return permissions

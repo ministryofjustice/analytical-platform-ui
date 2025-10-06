@@ -10,9 +10,12 @@ from ap.poc.forms import CreateDataFilterForm
 from .models import SharedResource
 from .utils import (
     create_or_update_shared_resources,
+    create_user_choice_form,
+    get_username,
     transform_data_filter,
     transform_database,
     transform_database_list,
+    transform_permissions,
     transform_table,
     transform_table_list,
 )
@@ -89,11 +92,13 @@ class DatabaseDetailView(TemplateView):
                 },
             }
             lake_formation = aws.LakeFormationService()
-            database_permissions = lake_formation.list_object_permissions(
-                resource_type="DATABASE", resource=resource
+            database_permissions = transform_permissions(
+                lake_formation.list_object_permissions(resource_type="DATABASE", resource=resource)
             )
 
             context["database_permissions"] = database_permissions
+            form = create_user_choice_form(database_permissions)
+            context["choices_form"] = form
 
         context["database"] = database
 
@@ -103,7 +108,7 @@ class DatabaseDetailView(TemplateView):
 class GrantDatabasePermissionsView(View):
     def post(self, request, *args, **kwargs):
         try:
-            username = request.POST.get("user")
+            username = get_username(request.POST.get("user_email"))
             database_rl_name = kwargs.get("database_rl_name")
             resource_catalog_id = str(kwargs.get("resource_catalog_id"))
 
@@ -174,11 +179,13 @@ class TableDetailView(TemplateView):
                 },
             }
             lake_formation = aws.LakeFormationService()
-            table_permissions = lake_formation.list_object_permissions(
-                resource_type="TABLE", resource=resource
+            table_permissions = transform_permissions(
+                lake_formation.list_object_permissions(resource_type="TABLE", resource=resource)
             )
 
             context["table_permissions"] = table_permissions
+            form = create_user_choice_form(table_permissions)
+            context["choices_form"] = form
 
             context["data_filters"] = lake_formation.list_data_filters(
                 resource_catalog_id=resource_catalog_id,
@@ -194,7 +201,7 @@ class TableDetailView(TemplateView):
 class GrantTablePermissionsView(View):
     def post(self, request, *args, **kwargs):
         try:
-            username = request.POST.get("user")
+            username = get_username(request.POST.get("user_email"))
             resource_catalog_id = str(kwargs.get("resource_catalog_id"))
             database_rl_name = kwargs.get("database_rl_name")
             table_name = kwargs.get("table_name")
@@ -496,9 +503,12 @@ class DataFilterDetailView(TemplateView):
             },
         }
 
-        filter_permissions = lake_formation.list_object_permissions(
-            resource_type="TABLE", resource=resource
+        filter_permissions = transform_permissions(
+            lake_formation.list_object_permissions(resource_type="TABLE", resource=resource)
         )
+
+        form = create_user_choice_form(filter_permissions)
+        context["choices_form"] = form
 
         context["database"] = database
         context["table"] = table
@@ -510,7 +520,7 @@ class DataFilterDetailView(TemplateView):
 class GrantFilterPermissionsView(View):
     def post(self, request, *args, **kwargs):
         try:
-            username = request.POST.get("user")
+            username = get_username(request.POST.get("user_email"))
             resource_catalog_id = str(kwargs.get("resource_catalog_id"))
             database_rl_name = kwargs.get("database_rl_name")
             table_name = kwargs.get("table_name")
