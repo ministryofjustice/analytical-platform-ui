@@ -15,7 +15,7 @@ repos:
       - id: gitleaks
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 60ef368a6f48dfb4317651017f66dbb055241a6c  # frozen: v0.12.12
+    rev: f9351c924055bf6c7b4a4670237d3ce141e9f57c  # frozen: v0.14.0
     hooks:
       # Run the linter.
       - id: ruff

@@ -2,7 +2,7 @@
 # Stage: build-node
 # From: docker.io/node:22.18.0-alpine3.22
 ##################################################
-FROM docker.io/node:24.7.0-alpine3.22@sha256:be4d5e92ac68483ec71440bf5934865b4b7fcb93588f17a24d411d15f0204e4f AS build-node
+FROM docker.io/node:24.9.0-alpine3.22@sha256:77f3c4d1f33c17dfa4af4b0add57d86957187873e313c2c37f52831d117645c8 AS build-node
 
 WORKDIR /build
 
@@ -19,7 +19,7 @@ EOF
 # Stage: build-python
 # From: docker.io/python:3.13-alpine3.22
 ##################################################
-FROM ghcr.io/astral-sh/uv:python3.13-alpine@sha256:9b0b40ee26d09b0ddb3b39f0aef24174f59f766af36591d541a2e14266a20886 AS build-python
+FROM ghcr.io/astral-sh/uv:python3.13-alpine@sha256:2dc9ecbbd685112c97d8d7a67b81c5afab84acf2d81e4b9b6b6c002cc79ee270 AS build-python
 
 ARG BUILD_DEV="false"
 
