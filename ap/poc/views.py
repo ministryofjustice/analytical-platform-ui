@@ -11,7 +11,7 @@ from .models import SharedResource
 from .utils import (
     create_or_update_shared_resources,
     create_user_choice_form,
-    get_username,
+    get_username_from_email,
     transform_data_filter,
     transform_database,
     transform_database_list,
@@ -108,7 +108,7 @@ class DatabaseDetailView(TemplateView):
 class GrantDatabasePermissionsView(View):
     def post(self, request, *args, **kwargs):
         try:
-            username = get_username(request.POST.get("user_email"))
+            username = get_username_from_email(request.POST.get("user_email"))
             database_rl_name = kwargs.get("database_rl_name")
             resource_catalog_id = str(kwargs.get("resource_catalog_id"))
 
@@ -201,7 +201,7 @@ class TableDetailView(TemplateView):
 class GrantTablePermissionsView(View):
     def post(self, request, *args, **kwargs):
         try:
-            username = get_username(request.POST.get("user_email"))
+            username = get_username_from_email(request.POST.get("user_email"))
             resource_catalog_id = str(kwargs.get("resource_catalog_id"))
             database_rl_name = kwargs.get("database_rl_name")
             table_name = kwargs.get("table_name")
@@ -520,7 +520,7 @@ class DataFilterDetailView(TemplateView):
 class GrantFilterPermissionsView(View):
     def post(self, request, *args, **kwargs):
         try:
-            username = get_username(request.POST.get("user_email"))
+            username = get_username_from_email(request.POST.get("user_email"))
             resource_catalog_id = str(kwargs.get("resource_catalog_id"))
             database_rl_name = kwargs.get("database_rl_name")
             table_name = kwargs.get("table_name")

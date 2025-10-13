@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as BaseUserManager
 from django.db import models
-from django.utils.text import slugify
 
 from ap.core.utils import sanitize_dns_label
 
@@ -79,9 +78,6 @@ class User(AbstractUser):
     def get_by_entra_oid(cls, oid):
         """Convenience method to find user by EntraID OID"""
         return cls.objects.get(entra_oid=oid)
-
-    def get_username(self):
-        return slugify(self.email.split("@")[0])
 
     def clean(self):
         """Normalize email to lowercase"""

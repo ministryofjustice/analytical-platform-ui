@@ -135,7 +135,7 @@ def transform_data_filter(filter):
     return filter_data
 
 
-def get_username(email):
+def get_username_from_email(email):
     return slugify(email.split("@")[0])
 
 
@@ -155,7 +155,7 @@ def transform_permissions(permissions):
     users = User.objects.all()
 
     for user in users:
-        username = get_username(user.email)
+        username = get_username_from_email(user.email)
         for perm in permissions:
             if perm["principal_name"] == username:
                 perm["email"] = user.email
