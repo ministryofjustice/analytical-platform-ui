@@ -18,6 +18,10 @@ def nav_items(request):
                 "url": reverse("poc:index"),
                 "hide": not request.user.is_superuser,
             },
+            {
+                "name": "Databases",
+                "url": reverse("poc:databases"),
+            },
         ]
     }
 
