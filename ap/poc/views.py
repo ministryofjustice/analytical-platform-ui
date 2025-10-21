@@ -282,10 +282,16 @@ class CreateDataFilterView(FormView):
         resource_catalog_id = str(self.kwargs.get("resource_catalog_id"))
         database_rl_name = self.kwargs.get("database_rl_name")
         table_name = self.kwargs.get("table_name")
+
+        glue = aws.GlueService()
+        database = glue.get_database_detail(database_rl_name)
+        database_name = database["TargetDatabase"]["DatabaseName"]
+
         context.update(
             {
                 "resource_catalog_id": resource_catalog_id,
                 "database_rl_name": database_rl_name,
+                "database_name": database_name,
                 "table_name": table_name,
             }
         )
@@ -349,14 +355,26 @@ class UpdateDataFilterView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        resource_catalog_id = str(self.kwargs.get("resource_catalog_id"))
+        database_rl_name = self.kwargs.get("database_rl_name")
+        table_name = self.kwargs.get("table_name")
+        filter_name = self.kwargs.get("filter_name")
+
+        glue = aws.GlueService()
+        database = glue.get_database_detail(database_rl_name)
+        database_name = database["TargetDatabase"]["DatabaseName"]
+
         context.update(
             {
-                "resource_catalog_id": str(self.kwargs.get("resource_catalog_id")),
-                "database_rl_name": self.kwargs.get("database_rl_name"),
-                "table_name": self.kwargs.get("table_name"),
-                "filter_name": self.kwargs.get("filter_name"),
+                "resource_catalog_id": resource_catalog_id,
+                "database_rl_name": database_rl_name,
+                "database_name": database_name,
+                "table_name": table_name,
+                "filter_name": filter_name,
             }
         )
+
         return context
 
     def get_form(self):

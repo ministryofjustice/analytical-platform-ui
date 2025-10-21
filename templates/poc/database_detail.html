@@ -1,5 +1,15 @@
 {% extends "base.html" %}
 
+{% block breadcrumbs %}
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="{% url 'poc:databases' %}">Databases</a>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+
 {% block title %}Database {{database.name}}{% endblock %}
 
 {% block content %}
