@@ -22,7 +22,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "django-debug-toolbar==6.0.0",
+    "django-debug-toolbar==6.1.0",
     "ipython>=9.5.0",
     "model-bakery==1.20.5",
     "moto[all]==5.1.14",
