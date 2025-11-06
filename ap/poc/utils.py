@@ -155,9 +155,8 @@ def transform_permissions(permissions):
     users = User.objects.all()
 
     for user in users:
-        username = get_username_from_email(user.email)
         for perm in permissions:
-            if perm["principal_name"] == username:
+            if perm["principal_name"] == user.entra_oid:
                 perm["email"] = user.email
 
     return permissions

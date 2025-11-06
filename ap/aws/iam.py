@@ -41,20 +41,24 @@ class IAMService(AWSService):
                 logger.warning(f"Role {role_name} does not exist.")
                 raise e
 
-    def create_role(self, role_name, assume_role_policy_document=None, description=""):
+    def create_role(self, role_name, path="", assume_role_policy_document=None, description=""):
         try:
             assume_role_policy_document = assume_role_policy_document or ROLE_POLICY_DOCUMENT
 
             response = self.client.create_role(
-                Path="/user/",
+                Path=path,
                 RoleName=role_name,
                 AssumeRolePolicyDocument=json.dumps(assume_role_policy_document),
                 Description=description,
             )
+
             return response.get("Role", {})
         except botocore.exceptions.ClientError as e:
-            logger.error(f"Error creating role {role_name}: {e}")
-            raise e
+            if e.response["Error"]["Code"] == "EntityAlreadyExists":
+                logger.info("Skipping role creation as it already exists.")
+            else:
+                logger.error(f"Error creating role {role_name}: {e}")
+                raise e
 
     def attach_role_policy(self, role_name, policy_arn=""):
         try:

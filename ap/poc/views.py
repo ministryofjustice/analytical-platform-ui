@@ -6,12 +6,12 @@ from django.views.generic import FormView, ListView, TemplateView
 
 from ap import aws
 from ap.poc.forms import CreateDataFilterForm
+from ap.users.models import User
 
 from .models import SharedResource
 from .utils import (
     create_or_update_shared_resources,
     create_user_choice_form,
-    get_username_from_email,
     transform_data_filter,
     transform_database,
     transform_database_list,
@@ -108,12 +108,12 @@ class DatabaseDetailView(TemplateView):
 class GrantDatabasePermissionsView(View):
     def post(self, request, *args, **kwargs):
         try:
-            username = get_username_from_email(request.POST.get("user_email"))
+            user = User.objects.get_by_email(request.POST.get("user_email"))
             database_rl_name = kwargs.get("database_rl_name")
             resource_catalog_id = str(kwargs.get("resource_catalog_id"))
 
             iam = aws.IAMService()
-            role = iam.get_role(role_name=f"{username}")
+            role = iam.get_role(role_name=f"{user.entra_oid}")
             principal = role.get("Arn")
 
             lake_formation = aws.LakeFormationService()
@@ -201,13 +201,13 @@ class TableDetailView(TemplateView):
 class GrantTablePermissionsView(View):
     def post(self, request, *args, **kwargs):
         try:
-            username = get_username_from_email(request.POST.get("user_email"))
+            user = User.objects.get_by_email(request.POST.get("user_email"))
             resource_catalog_id = str(kwargs.get("resource_catalog_id"))
             database_rl_name = kwargs.get("database_rl_name")
             table_name = kwargs.get("table_name")
 
             iam = aws.IAMService()
-            role = iam.get_role(role_name=f"{username}")
+            role = iam.get_role(role_name=user.entra_oid)
             principal = role.get("Arn")
 
             table_permissions = ["SELECT", "DESCRIBE"]
@@ -538,14 +538,14 @@ class DataFilterDetailView(TemplateView):
 class GrantFilterPermissionsView(View):
     def post(self, request, *args, **kwargs):
         try:
-            username = get_username_from_email(request.POST.get("user_email"))
+            user = User.objects.get_by_email(request.POST.get("user_email"))
             resource_catalog_id = str(kwargs.get("resource_catalog_id"))
             database_rl_name = kwargs.get("database_rl_name")
             table_name = kwargs.get("table_name")
             filter_name = kwargs.get("filter_name")
 
             iam = aws.IAMService()
-            role = iam.get_role(role_name=f"{username}")
+            role = iam.get_role(role_name=user.entra_oid)
             principal = role.get("Arn")
 
             table_permissions = ["SELECT", "DESCRIBE"]

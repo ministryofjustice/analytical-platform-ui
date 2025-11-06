@@ -32,10 +32,12 @@ class OIDCSubAuthenticationBackend:
 
     def _create_user(self):
         user_info = self.token.get("userinfo")
-        return User.objects.create(
+        user = User.objects.create(
             email=user_info.get("email"),
             entra_oid=user_info.get("oid"),
         )
+        user.initialise_aws_access()
+        return user
 
     def _update_user(self, user):
         user_info = self.token.get("userinfo")

@@ -8,7 +8,7 @@ from ap.aws.base import AWSService
 logger = structlog.get_logger(__name__)
 
 
-class AWSSSOAdmin(AWSService):
+class SSOAdmin(AWSService):
     def __init__(self, assume_role_name=None, profile_name=None, region_name=None):
         super().__init__(assume_role_name, profile_name, region_name)
         region = region_name or settings.AWS_DEFAULT_REGION
@@ -24,12 +24,12 @@ class AWSSSOAdmin(AWSService):
         return self.identity_store_id
 
 
-class AWSIdentityStore(AWSService):
+class IdentityStore(AWSService):
     def __init__(self, assume_role_name=None, profile_name=None, region_name=None):
         super().__init__(assume_role_name, profile_name, region_name)
         region = region_name or settings.AWS_DEFAULT_REGION
         self.client = self.boto3_session.client("identitystore", region_name=region)
-        self.sso_client = AWSSSOAdmin(
+        self.sso_client = SSOAdmin(
             assume_role_name=assume_role_name, profile_name=profile_name, region_name=region_name
         )
 
