@@ -10,12 +10,12 @@ repos:
       - id: check-added-large-files
 
   - repo: https://github.com/gitleaks/gitleaks
-    rev: 39fdb480a06768cc41a84ef86959c07ff33091c4  # frozen: v8.28.0
+    rev: 4b720c2674b640d046dadf45c2bc5173ee3734a4  # frozen: v8.29.1
     hooks:
       - id: gitleaks
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: f9351c924055bf6c7b4a4670237d3ce141e9f57c  # frozen: v0.14.0
+    rev: 488940d9de1b658fac229e34c521d75a6ea476f2  # frozen: v0.14.5
     hooks:
       # Run the linter.
       - id: ruff
