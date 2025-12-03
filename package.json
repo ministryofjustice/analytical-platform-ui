@@ -15,7 +15,7 @@
     "sass": "1.93.2"
   },
   "dependencies": {
-    "@ministryofjustice/frontend": "6.0.0",
+    "@ministryofjustice/frontend": "7.1.1",
     "govuk-frontend": "5.13.0",
     "jquery": "3.7.1",
     "nunjucks": "3.2.4"
