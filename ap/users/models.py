@@ -1,7 +1,10 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as BaseUserManager
 from django.db import models
 
+from ap.aws.iam import IAMService
+from ap.aws.identitystore import IdentityStore
 from ap.core.utils import sanitize_dns_label
 
 
@@ -85,8 +88,40 @@ class User(AbstractUser):
         if self.email:
             self.email = self.email.lower()
 
+    def create_iam_role(self):
+        iamservice = IAMService()
+        iamservice.create_role(
+            role_name=self.entra_oid, path="/users/", description=f"Role for user {self.email}"
+        )
+        iamservice.attach_role_policy(
+            role_name=self.entra_oid, policy_arn=settings.POC_USER_POLICY_ARN
+        )
+
+    def add_user_to_group(self, group_name):
+        identity_store = IdentityStore(
+            settings.IDENTITY_CENTER_ASSUMED_ROLE,
+            "APUIIdentityCenterAccess",
+            settings.IDENTITY_CENTER_ACCOUNT_REGION,
+        )
+
+        identity_store.add_user_to_group(self.email, group_name)
+
+    def remove_user_from_group(self, group_name):
+        identity_store = IdentityStore(
+            settings.IDENTITY_CENTER_ASSUMED_ROLE,
+            "APUIIdentityCenterAccess",
+            settings.IDENTITY_CENTER_ACCOUNT_REGION,
+        )
+        identity_store.remove_user_from_group(self.email, group_name)
+
+    def initialise_aws_access(self):
+        """Initialises AWS access for the user by creating IAM role and adding to group"""
+        self.create_iam_role()
+        # self.add_user_to_group(settings.POC_GROUP_NAME)
+
     def save(self, *args, **kwargs):
         # Ensure email is lowercase before saving
         if self.email:
             self.email = self.email.lower()
+
         return super().save(*args, **kwargs)

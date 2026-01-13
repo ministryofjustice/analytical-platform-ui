@@ -332,3 +332,8 @@ AWS_DEFAULT_REGION = os.environ.get("AWS_DEFAULT_REGION", "eu-west-2")
 
 # TODO should be removed - for the poc only
 PRODUCER_ACCOUNT_ID = "720819236209"
+
+POC_USER_POLICY_ARN = os.environ.get("POC_USER_POLICY_ARN", "poc_user_policy")
+IDENTITY_CENTER_ASSUMED_ROLE = os.environ.get("IDENTITY_CENTER_ASSUMED_ROLE")
+IDENTITY_CENTER_ACCOUNT_REGION = os.environ.get("IDENTITY_CENTER_ACCOUNT_REGION")
+POC_GROUP_NAME = os.environ.get("POC_GROUP_NAME")

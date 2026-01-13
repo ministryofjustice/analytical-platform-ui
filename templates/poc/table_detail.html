@@ -2,6 +2,19 @@
 
 {% block title %}Table {{table.name}}{% endblock %}
 
+{% block breadcrumbs %}
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="{% url 'poc:databases' %}">Databases</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="{% url 'poc:database_detail' database.catalog_id database.rl_name %}">{{ database.name }}</a>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+
 {% block content %}
 <h1 class="govuk-heading-xl">{{table.name}}</h1>
 <p class="govuk-body">Database: {{database.name}}</p>

@@ -2,6 +2,23 @@
 
 {% block title %}Create Data Filter{% endblock %}
 
+{% block breadcrumbs %}
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="{% url 'poc:databases' %}">Databases</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="{% url 'poc:database_detail' resource_catalog_id database_rl_name %}">{{ database_name }}</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="{% url 'poc:table_detail' resource_catalog_id database_rl_name table_name %}">{{ table_name }}</a>
+            </li>
+        </ol>
+    </div>
+{% endblock %}
+
+
 {% block content %}
 
 <h1 class="govuk-heading-l">Create Data Filter for Table</h1>
